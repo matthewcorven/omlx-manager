@@ -284,12 +284,13 @@ with PLE offload on, not over the offload on/off switch.
 
 | Volume | Size | Free | Role |
 |---|---|---|---|
-| Internal (`/`) | 1.8 TiB | 299 GiB | active downloads and tuning |
-| `/Volumes/NVMe` | 931 GiB | 850 GiB | finished models, registered in `model.model_dirs` |
+| Internal (`/`) | 1.8 TiB | 292 GiB | active downloads and tuning |
+| `/Volumes/NVMe` | 931 GiB | 814 GiB | finished models, registered in `model.model_dirs` |
 
 Internal free space fell from 396 GiB to 180 GiB as the download set completed,
-then recovered to 299 GiB once the four finished models were shuttled to NVMe
-(81 GiB there: Ornith 20G, Qwen3.8-27B 16G, gemma-4-31B 19G, gemma-4-26B 27G).
+then recovered to 292 GiB once the five finished models were shuttled to NVMe
+(117 GiB there: Ornith 20G, Qwen3.8-27B 16G, gemma-4-31B 19G, gemma-4-26B 27G,
+Qwen3.6-35B-A3B 36G).
 Both directories are registered, so a shuttled model still loads — moving it is
 a disk operation only, never a "make it usable" step.
 
