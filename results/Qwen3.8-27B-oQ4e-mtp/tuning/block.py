@@ -22,8 +22,11 @@ def put(patch):
         f"{OMLX}/admin/api/models/{MODEL}/settings",
         data=json.dumps(patch).encode(),
         headers={"Content-Type": "application/json"}, method="PUT")
-    with urllib.request.urlopen(req, timeout=120) as r:
-        return json.load(r)
+    try:
+        with urllib.request.urlopen(req, timeout=120) as r:
+            return json.load(r)
+    except urllib.error.HTTPError as e:
+        raise RuntimeError(f"PUT {patch} -> {e.code}: {e.read().decode()[:400]}") from None
 
 def wait_loaded(timeout=300):
     t0 = time.time()
