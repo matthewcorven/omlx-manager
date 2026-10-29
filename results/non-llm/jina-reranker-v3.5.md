@@ -1,9 +1,9 @@
 # jina-reranker-v3.5 — smoke test
 
-**Status: FAILED — wrong artifact downloaded. Fix is a re-download, deferred until
-the benchmark slot is free (downloads skew throughput measurements).**
+**Status: PASS — fixed by replacing the Transformers checkpoint with the MLX
+conversion (`jinaai/jina-reranker-v3.5-mlx`).**
 
-## Symptom
+## Original symptom (first pass)
 
 ```
 POST /v1/rerank
@@ -14,9 +14,10 @@ projector.2.weight."}}
 
 ## Diagnosis
 
-We have `jinaai/jina-reranker-v3.5`, which is the **Transformers** checkpoint, not
-an MLX conversion. It ships a custom `modeling.py` defining `JinaForRanking`, a
-subclass of `Qwen3ForCausalLM` that adds a two-layer projection head:
+The first download was `jinaai/jina-reranker-v3.5`, the **Transformers**
+checkpoint, not an MLX conversion. It ships a custom `modeling.py` defining
+`JinaForRanking`, a subclass of `Qwen3ForCausalLM` that adds a two-layer
+projection head:
 
 ```python
 self.projector = nn.Sequential(
@@ -46,28 +47,43 @@ Ruled out, with evidence:
   but no projector entries; the head is defined only in `modeling.py`, which MLX
   loading does not execute.
 
-## Fix
+## Fix applied
 
-The model card states an MLX conversion exists:
+1. Downloaded `jinaai/jina-reranker-v3.5-mlx` (1.21 GB, 1,205,219,351 bytes) via
+   `POST /admin/api/hf/download`. It ships `model.safetensors` plus a separate
+   `projector.safetensors`, so the head is a first-class weight file rather than
+   an unexpected parameter.
+2. Smoke-tested it **before** removing anything — it answered correctly.
+3. Removed the Transformers directory
+   `~/.omlx/models/mlx-community/jinaai/jina-reranker-v3.5` (1.1 GB) so it stops
+   failing on every load attempt.
+4. Restarted oMLX so the model index dropped the removed path. After restart the
+   model list contains only `jina-reranker-v3.5-mlx`.
 
-> GGUF ... and MLX versions are now available.
-
-Download `jinaai/jina-reranker-v3.5-mlx` in place of the Transformers repo and
-re-run the smoke test. The current directory
-(`~/.omlx/models/mlx-community/jinaai/jina-reranker-v3.5`, 1.1 GB) should be
-removed once the replacement is verified, so it stops failing on every load
-attempt.
-
-## Smoke test to run after the fix
+## Verification
 
 ```sh
 curl -s -X POST $OMLX/v1/rerank -H 'Content-Type: application/json' -d '{
-  "model":"jina-reranker-v3.5",
+  "model":"jina-reranker-v3.5-mlx",
   "query":"how do I reverse a string in python",
   "documents":["Use s[::-1] to reverse a string.",
                "The capital of France is Paris.",
                "Bake at 350F for 20 minutes."]}'
 ```
 
-Pass criteria: HTTP 200, three scored results, and the Python document ranked
-first.
+Result — HTTP 200, three scored results, Python document ranked first:
+
+| Rank | Document | Score |
+|---|---|---|
+| 1 | `Use s[::-1] to reverse a string.` | 0.4715 |
+| 2 | `Bake at 350F for 20 minutes.` | -0.1342 |
+| 3 | `The capital of France is Paris.` | -0.1693 |
+
+`usage.total_tokens: 221`. The same response was reproduced after the restart,
+so the result is not a warm-cache artifact.
+
+## Notes
+
+- The model id changed: use `jina-reranker-v3.5-mlx`, not `jina-reranker-v3.5`.
+- The download was run only while the benchmark slot was idle, per the campaign
+  rule that downloads skew throughput by up to 4x.
