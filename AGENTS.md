@@ -17,7 +17,9 @@ settings profile that balances decode speed against time-to-first-token.
 3. **One model per agent.** A model-tuning agent owns exactly one model. It must
    not download, load, or change settings for any other model.
 4. **Do not edit `~/.omlx/settings.json`** (global server config). Per-model
-   changes go through `/admin/api/models/{id}/settings` only.
+   changes go through `/admin/api/models/{id}/settings` only. In particular,
+   **never** call `POST /admin/api/global-settings` with `model_dirs` during a
+   benchmark — it unloads every loaded model and re-discovers.
 5. **Do not run two benchmarks at once.** oMLX returns 409; concurrent runs
    corrupt measurements.
 6. **Record everything.** Every measurement goes into `results/<model>/`. A
@@ -113,3 +115,8 @@ Each model agent returns:
 - Ensure only one benchmark runs at a time.
 - Keep `docs/model-candidates.md` and `results/` in sync.
 - Do not let two agents touch the same model.
+- Manage the two model directories: internal SSD for active work, and
+  `/Volumes/NVMe/omlx-models` (1 TB external) for models already tested. Both
+  are registered in `model.model_dirs`, so a model on the external volume can be
+  loaded directly — moving a model there does not make it unusable.
+- Never change `model_dirs` while any benchmark is running.

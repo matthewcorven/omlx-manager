@@ -15,9 +15,27 @@ and the PRs/commits they reference.
 | Chip | Apple M4 Max, 40 GPU cores |
 | Memory | 128 GB unified (~546 GB/s) |
 | oMLX model memory ceiling | ~89.6 GB (balanced guard tier) |
-| Model dir | `~/.omlx/models/mlx-community` |
+| Model dirs | `~/.omlx/models/mlx-community` + `/Volumes/NVMe/omlx-models` |
 | SSD cache | `~/.omlx/cache` (185 GB budget) |
 | Server | `http://127.0.0.1:8001` |
+
+### Storage
+
+Two model directories are registered, so the model set is not limited to the
+internal SSD:
+
+| Volume | Size | Role |
+|---|---|---|
+| `/System/Volumes/Data` (internal) | ~1.8 TB, ~430 GB free | Active download + tuning target |
+| `/Volumes/NVMe` (external, `/dev/disk4`) | 1 TB, ~931 GB free | Overflow / cold storage for tested models |
+
+`/Volumes/NVMe/omlx-models` is registered as a second entry in
+`model.model_dirs`, so oMLX discovers and loads models from it directly — no
+copying back is needed to run a model that lives there.
+
+> **Warning:** `POST /admin/api/global-settings` with `model_dirs` **unloads all
+> loaded models and re-discovers**. Never call it while a benchmark is running.
+> `model_dirs` is a **top-level** field, not nested under `model`.
 
 ## What this repo contains
 
