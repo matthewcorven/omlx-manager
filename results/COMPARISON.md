@@ -239,12 +239,8 @@ Notes on the Qwen3.8-Flash-Next-oQ4e-mtp row:
 
 ## Downloaded, tuning not yet started
 
-All of these are on disk and pass a load smoke test or are queued for one. None
-has a `final.json` yet.
-
-| Model | On disk | Resident | MoE | MTP | Native ctx | Smarts | Status |
-|---|---|---|---|---|---|---|---|
-| `Jundot/Qwen3.8-Flash-Next-oQ4e-mtp` | 105.06 GB | 112.81 GB | yes | yes | 262144 | 5.327 | **resident-bound, see below** |
+**Empty.** Every downloaded coding candidate has a `final.json` and a row in the
+tested table above.
 
 Not coding models, downloaded for other roles: `jinaai/jina-reranker-v3.5`
 (1.17 GB, reranker), `mlx-community/Unlimited-OCR-2-8bit` (3.84 GB, OCR).
