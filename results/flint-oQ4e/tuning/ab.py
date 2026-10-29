@@ -19,13 +19,17 @@ def put(patch):
     with urllib.request.urlopen(req, timeout=60) as r:
         return json.load(r)
 
+PAD = int(os.environ.get("PAD", "0"))
+
+
 def measure():
     last_err = None
     for attempt in range(3):
-        r = subprocess.run(
-            ["python3", "scripts/measure.py", "--model", MODEL,
-             "--runs", "1", "--max-tokens", "300"],
-            capture_output=True, text=True, cwd=REPO)
+        cmd = ["python3", "scripts/measure.py", "--model", MODEL,
+               "--runs", "1", "--max-tokens", "300"]
+        if PAD:
+            cmd += ["--context-pad", str(PAD)]
+        r = subprocess.run(cmd, capture_output=True, text=True, cwd=REPO)
         lines = [l for l in r.stdout.splitlines() if l.startswith("run 1:")]
         if lines:
             line = lines[0]
@@ -43,6 +47,7 @@ def main():
     label_a, patch_a = sys.argv[1], json.loads(sys.argv[2])
     label_b, patch_b = sys.argv[3], json.loads(sys.argv[4])
     n = int(sys.argv[5]) if len(sys.argv) > 5 else 5
+    out = sys.argv[6] if len(sys.argv) > 6 else f"ab-{label_a}-vs-{label_b}.json"
     arms = {"A": (label_a, patch_a, []), "B": (label_b, patch_b, [])}
     put(patch_a)
     measure()  # discard warmup
@@ -64,8 +69,7 @@ def main():
                   "ttft_ms": round(t, 1), "decode_tps": round(d, 2),
                   "total_ms": round(tot, 0), "samples": acc}
         print(f"{k} {lbl:22} ttft={t:6.1f}ms decode={d:6.2f}tps total={tot:7.0f}ms")
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                        f"ab-{label_a}-vs-{label_b}.json")
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), out)
     with open(path, "w") as f:
         json.dump(res, f, indent=2)
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Run the three fixed quality-guardrail prompts and dump raw outputs."""
-import json, os, sys, urllib.request
+import json, os, sys, time, urllib.request
 
 OMLX = "http://127.0.0.1:8001"
 MODEL = "flint-oQ4e"
@@ -18,39 +18,79 @@ PROMPTS = [
 ]
 
 
+TEMP = float(os.environ.get("TEMP", "0.2"))
+TOP_P = float(os.environ.get("TOP_P", "0.95"))
+TOP_K = int(os.environ.get("TOP_K", "20"))
+MAXTOK = int(os.environ.get("MAXTOK", "700"))
+OUT = sys.argv[1] if len(sys.argv) > 1 else "quality-raw.json"
+
+
 def ask(prompt):
+    """Stream the completion. Flint spends its first ~250 tokens on
+    reasoning_content, so a non-streaming call with a small budget returns an
+    empty content field; streaming also gives us TTFT/TTFC."""
     body = json.dumps({
         "model": MODEL,
         "messages": [{"role": "user", "content": prompt}],
-        "max_tokens": 700,
-        "temperature": 0.2,
-        "top_p": 0.95,
-        "top_k": 20,
-        "stream": False,
+        "max_tokens": MAXTOK,
+        "temperature": TEMP,
+        "top_p": TOP_P,
+        "top_k": TOP_K,
+        "stream": True,
     }).encode()
     req = urllib.request.Request(f"{OMLX}/v1/chat/completions", data=body,
                                  headers={"Content-Type": "application/json"}, method="POST")
-    with urllib.request.urlopen(req, timeout=600) as r:
-        return json.load(r)
+    content, reasoning, finish = [], [], None
+    t0 = time.time()
+    ttft = ttfc = None
+    with urllib.request.urlopen(req, timeout=900) as r:
+        for raw in r:
+            line = raw.decode("utf-8", "replace").strip()
+            if not line.startswith("data:"):
+                continue
+            data = line[5:].strip()
+            if data == "[DONE]":
+                break
+            try:
+                ev = json.loads(data)
+            except json.JSONDecodeError:
+                continue
+            for ch in ev.get("choices") or []:
+                d = ch.get("delta") or {}
+                if d.get("reasoning_content"):
+                    if ttft is None:
+                        ttft = (time.time() - t0) * 1000
+                    reasoning.append(d["reasoning_content"])
+                if d.get("content"):
+                    if ttft is None:
+                        ttft = (time.time() - t0) * 1000
+                    if ttfc is None:
+                        ttfc = (time.time() - t0) * 1000
+                    content.append(d["content"])
+                if ch.get("finish_reason"):
+                    finish = ch["finish_reason"]
+    return {
+        "content": "".join(content),
+        "reasoning_content": "".join(reasoning),
+        "finish_reason": finish,
+        "ttft_ms": round(ttft, 1) if ttft else None,
+        "ttfc_ms": round(ttfc, 1) if ttfc else None,
+        "elapsed_ms": round((time.time() - t0) * 1000, 1),
+    }
 
 
 def main():
     out = []
     for name, prompt in PROMPTS:
         resp = ask(prompt)
-        msg = resp["choices"][0]["message"]
-        out.append({
-            "name": name,
-            "prompt": prompt,
-            "content": msg.get("content") or "",
-            "reasoning_content": msg.get("reasoning_content") or "",
-            "finish_reason": resp["choices"][0].get("finish_reason"),
-            "usage": resp.get("usage"),
-        })
-        print(f"{name}: {len(out[-1]['content'])} chars content, "
-              f"{len(out[-1]['reasoning_content'])} chars reasoning, "
-              f"finish={out[-1]['finish_reason']}", flush=True)
-    with open(os.path.join(HERE, "quality-raw.json"), "w") as f:
+        out.append({"name": name, "prompt": prompt, **resp,
+                    "sampler": {"temperature": TEMP, "top_p": TOP_P, "top_k": TOP_K,
+                                "max_tokens": MAXTOK}})
+        print(f"{name}: {len(resp['content'])} chars content, "
+              f"{len(resp['reasoning_content'])} chars reasoning, "
+              f"finish={resp['finish_reason']} ttft={resp['ttft_ms']}ms "
+              f"ttfc={resp['ttfc_ms']}ms", flush=True)
+    with open(os.path.join(HERE, OUT), "w") as f:
         json.dump(out, f, indent=2)
 
 
