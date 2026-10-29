@@ -222,3 +222,40 @@ Before believing a surprising number, check in this order:
 3. Was a download or another benchmark running concurrently?
 4. Is `ttfc_ms` null while `ttft_ms` looks normal? That is thinking, not speed.
 5. Did the harness discard a warmup?
+
+## Two ways a model can look corrupt when it isn't
+
+Both were hit for real on `flint-oQ4e` and both cost a full tuning pass.
+
+### 1. Reasoning budget starves content
+
+With a non-streaming request and `max_tokens` of 120-150, a thinking-capable
+model spends the entire budget on `reasoning_content` and returns
+`content: ""` with `finish_reason: length`. That looks exactly like
+corruption. Always check `reasoning_len` / reasoning chunk count before
+concluding anything, and for quality checks **stream and use
+`max_tokens >= 350`**.
+
+### 2. A saturated SSD prefix cache serves poisoned prefixes
+
+If `~/.omlx/cache` is at its `cache.ssd_cache_max_size` limit, coherence can
+break on a config that is otherwise fine — reloading does not help, which
+makes it look like a model or setting fault. Symptoms: word salad that
+survives a settings revert and a reload, plus server log lines like
+`Invalidated N SSD index entries with stale layer cache signature`.
+
+Recovery: unload the model, move `~/.omlx/cache/*` to a quarantine directory
+(preserve it, do not delete), reload, re-probe. Check the size before every
+tuning pass:
+
+```sh
+du -sh ~/.omlx/cache
+```
+
+### Corollary: a suspiciously large speedup deserves a coherence check first
+
+`activation_fp16_enabled: true` on flint gave TTFT 60-66 ms against
+1756 ms for `false` — a 26x gap. It was pure noise: the corrupted model never
+entered its reasoning phase, so it began streaming garbage immediately. When a
+knob produces a speedup of that magnitude, read the output before recording
+the number, and trust `activation_fp16_supported: false` over any measurement.
