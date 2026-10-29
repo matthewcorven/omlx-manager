@@ -280,6 +280,31 @@ all four rows (~52.9 GB); what changes is how much of the *rest* of the model
 stays resident. So the sweep to run is over `moe_expert_offload_resident_fraction`
 with PLE offload on, not over the offload on/off switch.
 
+### Re-probed again 2026-10-29, nothing loaded — the PLE row flipped
+
+The ceiling is dynamic (`model_memory_max` reads 90.95 GB with nothing loaded,
+88.81 GB with gemma-4-26B resident, 85.93 GB earlier), so the fit answer has to
+be taken with the slot empty. With nothing loaded:
+
+| `mtp_enabled` | `qwen4_ple_ssd_offload` | Status | Max offloadable | Bytes |
+|---|---|---|---|---|
+| `true` | `false` | `fit` | **61%** | 84,942,916,831 |
+| `true` | `true` | `resident` | — | 0 |
+| `false` | `true` | `resident` | — | 0 |
+
+This **inverts** the previous reading. The 63% row was not "PLE offload on frees
+room for 63% of experts" — with PLE offload on the model reports `resident`,
+meaning it already fits with no expert offload at all, and `max_percent` is
+`null` because there is nothing to offload. The 16%/18% rows are the ones where
+offload is actually required, and with the slot empty the requirement is 61%,
+not 16%.
+
+So the earlier "the lever is bigger than assumed" conclusion was wrong in the
+opposite direction: PLE offload is the lever that makes the model fit, and MoE
+expert offload is only needed if PLE offload is off. The sweep still runs over
+`moe_expert_offload_resident_fraction`, but the baseline to beat is the
+PLE-offload-on configuration, which needs no expert offload at all.
+
 ## Storage
 
 | Volume | Size | Free | Role |
