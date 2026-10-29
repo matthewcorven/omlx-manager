@@ -1,0 +1,16 @@
+{
+  "enable_thinking": false,
+  "mtp_enabled": true,
+  "mtp_adaptive_max_depth": null,
+  "mtp_fixed_depth": 4,
+  "turboquant_kv_enabled": false,
+  "turboquant_kv_bits": 4.0,
+  "turboquant_skip_last": true,
+  "max_context_window": null,
+  "temperature": 0.2,
+  "top_p": 0.95,
+  "top_k": 64,
+  "force_sampling": false,
+  "activation_fp16_enabled": false,
+  "dflash_enabled": false
+}
