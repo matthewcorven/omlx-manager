@@ -136,12 +136,18 @@ rmdir "$(dirname "$SRC")" 2>/dev/null || true
 
 echo "moved. verifying oMLX still sees it..."
 curl -s -m 10 "$OMLX/admin/api/models" 2>/dev/null | python3 -c "
-import json,sys
+import json,os,sys
 d=json.load(sys.stdin)
 ms = d if isinstance(d,list) else d.get('models',[])
 for m in ms:
     if m.get('id')=='$MODEL':
-        print('  visible at:', m.get('path') or m.get('model_path') or '(path not reported)')
+        p = m.get('path') or m.get('model_path') or ''
+        print('  indexed at:', p or '(path not reported)')
+        if p and not os.path.isdir(p):
+            print('  STALE INDEX — that path no longer exists; restart the server')
+            print('  so it re-indexes model_dirs, then re-check with a real request.')
+        elif p:
+            print('  path exists on disk')
         break
 else:
     print('  NOT VISIBLE — restart the server so it re-indexes model_dirs')

@@ -211,13 +211,22 @@ Two options, neither taken yet:
 
 | Volume | Size | Free | Role |
 |---|---|---|---|
-| Internal (`/`) | 1.8 TiB | 180 GiB | active downloads and tuning |
-| `/Volumes/NVMe` | 931 GiB | 931 GiB | finished models, registered in `model.model_dirs` |
+| Internal (`/`) | 1.8 TiB | 299 GiB | active downloads and tuning |
+| `/Volumes/NVMe` | 931 GiB | 850 GiB | finished models, registered in `model.model_dirs` |
 
-Internal free space fell from 396 GiB to 180 GiB as the download set completed.
-The NVMe volume is still empty; shuttling finished models there is the next
-reclaim step. Both directories are registered, so a shuttled model still loads —
-moving it is a disk operation only, never a "make it usable" step.
+Internal free space fell from 396 GiB to 180 GiB as the download set completed,
+then recovered to 299 GiB once the four finished models were shuttled to NVMe
+(81 GiB there: Ornith 20G, Qwen3.8-27B 16G, gemma-4-31B 19G, gemma-4-26B 27G).
+Both directories are registered, so a shuttled model still loads — moving it is
+a disk operation only, never a "make it usable" step.
+
+**Shuttling needs a server restart to re-index.** The move itself is a plain
+`mv`, but oMLX caches the model path from its last scan. After a shuttle,
+`GET /admin/api/models` still reports the old internal path until the server is
+restarted; loading from that stale path fails. Restart, confirm the reported
+path is the NVMe one and exists, then load and serve one real request to prove
+it. `scripts/shuttle_model.sh` now checks the reported path for existence and
+says "STALE INDEX" instead of printing the old path as if it were fine.
 
 ## How rows get added
 
