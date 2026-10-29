@@ -1,0 +1,71 @@
+[
+  {
+    "extra": {},
+    "reasoning_chars": 6518,
+    "content_chars": 106,
+    "finish_reason": "stop",
+    "ttft_ms": 366.9,
+    "ttfc_ms": 16138.3,
+    "content": "```python\ndef average(nums):\n    if not nums:\n        return 0\n    return sum(nums) / float(len(nums))\n```",
+    "label": "default"
+  },
+  {
+    "extra": {
+      "thinking_budget_enabled": true,
+      "thinking_budget_tokens": 512
+    },
+    "reasoning_chars": 6364,
+    "content_chars": 106,
+    "finish_reason": "stop",
+    "ttft_ms": 394.6,
+    "ttfc_ms": 15446.6,
+    "content": "```python\ndef average(nums):\n    if not nums:\n        return 0\n    return float(sum(nums)) / len(nums)\n```",
+    "label": "budget-512-on"
+  },
+  {
+    "extra": {
+      "thinking_budget_enabled": true,
+      "thinking_budget_tokens": 512
+    },
+    "reasoning_chars": 5051,
+    "content_chars": 106,
+    "finish_reason": "stop",
+    "ttft_ms": 395.4,
+    "ttfc_ms": 12504.1,
+    "content": "```python\ndef average(nums):\n    if not nums:\n        return 0\n    return float(sum(nums)) / len(nums)\n```",
+    "label": "budget-512-on"
+  },
+  {
+    "extra": {
+      "thinking_budget_enabled": true,
+      "thinking_budget_tokens": 512
+    },
+    "reasoning_chars": 8900,
+    "content_chars": 106,
+    "finish_reason": "stop",
+    "ttft_ms": 382.1,
+    "ttfc_ms": 22178.5,
+    "content": "```python\ndef average(nums):\n    if not nums:\n        return 0\n    return float(sum(nums)) / len(nums)\n```",
+    "label": "budget-512-on"
+  },
+  {
+    "extra": {},
+    "reasoning_chars": 4489,
+    "content_chars": 99,
+    "finish_reason": "stop",
+    "ttft_ms": 417.7,
+    "ttfc_ms": 11622.4,
+    "content": "```python\ndef average(nums):\n    if not nums:\n        return 0\n    return sum(nums) / len(nums)\n```",
+    "label": "default"
+  },
+  {
+    "extra": {},
+    "reasoning_chars": 4431,
+    "content_chars": 94,
+    "finish_reason": "stop",
+    "ttft_ms": 384.8,
+    "ttfc_ms": 10974.0,
+    "content": "def average(nums):\n    if not nums:\n        return 0.0\n    return float(sum(nums)) / len(nums)",
+    "label": "default"
+  }
+]

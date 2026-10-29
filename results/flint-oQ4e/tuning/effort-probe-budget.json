@@ -1,0 +1,72 @@
+[
+  {
+    "extra": {},
+    "reasoning_chars": 7415,
+    "content_chars": 154,
+    "finish_reason": "stop",
+    "ttft_ms": 368.9,
+    "ttfc_ms": 18468.3,
+    "content": "```python\ndef average(nums):\n    if not nums:\n        return 0\n    total = 0\n    for n in nums:\n        total += n\n    return float(total) / len(nums)\n```",
+    "label": "default"
+  },
+  {
+    "extra": {
+      "reasoning_effort": "low"
+    },
+    "reasoning_chars": 6003,
+    "content_chars": 92,
+    "finish_reason": "stop",
+    "ttft_ms": 393.0,
+    "ttfc_ms": 14822.5,
+    "content": "def average(nums):\n    if not nums:\n        return 0\n    return sum(nums) / float(len(nums))",
+    "label": "effort-low"
+  },
+  {
+    "extra": {
+      "reasoning_effort": "max"
+    },
+    "reasoning_chars": 5150,
+    "content_chars": 154,
+    "finish_reason": "stop",
+    "ttft_ms": 395.9,
+    "ttfc_ms": 12942.5,
+    "content": "```python\ndef average(nums):\n    if not nums:\n        return 0\n    total = 0\n    for n in nums:\n        total += n\n    return total / float(len(nums))\n```",
+    "label": "effort-max"
+  },
+  {
+    "extra": {
+      "thinking_budget_tokens": 256
+    },
+    "reasoning_chars": 7841,
+    "content_chars": 106,
+    "finish_reason": "stop",
+    "ttft_ms": 374.3,
+    "ttfc_ms": 18910.7,
+    "content": "```python\ndef average(nums):\n    if not nums:\n        return 0\n    return float(sum(nums)) / len(nums)\n```",
+    "label": "budget-256"
+  },
+  {
+    "extra": {
+      "thinking_budget_tokens": 512
+    },
+    "reasoning_chars": 3246,
+    "content_chars": 85,
+    "finish_reason": "stop",
+    "ttft_ms": 394.9,
+    "ttfc_ms": 8129.1,
+    "content": "def average(nums):\n    if not nums:\n        return 0\n    return sum(nums) / len(nums)",
+    "label": "budget-512"
+  },
+  {
+    "extra": {
+      "thinking_budget_tokens": 1024
+    },
+    "reasoning_chars": 4408,
+    "content_chars": 106,
+    "finish_reason": "stop",
+    "ttft_ms": 362.6,
+    "ttfc_ms": 10890.7,
+    "content": "```python\ndef average(nums):\n    if not nums:\n        return 0\n    return float(sum(nums)) / len(nums)\n```",
+    "label": "budget-1024"
+  }
+]

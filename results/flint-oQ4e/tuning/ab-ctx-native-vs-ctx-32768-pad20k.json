@@ -1,0 +1,56 @@
+{
+  "A": {
+    "label": "ctx-native-pad20k",
+    "patch": {
+      "max_context_window": null
+    },
+    "n": 3,
+    "ttft_ms": 888.4,
+    "decode_tps": 92.74,
+    "total_ms": 4130.0,
+    "samples": [
+      {
+        "ttft_ms": 858.0,
+        "decode_tps": 93.43,
+        "total_ms": 4059.3
+      },
+      {
+        "ttft_ms": 888.4,
+        "decode_tps": 92.18,
+        "total_ms": 4132.8
+      },
+      {
+        "ttft_ms": 905.2,
+        "decode_tps": 92.74,
+        "total_ms": 4130.2
+      }
+    ]
+  },
+  "B": {
+    "label": "ctx-32768-pad20k",
+    "patch": {
+      "max_context_window": 32768
+    },
+    "n": 3,
+    "ttft_ms": 870.1,
+    "decode_tps": 92.92,
+    "total_ms": 4100.0,
+    "samples": [
+      {
+        "ttft_ms": 863.2,
+        "decode_tps": 92.92,
+        "total_ms": 4081.9
+      },
+      {
+        "ttft_ms": 886.5,
+        "decode_tps": 93.06,
+        "total_ms": 4100.3
+      },
+      {
+        "ttft_ms": 870.1,
+        "decode_tps": 92.16,
+        "total_ms": 4115.3
+      }
+    ]
+  }
+}

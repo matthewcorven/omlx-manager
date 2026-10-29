@@ -1,0 +1,72 @@
+[
+  {
+    "extra": {},
+    "reasoning_chars": 5666,
+    "content_chars": 106,
+    "finish_reason": "stop",
+    "ttft_ms": 377.3,
+    "ttfc_ms": 13516.0,
+    "content": "```python\ndef average(nums):\n    if not nums:\n        return 0\n    return sum(nums) / float(len(nums))\n```",
+    "label": "default"
+  },
+  {
+    "extra": {
+      "reasoning_effort": "low"
+    },
+    "reasoning_chars": 5149,
+    "content_chars": 154,
+    "finish_reason": "stop",
+    "ttft_ms": 382.7,
+    "ttfc_ms": 12031.7,
+    "content": "```python\ndef average(nums):\n    if not nums:\n        return 0\n    total = 0\n    for n in nums:\n        total += n\n    return total / float(len(nums))\n```",
+    "label": "effort-low"
+  },
+  {
+    "extra": {
+      "reasoning_effort": "medium"
+    },
+    "reasoning_chars": 5142,
+    "content_chars": 106,
+    "finish_reason": "stop",
+    "ttft_ms": 398.1,
+    "ttfc_ms": 12042.9,
+    "content": "```python\ndef average(nums):\n    if not nums:\n        return 0\n    return float(sum(nums)) / len(nums)\n```",
+    "label": "effort-medium"
+  },
+  {
+    "extra": {
+      "reasoning_effort": "high"
+    },
+    "reasoning_chars": 4476,
+    "content_chars": 106,
+    "finish_reason": "stop",
+    "ttft_ms": 377.3,
+    "ttfc_ms": 10939.5,
+    "content": "```python\ndef average(nums):\n    if not nums:\n        return 0\n    return float(sum(nums)) / len(nums)\n```",
+    "label": "effort-high"
+  },
+  {
+    "extra": {
+      "reasoning_effort": "max"
+    },
+    "reasoning_chars": 3731,
+    "content_chars": 154,
+    "finish_reason": "stop",
+    "ttft_ms": 377.5,
+    "ttfc_ms": 8994.9,
+    "content": "```python\ndef average(nums):\n    if not nums:\n        return 0\n    total = 0\n    for n in nums:\n        total += n\n    return total / float(len(nums))\n```",
+    "label": "effort-max"
+  },
+  {
+    "extra": {
+      "thinking_budget_tokens": 256
+    },
+    "reasoning_chars": 8873,
+    "content_chars": 106,
+    "finish_reason": "stop",
+    "ttft_ms": 355.1,
+    "ttfc_ms": 21673.9,
+    "content": "```python\ndef average(nums):\n    if not nums:\n        return 0\n    return float(sum(nums)) / len(nums)\n```",
+    "label": "budget-256"
+  }
+]

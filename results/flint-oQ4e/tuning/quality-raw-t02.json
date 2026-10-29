@@ -1,0 +1,50 @@
+[
+  {
+    "name": "pure-function",
+    "prompt": "Write a Python function `merge_intervals(intervals)` that takes a list of [start, end] pairs, merges all overlapping or adjacent intervals, and returns the result sorted by start. Include a docstring. Output only the code.",
+    "content": "```python\ndef merge_intervals(intervals):\n    \"\"\"Merge overlapping or adjacent intervals.\n\n    Args:\n        intervals: List of [start, end] pairs.\n\n    Returns:\n        List of merged intervals sorted by start.\n    \"\"\"\n    if not intervals:\n        return []\n\n    sorted_intervals = sorted(intervals, key=lambda x: x[0])\n    merged = [sorted_intervals[0].copy()]\n\n    for start, end in sorted_intervals[1:]:\n        last_start, last_end = merged[-1]\n        if start <= last_end:\n            merged[-1][1] = max(last_end, end)\n        else:\n            merged.append([start, end])\n\n    return merged\n```",
+    "reasoning_content": "We need answer only code. Need write Python function merge_intervals(intervals) docstring. Should include code. Need likely no extra text. We can provide function.\n\nNeed be careful: overlapping or adjacent intervals. Sort by start. Iterate. If current start <= last end (adjacent means start == end? Usually merge if start <= end, since adjacent [1,2] and [2,3] merge to [1,3]. Overlap if start <= end. If intervals maybe inclusive? Pairs start,end. Adjacent if next.start <= current.end. Merge max end.\n\nReturn sorted by start.\n\nDocstring.\n\nOutput only code. Could include type hints? Fine.\n\nLet's craft:\n\ndef merge_intervals(intervals):\n    \"\"\"Merge overlapping or adjacent intervals.\n\n    Args:\n        intervals: List of [start, end] pairs.\n\n    Returns:\n        List of merged intervals sorted by start.\n    \"\"\"\n    if not intervals:\n        return []\n    sorted_intervals = sorted(intervals, key=lambda x: x[0])\n    merged = [sorted_intervals[0].copy()]\n    for start, end in sorted_intervals[1:]:\n        last_start, last_end = merged[-1]\n        if start <= last_end:\n            merged[-1][1] = max(last_end, end)\n        else:\n            merged.append([start, end])\n    return merged\n\nNeed maybe copy? sorted returns new lists? sorted on list of lists returns list of same list references? Actually sorted creates new list with references to same inner lists, so mutating merged[-1][1] mutates original? If intervals contain lists, sorted returns new outer list but inner same objects. merged initialized [sorted_intervals[0].copy()] to avoid. For appended [start,end] new list. Good.\n\nCheck if intervals empty. If intervals maybe tuples? sorted okay, merged list of lists. For first copy. For subsequent append [start,end]. Good.\n\nOutput only code.",
+    "finish_reason": "stop",
+    "ttft_ms": 273.3,
+    "ttfc_ms": 3931.2,
+    "elapsed_ms": 5217.5,
+    "sampler": {
+      "temperature": 0.2,
+      "top_p": 0.95,
+      "top_k": 20,
+      "max_tokens": 3000
+    }
+  },
+  {
+    "name": "bug-fix",
+    "prompt": "This function should return the average of a list of numbers, but it crashes on an empty list and returns the wrong value for integers. Find the bug and give the corrected function.\n\n```python\ndef average(nums):\n    total = 0\n    for n in nums:\n        total += n\n    return total / len(nums)\n```\n\nOutput only the corrected code.",
+    "content": "```python\ndef average(nums):\n    if not nums:\n        return 0\n    return float(sum(nums)) / len(nums)\n```",
+    "reasoning_content": "We need answer only corrected code. Need identify bug: empty list division by zero; integers wrong? In Python 3 / returns float, okay. Maybe if list of ints average should be float? \"returns wrong value for integers\" maybe because total / len(nums) in Python 2 integer division? But code likely Python 3? They ask corrected function. Need output only corrected code.\n\nWe should provide function that handles empty list maybe return 0? Average undefined; maybe return 0? Need infer. \"should return average of list of numbers, but it crashes on an empty list and returns the wrong value for integers.\" Wrong value for integers maybe because using / with ints in Python 2 truncates? Or maybe total starts int and division returns float in Python3, okay. Could be they expect average as float? For integers, total / len(nums) in Python 2 gives integer floor. Corrected: return total / len(nums) if nums else 0? Or raise? Usually average of empty list maybe 0? But \"crashes on empty list\" fix: if not nums: return 0 maybe. \"returns wrong value for integers\" fix: use float division: return total / len(nums) maybe in Python3 already; but to be safe: return float(total) / len(nums). Or sum(nums) / len(nums). Need output only corrected code.\n\nLet's craft:\n\ndef average(nums):\n    if not nums:\n        return 0\n    return sum(nums) / len(nums)\n\nBut if they want average of empty list maybe maybe return 0? Could also return None? The prompt: \"should return the average of a list of numbers, but it crashes on an empty list and returns the wrong value for integers. Find the bug and give the corrected function.\" Output only corrected code.\n\nMaybe corrected:\n\ndef average(nums):\n    if len(nums) == 0:\n        return 0\n    return sum(nums) / len(nums)\n\nBut \"wrong value for integers\" maybe because total / len(nums) with ints in Python 2? Use float(total) / len(nums). But if using Python 3, not needed. To be robust:\n\ndef average(nums):\n    if not nums:\n        return 0\n    return float(sum(nums)) / len(nums)\n\nBut if nums contains floats, sum returns float, float okay.\n\nShould we include type hints? No.\n\nNeed output only corrected code, no explanation.\n\nLet's final with code block? \"Output only the corrected code.\" Probably just code block or plain code. I'll provide plain code.\n\nPotential final:\n\ndef average(nums):\n    if not nums:\n        return 0\n    return sum(nums) / len(nums)\n\nBut if empty list average maybe should be 0? Could be acceptable? Maybe better to return 0.0? The prompt didn't specify behavior for empty list; just shouldn't crash. Could return 0.0.\n\nLet's consider if \"wrong value for integers\" means if list contains integers, average should be float? Example average([1,2]) should be 1.5, but if using integer division returns 1. In Python 3, / is float. But maybe they wrote code in Python 2? The corrected function should use float division. So:\n\ndef average(nums):\n    if not nums:\n        return 0\n    return float(sum(nums)) / len(nums)\n\nThis handles empty and integer division.\n\nBut if nums empty, return 0 maybe int; okay.\n\nLet's final.",
+    "finish_reason": "stop",
+    "ttft_ms": 353.2,
+    "ttfc_ms": 7275.3,
+    "elapsed_ms": 7509.9,
+    "sampler": {
+      "temperature": 0.2,
+      "top_p": 0.95,
+      "top_k": 20,
+      "max_tokens": 3000
+    }
+  },
+  {
+    "name": "refactor",
+    "prompt": "Refactor this into something more readable without changing behaviour. Output only the refactored code.\n\n```python\ndef proc(d, k):\n    r = []\n    for i in range(len(k)):\n        if k[i] in d:\n            if d[k[i]] != None:\n                r.append((k[i], d[k[i]]))\n    return r\n```",
+    "content": "```python\ndef proc(d, k):\n    return [(key, d[key]) for key in k if key in d and d[key] is not None]\n```",
+    "reasoning_content": "We need to refactor the given Python function into something more readable without changing behavior. The function takes two arguments: d (likely a dictionary) and k (likely a list). It initializes an empty list r. Then iterates over range(len(k)), i.e., over indices of k. For each index i, checks if k[i] is in d. If yes, and if d[k[i]] is not None, appends a tuple (k[i], d[k[i]]) to r.\n\nThe behavior: It returns a list of tuples where each tuple contains a key from the list k and its corresponding value from dictionary d, but only if the key exists in d and the value is not None.\n\nWe can refactor for readability: use list comprehension, maybe rename variables to be more descriptive, but we must not change behavior.\n\nPossible improvements:\n- Use `for key in k:` instead of indexing.\n- Use `if key in d and d[key] is not None`.\n- Use list comprehension: `[ (key, d[key]) for key in k if key in d and d[key] is not None ]`\n\nBut careful: The original checks `if k[i] in d` and then `if d[k[i]] != None`. The second check is redundant if we use `d[key] is not None` because if key is in d, d[key] might be None, but we need to check that. So condition: `key in d and d[key] is not None`.\n\nAlso note: The original uses `!= None` which is equivalent to `is not None` for checking None, but better style is `is not None`.\n\nWe should also consider that the original iterates over indices, but we can iterate directly over elements of k.\n\nRefactored code:\n\n```python\ndef proc(d, k):\n    return [(key, d[key]) for key in k if key in d and d[key] is not None]\n```\n\nThis is more readable and concise.\n\nBut we must ensure we don't change behavior: The original appends tuples in the order they appear in k, and the list comprehension preserves order. Yes.\n\nAlso, note that the original checks `if k[i] in d` which is membership in dictionary keys. That's fine.\n\nThus, the refactored code is just that.\n\nWe should output only the refactored code, no extra text.\n\nLet's write it.",
+    "finish_reason": "stop",
+    "ttft_ms": 376.5,
+    "ttfc_ms": 5103.8,
+    "elapsed_ms": 5346.9,
+    "sampler": {
+      "temperature": 0.2,
+      "top_p": 0.95,
+      "top_k": 20,
+      "max_tokens": 3000
+    }
+  }
+]
