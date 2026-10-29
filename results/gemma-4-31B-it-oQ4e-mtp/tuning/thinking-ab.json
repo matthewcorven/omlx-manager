@@ -1,0 +1,54 @@
+{
+  "off": [
+    {
+      "ttfc_ms": 326.1,
+      "elapsed_ms": 15218.0,
+      "content_chunks": 62,
+      "reasoning_chars": 0,
+      "finish": "length",
+      "decode_tps": 4.16
+    },
+    {
+      "ttfc_ms": 269.2,
+      "elapsed_ms": 15725.0,
+      "content_chunks": 65,
+      "reasoning_chars": 0,
+      "finish": "length",
+      "decode_tps": 4.21
+    },
+    {
+      "ttfc_ms": 335.3,
+      "elapsed_ms": 15747.0,
+      "content_chunks": 64,
+      "reasoning_chars": 0,
+      "finish": "length",
+      "decode_tps": 4.15
+    }
+  ],
+  "on": [
+    {
+      "ttfc_ms": 16210.5,
+      "elapsed_ms": 16330.0,
+      "content_chunks": 2,
+      "reasoning_chars": 2519,
+      "finish": "length",
+      "decode_tps": 16.76
+    },
+    {
+      "ttfc_ms": 15776.9,
+      "elapsed_ms": 15777.0,
+      "content_chunks": 1,
+      "reasoning_chars": 1962,
+      "finish": "length",
+      "decode_tps": 3216.49
+    },
+    {
+      "ttfc_ms": 15879.8,
+      "elapsed_ms": 15880.0,
+      "content_chunks": 1,
+      "reasoning_chars": 2024,
+      "finish": "length",
+      "decode_tps": 7570.95
+    }
+  ]
+}

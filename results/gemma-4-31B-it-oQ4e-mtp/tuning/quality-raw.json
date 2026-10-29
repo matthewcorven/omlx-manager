@@ -1,0 +1,50 @@
+[
+  {
+    "name": "pure-function",
+    "prompt": "Write a Python function `merge_intervals(intervals)` that takes a list of [start, end] pairs, merges all overlapping or adjacent intervals, and returns the result sorted by start. Include a docstring. Output only the code.",
+    "content": "```python\ndef merge_intervals(intervals):\n    \"\"\"\n    Merges all overlapping or adjacent intervals and returns them sorted by start.\n    \n    Args:\n        intervals (list[list[int]]): A list of [start, end] pairs.\n        \n    Returns:\n        list[list[int]]: A list of merged intervals.\n    \"\"\"\n    if not intervals:\n        return []\n\n    # Sort intervals by start time\n    intervals.sort(key=lambda x: x[0])\n\n    merged = [intervals[0]]\n\n    for current in intervals[1:]:\n        prev_start, prev_end = merged[-1]\n        curr_start, curr_end = current\n\n        # If current interval overlaps or is adjacent to the previous one\n        if curr_start <= prev_end:\n            # Update the end of the last interval to the maximum end value\n            merged[-1][1] = max(prev_end, curr_end)\n        else:\n            # No overlap, add the current interval to the list\n            merged.append(current)\n\n    return merged\n```",
+    "reasoning_content": "",
+    "finish_reason": "stop",
+    "ttft_ms": 248.9,
+    "ttfc_ms": 248.9,
+    "elapsed_ms": 4519.2,
+    "sampler": {
+      "temperature": 0.2,
+      "top_p": 0.95,
+      "top_k": 64,
+      "max_tokens": 700
+    }
+  },
+  {
+    "name": "bug-fix",
+    "prompt": "This function should return the average of a list of numbers, but it crashes on an empty list and returns the wrong value for integers. Find the bug and give the corrected function.\n\n```python\ndef average(nums):\n    total = 0\n    for n in nums:\n        total += n\n    return total / len(nums)\n```\n\nOutput only the corrected code.",
+    "content": "```python\ndef average(nums):\n    if not nums:\n        return 0\n    total = 0\n    for n in nums:\n        total += n\n    return total / len(nums)\n```",
+    "reasoning_content": "",
+    "finish_reason": "stop",
+    "ttft_ms": 243.8,
+    "ttfc_ms": 243.8,
+    "elapsed_ms": 1043.4,
+    "sampler": {
+      "temperature": 0.2,
+      "top_p": 0.95,
+      "top_k": 64,
+      "max_tokens": 700
+    }
+  },
+  {
+    "name": "refactor",
+    "prompt": "Refactor this into something more readable without changing behaviour. Output only the refactored code.\n\n```python\ndef proc(d, k):\n    r = []\n    for i in range(len(k)):\n        if k[i] in d:\n            if d[k[i]] != None:\n                r.append((k[i], d[k[i]]))\n    return r\n```",
+    "content": "```python\ndef proc(d, k):\n    return [(key, d[key]) for key in k if d.get(key) is not None]\n```",
+    "reasoning_content": "",
+    "finish_reason": "stop",
+    "ttft_ms": 717.7,
+    "ttfc_ms": 717.7,
+    "elapsed_ms": 1513.7,
+    "sampler": {
+      "temperature": 0.2,
+      "top_p": 0.95,
+      "top_k": 64,
+      "max_tokens": 700
+    }
+  }
+]

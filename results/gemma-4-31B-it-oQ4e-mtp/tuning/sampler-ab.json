@@ -1,0 +1,46 @@
+{
+  "card(1.0/0.95/64)": [
+    {
+      "ttfc_ms": 290.6,
+      "decode_tps": 3.81,
+      "chunks": 30
+    },
+    {
+      "ttfc_ms": 262.0,
+      "decode_tps": 3.89,
+      "chunks": 29
+    },
+    {
+      "ttfc_ms": 262.5,
+      "decode_tps": 3.82,
+      "chunks": 28
+    },
+    {
+      "ttfc_ms": 269.6,
+      "decode_tps": 3.81,
+      "chunks": 28
+    }
+  ],
+  "coding(0.2/0.95/64)": [
+    {
+      "ttfc_ms": 277.3,
+      "decode_tps": 3.89,
+      "chunks": 29
+    },
+    {
+      "ttfc_ms": 278.0,
+      "decode_tps": 3.94,
+      "chunks": 30
+    },
+    {
+      "ttfc_ms": 276.6,
+      "decode_tps": 3.77,
+      "chunks": 28
+    },
+    {
+      "ttfc_ms": 234.1,
+      "decode_tps": 3.92,
+      "chunks": 28
+    }
+  ]
+}
