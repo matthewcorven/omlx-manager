@@ -1,0 +1,487 @@
+{
+  "model_id": "Qwen3.8-Flash-Next-oQ4e-mtp",
+  "repo_id": "mlx-community/Jundot/Qwen3.8-Flash-Next-oQ4e-mtp",
+  "quant": "oQ4e (mixed-precision affine, 4.775 effective bits/weight over the whole checkpoint; 4-bit group-64 base at 68.5% of weights, 8-bit group-64 on 2.3%, BF16 embed/lm_head, and a 51.2B-parameter n-gram embedding table stored as 4-bit group-32 at 28.4% of weights). Better Low-Bit oQ build dated 2026-10-24.",
+  "architecture": "qwen4_exp (Qwen4ExpForConditionalGeneration), 125B total / ~6B active MoE vision-language model, 48 layers, hidden 2560, 512 experts with top-10 routing, moe_intermediate 640, hybrid Gated DeltaNet + Qwen Sparse Attention (QSA) stack (36 linear_attention + 12 full_attention, full_attention_interval 4), 24 query / 2 KV heads, head_dim 256, indexer 4 heads / budget 2048, 51.2B n-gram embedding (ngram_size 3), 0.449B vision encoder, 2.607B MTP head (mtp_num_hidden_layers 1), vocab 248320, engine_type vlm",
+  "native_context": 262144,
+  "download_size": "105.06 GiB",
+  "download_size_bytes": 112812100831,
+  "resident_size": "73.77 GiB",
+  "resident_size_bytes": 79211939549,
+  "model_path": "/Users/core/.omlx/models/mlx-community/Jundot/Qwen3.8-Flash-Next-oQ4e-mtp",
+  "profile": "coding-tuned",
+  "baseline": {
+    "note": "Server defaults as discovered, with the one change the coordinator had already made to make the model loadable at all: qwen4_ple_ssd_offload true. Everything else default - enable_thinking null (which on this model is NOT off), card sampler temp 1.0 / top_p 0.95 / top_k 20, MTP on with adaptive depth, KV quant off, native context, force_sampling false, moe_expert_offload_enabled false. 6 runs after one discarded warmup. Single-block number: NOT comparable to final_medians.",
+    "ttft_ms": 119.9,
+    "decode_tps": 79.72,
+    "total_ms": 3870.0,
+    "runs": 6,
+    "max_tokens": 300,
+    "context_pad": 0
+  },
+  "final_medians": {
+    "ttft_ms": 125.8,
+    "ttfc_ms": 125.8,
+    "decode_tps": 88.92,
+    "total_ms": 3493.0,
+    "runs": 10,
+    "max_tokens": 300,
+    "note": "10-run measurement after one discarded warmup on the applied final config. TTFC equals TTFT because thinking is off and no reasoning_content is emitted. This is a single-block number and is NOT comparable to baseline above. The only valid defaults-vs-final comparison is the paired whole-config test. The agent ran it twice: final 91.78 tps / 121.5 ms vs defaults 86.45 / 113.2 (+6.2% decode, -191 ms total, +8.3 ms TTFT) and final 89.72 / 124.8 vs defaults 87.55 / 115.7 (+2.5%, -71 ms, +9.1 ms). The coordinator's independent paired run (n=12/arm, tuning/block-coord-defaults-vs-coord-final.json) reads 86.50 -> 96.56 tps, +11.6% decode, 3575 -> 3218 ms total, 115.0 -> 123.1 ms TTFT. Honest range: +6% to +12% decode, dominated by the thinking pin."
+  },
+  "settings": {
+    "max_context_window": null,
+    "max_tokens": null,
+    "temperature": 0.6,
+    "top_p": 0.95,
+    "top_k": 20,
+    "repetition_penalty": null,
+    "min_p": null,
+    "presence_penalty": null,
+    "force_sampling": false,
+    "max_tool_result_tokens": null,
+    "chat_template_kwargs": null,
+    "forced_ct_kwargs": null,
+    "ttl_seconds": null,
+    "model_type_override": null,
+    "model_alias": null,
+    "index_cache_freq": null,
+    "enable_thinking": false,
+    "qwen4_ple_ssd_offload": true,
+    "qwen4_gdn_decode_wide_proj": false,
+    "deepseek_v41_engram_ssd_offload": false,
+    "deepseek_v41_ced_prefill_enabled": false,
+    "activation_fp16_enabled": false,
+    "preserve_thinking": null,
+    "cache_reasoning_output": null,
+    "thinking_budget_enabled": false,
+    "thinking_budget_tokens": null,
+    "gpu_power_limit_w": null,
+    "reasoning_parser": null,
+    "guided_grammar_enabled": false,
+    "guided_grammar": null,
+    "turboquant_kv_enabled": false,
+    "turboquant_kv_scheme": "turboquant",
+    "turboquant_kv_bits": 8.0,
+    "turboquant_skip_last": true,
+    "qwen35_ane_prefill_enabled": false,
+    "qwen35_ane_prefill_sequence_length": 2048,
+    "qwen35_ane_prefill_tail_padding_min_tokens": 0,
+    "qwen35_ane_prefill_fraction": null,
+    "qwen35_ane_prefill_shared_fraction": 1.0,
+    "qwen35_ane_prefill_fused_down": false,
+    "qwen35_ane_prefill_max_layers": 64,
+    "qwen35_ane_prefill_dual_ane": true,
+    "qwen35_ane_prefill_gdn": true,
+    "qwen35_ane_prefill_gdn_fraction": 0.5,
+    "qwen35_ane_prefill_gdn_max_layers": 48,
+    "qwen35_ane_prefill_cpu_enabled": false,
+    "qwen35_ane_prefill_cpu_fraction": 0.135,
+    "qwen35_ane_prefill_cpu_down_fraction": 0.0,
+    "qwen35_ane_prefill_cpu_gdn_fraction": 0.0,
+    "qwen35_ane_prefill_cpu_threads": 8,
+    "qwen35_ane_prefill_cpu_shared_resource": true,
+    "qwen35_oq_a8_enabled": false,
+    "qwen35_oq_a8_min_tokens": 128,
+    "moe_expert_offload_enabled": false,
+    "moe_expert_offload_resident_fraction": 0.25,
+    "specprefill_enabled": false,
+    "specprefill_draft_model": null,
+    "specprefill_keep_pct": null,
+    "specprefill_threshold": null,
+    "dflash_enabled": false,
+    "dflash_draft_model": null,
+    "dflash_draft_quant_enabled": null,
+    "dflash_draft_quant_weight_bits": null,
+    "dflash_draft_quant_group_size": null,
+    "dflash_draft_window_size": null,
+    "dflash_block_size": null,
+    "dflash_verify_mode": null,
+    "mtp_enabled": true,
+    "mtp_adaptive_max_depth": null,
+    "mtp_fixed_depth": null,
+    "vlm_mtp_enabled": false,
+    "vlm_mtp_draft_model": null,
+    "vlm_mtp_draft_block_size": null,
+    "is_pinned": false,
+    "is_default": false,
+    "is_hidden": false,
+    "is_favorite": false,
+    "external_engine": null,
+    "trust_remote_code": false,
+    "embedding_audio_enabled": false,
+    "embedding_audio_max_seconds": null,
+    "display_name": null,
+    "description": null,
+    "active_profile_name": null
+  },
+  "sweep": [
+    {
+      "stage": "thinking",
+      "variant": "enable_thinking false",
+      "ttft_ms": 480.8,
+      "decode_tps": null,
+      "method": "single streamed request, max_tokens 400, tuning/tristate.py",
+      "verdict": "KEPT - 544 content chars, 0 reasoning chars, finish=stop, correct merge_sorted_lists"
+    },
+    {
+      "stage": "thinking",
+      "variant": "enable_thinking null (default)",
+      "ttft_ms": null,
+      "decode_tps": null,
+      "method": "single streamed request, max_tokens 400, tuning/tristate.py",
+      "verdict": "rejected - 416 content chars but 1111 reasoning chars and ttfc 4888 ms; null is NOT off on this model"
+    },
+    {
+      "stage": "thinking",
+      "variant": "enable_thinking true",
+      "ttft_ms": null,
+      "decode_tps": null,
+      "method": "single streamed request, max_tokens 400, tuning/tristate.py",
+      "verdict": "rejected - byte-identical behaviour to null (1111 reasoning chars, ttfc 3477 ms); true does not mean 'on' in any useful sense, it means 'same as unset'"
+    },
+    {
+      "stage": "thinking",
+      "variant": "enable_thinking null (head-to-head)",
+      "ttft_ms": 117.3,
+      "decode_tps": 78.84,
+      "method": "alternating blocks, n=10 per arm, max_tokens 300, tuning/block.py",
+      "verdict": "rejected - 8.0% slower decode, +275 ms total"
+    },
+    {
+      "stage": "thinking",
+      "variant": "enable_thinking false (head-to-head)",
+      "ttft_ms": 129.9,
+      "decode_tps": 85.18,
+      "method": "alternating blocks, n=10 per arm, max_tokens 300, tuning/block.py",
+      "verdict": "KEPT - +8.0% decode, -275 ms total, +12.6 ms TTFT; the only real tuning lever on this model"
+    },
+    {
+      "stage": "mtp",
+      "variant": "MTP off",
+      "ttft_ms": 117.5,
+      "decode_tps": 58.53,
+      "method": "forward+backward ordered sweep, n=8, tuning/blocksweep.py",
+      "verdict": "rejected - 37% of the adaptive arm; MTP is worth +59% decode"
+    },
+    {
+      "stage": "mtp",
+      "variant": "MTP on, adaptive depth (default)",
+      "ttft_ms": 120.7,
+      "decode_tps": 93.18,
+      "method": "forward+backward ordered sweep, n=8, tuning/blocksweep.py",
+      "verdict": "KEPT - best in sweep"
+    },
+    {
+      "stage": "mtp",
+      "variant": "MTP on, fixed depth 2",
+      "ttft_ms": 117.5,
+      "decode_tps": 91.14,
+      "method": "forward+backward ordered sweep, n=8, tuning/blocksweep.py",
+      "verdict": "rejected - 2.2% slower than adaptive, inside noise"
+    },
+    {
+      "stage": "mtp",
+      "variant": "MTP on, fixed depth 4",
+      "ttft_ms": 119.3,
+      "decode_tps": 89.85,
+      "method": "forward+backward ordered sweep, n=8, tuning/blocksweep.py",
+      "verdict": "rejected - 3.6% slower than adaptive, inside noise"
+    },
+    {
+      "stage": "mtp",
+      "variant": "MTP on, adaptive depth (head-to-head)",
+      "ttft_ms": 122.5,
+      "decode_tps": 99.36,
+      "method": "alternating blocks, n=10 per arm, tuning/block.py",
+      "verdict": "KEPT - +0.9% decode over fixed 2, -4.0 ms TTFT; the margin is inside the 1% noise floor, kept as the default rather than as a win"
+    },
+    {
+      "stage": "mtp",
+      "variant": "MTP on, fixed depth 2 (head-to-head)",
+      "ttft_ms": 118.5,
+      "decode_tps": 98.44,
+      "method": "alternating blocks, n=10 per arm, tuning/block.py",
+      "verdict": "rejected - null against adaptive"
+    },
+    {
+      "stage": "kv-quant",
+      "variant": "KV quant off",
+      "ttft_ms": 123.2,
+      "decode_tps": 96.68,
+      "method": "forward+backward ordered sweep, n=8, tuning/blocksweep.py",
+      "verdict": "KEPT - null result, and there is no memory pressure to relieve"
+    },
+    {
+      "stage": "kv-quant",
+      "variant": "8-bit + skip_last",
+      "ttft_ms": 122.1,
+      "decode_tps": 96.28,
+      "method": "forward+backward ordered sweep, n=8, tuning/blocksweep.py",
+      "verdict": "rejected - null (-0.4% decode, -1.1 ms TTFT)"
+    },
+    {
+      "stage": "kv-quant",
+      "variant": "4-bit + skip_last",
+      "ttft_ms": 120.4,
+      "decode_tps": 96.49,
+      "method": "forward+backward ordered sweep, n=8, tuning/blocksweep.py",
+      "verdict": "rejected - null (-0.2% decode, -2.8 ms TTFT)"
+    },
+    {
+      "stage": "context",
+      "variant": "native 262144",
+      "ttft_ms": 123.4,
+      "decode_tps": 96.56,
+      "method": "interleaved paired A/B, n=6, tuning/ab.py",
+      "verdict": "KEPT - null result"
+    },
+    {
+      "stage": "context",
+      "variant": "32768 cap",
+      "ttft_ms": 121.5,
+      "decode_tps": 96.12,
+      "method": "interleaved paired A/B, n=6, tuning/ab.py",
+      "verdict": "rejected - null (-0.5% decode, -1.9 ms TTFT); no reason to give up 8x context for nothing"
+    },
+    {
+      "stage": "sampling",
+      "variant": "card sampler temp 1.0 / top_p 0.95 / top_k 20",
+      "ttft_ms": 125.7,
+      "decode_tps": 96.36,
+      "method": "interleaved paired A/B, n=6, tuning/ab.py",
+      "verdict": "rejected - throughput-neutral; not the card's coding recommendation"
+    },
+    {
+      "stage": "sampling",
+      "variant": "coding sampler temp 0.6 / top_p 0.95 / top_k 20",
+      "ttft_ms": 123.2,
+      "decode_tps": 96.16,
+      "method": "interleaved paired A/B, n=6, tuning/ab.py",
+      "verdict": "KEPT - null on throughput; kept on the model-card recommendation, not on a speed claim"
+    },
+    {
+      "stage": "sampling",
+      "variant": "temperature 1.0 (isolating A/B)",
+      "ttft_ms": 128.1,
+      "decode_tps": 96.71,
+      "method": "interleaved paired A/B, n=8, tuning/ab.py",
+      "verdict": "rejected - null; run specifically to test whether temperature explains the whole-config decode delta. It does not."
+    },
+    {
+      "stage": "sampling",
+      "variant": "temperature 0.6 (isolating A/B)",
+      "ttft_ms": 130.6,
+      "decode_tps": 96.56,
+      "method": "interleaved paired A/B, n=8, tuning/ab.py",
+      "verdict": "KEPT - null (-0.2% decode, +2.5 ms TTFT)"
+    },
+    {
+      "stage": "sampling",
+      "variant": "force_sampling false",
+      "ttft_ms": null,
+      "decode_tps": null,
+      "method": "3 identical temperature-0.0 requests per arm, tuning/forcesampling.py",
+      "verdict": "KEPT - 1/3 distinct outputs, i.e. deterministic at temp 0.0"
+    },
+    {
+      "stage": "sampling",
+      "variant": "force_sampling true",
+      "ttft_ms": null,
+      "decode_tps": null,
+      "method": "3 identical temperature-0.0 requests per arm, tuning/forcesampling.py",
+      "verdict": "rejected - 2/3 distinct outputs at temperature 0.0; force_sampling overrides the request temperature with the model's 0.6, so any temp-0 harness measures a different sampler on this arm. Measurement artifact, not a lever."
+    },
+    {
+      "stage": "moe-offload",
+      "variant": "fit endpoint, PLE offload on + MTP on",
+      "ttft_ms": null,
+      "decode_tps": null,
+      "method": "GET /admin/api/models/{id}/moe-offload-fit?mtp_enabled=true&qwen4_ple_ssd_offload=true",
+      "verdict": "status resident, max_percent null, bytes 0 - with PLE offload on there is nothing to offload"
+    },
+    {
+      "stage": "moe-offload",
+      "variant": "fit endpoint, PLE offload off + MTP on",
+      "ttft_ms": null,
+      "decode_tps": null,
+      "method": "GET /admin/api/models/{id}/moe-offload-fit?mtp_enabled=true&qwen4_ple_ssd_offload=false",
+      "verdict": "status fit at 61% (84,942,916,831 B) - the 61% requirement only exists if PLE offload is off"
+    },
+    {
+      "stage": "moe-offload",
+      "variant": "PLE offload on, expert offload OFF (baseline arm)",
+      "ttft_ms": 123.5,
+      "decode_tps": 89.07,
+      "method": "forward+backward ordered block sweep, n=8, tuning/blocksweep.py; resident 79.21 GB",
+      "verdict": "KEPT - fastest AND the only arm that needs no expert offload"
+    },
+    {
+      "stage": "moe-offload",
+      "variant": "expert offload on, resident_fraction 0.10",
+      "ttft_ms": 702.3,
+      "decode_tps": 12.66,
+      "method": "forward+backward ordered block sweep, n=8, tuning/blocksweep.py; resident 14.97 GB",
+      "verdict": "rejected - 7.0x slower decode, 5.7x worse TTFT, to save 64 GB the model does not need"
+    },
+    {
+      "stage": "moe-offload",
+      "variant": "expert offload on, resident_fraction 0.25 (default)",
+      "ttft_ms": 648.2,
+      "decode_tps": 20.0,
+      "method": "forward+backward ordered block sweep, n=8, tuning/blocksweep.py; resident 25.70 GB",
+      "verdict": "rejected - 4.5x slower decode, 5.2x worse TTFT"
+    },
+    {
+      "stage": "moe-offload",
+      "variant": "expert offload on, resident_fraction 0.50",
+      "ttft_ms": 394.5,
+      "decode_tps": 38.43,
+      "method": "forward+backward ordered block sweep, n=8, tuning/blocksweep.py; resident 43.54 GB",
+      "verdict": "rejected - 2.3x slower decode, 3.2x worse TTFT"
+    },
+    {
+      "stage": "moe-offload",
+      "variant": "expert offload on, resident_fraction 0.75",
+      "ttft_ms": 232.9,
+      "decode_tps": 63.77,
+      "method": "forward+backward ordered block sweep, n=8, tuning/blocksweep.py; resident 61.38 GB",
+      "verdict": "rejected - 28% slower decode, 1.9x worse TTFT, and still 18 GB larger than the PLE-only arm"
+    },
+    {
+      "stage": "ple-offload",
+      "variant": "qwen4_ple_ssd_offload true (COLD prefill, cache defeated, ~21.7k tok)",
+      "ttft_ms": 33803.9,
+      "decode_tps": 72.12,
+      "method": "alternating blocks via tuning/coldprefill.py (random nonce per request, cached_tokens=0), PAD=8000, n=6 per arm; prefill 646.5 tps",
+      "verdict": "KEPT - the residency enabler and the single biggest lever on the model"
+    },
+    {
+      "stage": "ple-offload",
+      "variant": "qwen4_ple_ssd_offload false + expert offload 0.61 (COLD prefill, ~21.7k tok)",
+      "ttft_ms": 54310.8,
+      "decode_tps": 19.08,
+      "method": "alternating blocks via tuning/coldprefill.py, PAD=8000, n=6 per arm; prefill 434.5 tps",
+      "verdict": "rejected - +20.5 s TTFT and 3.8x slower decode on a cold long prompt"
+    },
+    {
+      "stage": "whole-config",
+      "variant": "server defaults (thinking unset, card sampler, adaptive MTP)",
+      "ttft_ms": 113.2,
+      "decode_tps": 86.45,
+      "method": "alternating blocks, n=10 per arm, run 1 of 2, tuning/block.py",
+      "verdict": "superseded"
+    },
+    {
+      "stage": "whole-config",
+      "variant": "final config (thinking false, temp 0.6, adaptive MTP, PLE offload on)",
+      "ttft_ms": 121.5,
+      "decode_tps": 91.78,
+      "method": "alternating blocks, n=10 per arm, run 1 of 2, tuning/block.py",
+      "verdict": "KEPT - +6.2% decode, -191 ms total, +8.3 ms TTFT"
+    },
+    {
+      "stage": "whole-config",
+      "variant": "server defaults (run 2)",
+      "ttft_ms": 115.7,
+      "decode_tps": 87.55,
+      "method": "alternating blocks, n=10 per arm, run 2 of 2, tuning/block.py",
+      "verdict": "superseded"
+    },
+    {
+      "stage": "whole-config",
+      "variant": "final config (run 2)",
+      "ttft_ms": 124.8,
+      "decode_tps": 89.72,
+      "method": "alternating blocks, n=10 per arm, run 2 of 2, tuning/block.py",
+      "verdict": "KEPT - +2.5% decode, -71 ms total, +9.1 ms TTFT. The two runs disagree by 2.4x, so the honest headline is the range +2.5% to +6.2%."
+    },
+    {
+      "stage": "dflash",
+      "variant": "dflash_enabled / specprefill_enabled",
+      "ttft_ms": null,
+      "decode_tps": null,
+      "method": "settings inspection + capability flags",
+      "verdict": "not probed - dflash_compatible is false (DFlash does not support qwen4_exp / vlm), and dflash_enabled + mtp_enabled returns HTTP 400. MTP is worth +59% decode, so DFlash would have to beat that to be worth trading."
+    },
+    {
+      "stage": "dflash",
+      "variant": "activation_fp16_enabled",
+      "ttft_ms": null,
+      "decode_tps": null,
+      "method": "settings inspection",
+      "verdict": "not probed - activation_fp16_supported is false"
+    },
+    {
+      "stage": "dflash",
+      "variant": "qwen35_oq_a8_enabled",
+      "ttft_ms": null,
+      "decode_tps": null,
+      "method": "settings inspection",
+      "verdict": "not probed - qwen35_oq_a8_supported is false"
+    },
+    {
+      "stage": "ane-prefill",
+      "variant": "ANE prefill",
+      "ttft_ms": null,
+      "decode_tps": null,
+      "method": "settings inspection",
+      "verdict": "not applicable - ane_prefill_backend is null for this model; the ANE prefill path is not offered on qwen4_exp"
+    }
+  ],
+  "rationale": "Two things matter on this model and neither of them is a throughput knob in the usual sense. (1) qwen4_ple_ssd_offload is the residency enabler: the PLE table is 79.2 GB of mmap-able weights and offloading it is what makes a 105 GB checkpoint fit at all. It is also the single biggest performance lever measured here - on a cache-defeated cold ~21.7k-token prefill it is worth 20.5 s of TTFT (33.8 s vs 54.3 s) and 3.8x decode (72.1 vs 19.1 tps), because the alternative is expert offload at 0.61 which is far more expensive per token. (2) enable_thinking: false is the real tuning lever: paired n=10/arm it is +8.0% decode, -275 ms total, +12.6 ms TTFT, and it is the difference between the model emitting reasoning before every answer and not. On this model null is NOT off (1111 reasoning chars, ttfc 4888 ms) and true is byte-identical to null. MTP is worth +59% decode (58.53 -> 93.18 tps) and adaptive depth is the right setting; fixed 2 and fixed 4 are both inside noise of it. MoE expert offload is rejected outright: with PLE offload on the model already fits with zero expert offload, and every expert-offload arm is monotonically worse on both axes - 0.75 resident fraction costs 28% decode and 1.9x TTFT while still being 18 GB larger than the PLE-only arm, and 0.10 costs 7x decode. KV quantization, context window, sampler and temperature are all nulls. force_sampling is a measurement artifact, not a lever. The whole-config gain is +2.5% to +6.2% decode and is dominated by the thinking pin; the two runs disagree by 2.4x, so it is reported as a range and treated as low confidence.",
+  "failure_modes": [
+    "The paged prefix cache serves the entire prefill under measure.py, so TTFT measures cache restore and every prefill knob reads null. Worked around with tuning/coldprefill.py, which prepends a fresh random nonce per request so cached_tokens stays 0. coldprefill.py takes its pad from the PAD env var, not an argument - passing it as an argument silently yields pt=47 and a meaningless result.",
+    "The KV skip-last field is turboquant_skip_last, NOT turboquant_kv_skip_last. The latter returns HTTP 422 extra_forbidden. The first KV sweep attempt was lost to this.",
+    "GET /admin/api/models/{id}/settings returns 405. Read .settings off GET /admin/api/models instead.",
+    "auto_unloaded unloads but does NOT reload. Every reload-requiring PUT must be followed by POST /load and a poll for loaded: true, or the next measurement runs against an empty slot.",
+    "ab.py leaves its last patch applied. Reset after every run or the next test starts from the wrong config.",
+    "enable_thinking: null is not off on this model. It emitted 1111 reasoning chars with ttfc 4888 ms while ttft looked normal. enable_thinking: true was byte-identical to null. Only explicit false disables thinking.",
+    "force_sampling: true overrides the request's temperature 0.0 with the model's configured 0.6, so any temp-0 harness measures a different sampler on that arm. Verified with three identical temp-0 requests: false -> 1/3 distinct outputs, true -> 2/3 distinct.",
+    "Per-sample warmup ramps are real and large. The PLE-only arm of the MoE sweep ran 82.3, 79.4, 82.0, 79.2 then 96.8, 97.5, 97.6, 95.8 across its two passes - the first pass was still warming, so its median is conservative. The whole-config blocks show the opposite drift (final-config 95.9 -> 87.0 within one block), so the arm that runs first in a block looks better.",
+    "qwen4_ple_ssd_offload_forced read true early in the session and false later. It is a derived flag, not a setting; do not use it to infer whether offload is active - read qwen4_ple_ssd_offload.",
+    "The memory ceiling is dynamic and state-dependent: observed 85.93 / 88.81 / 90.95 / 96.3-100.5 / 98.1 / 113.35 / 127.1 GB in different states. Every resident-memory number in this report records the ceiling it was measured against.",
+    "measure.py intermittently exits non-zero with no 'run 1:' line. The harnesses retry up to 3x; a single failure is not a config result."
+  ],
+  "measurement_caveat": "No number in this report is comparable to a number from a different block. Absolute decode throughput on this machine drifts 30%+ between sessions with no config change. Every verdict above is a paired comparison inside one block: interleaved A/B (tuning/ab.py) for knobs that do not reload (context window, sampler, temperature, force_sampling); alternating blocks with a discarded warmup per block (tuning/block.py) for knobs that do reload (thinking, MTP depth, KV quant, MoE expert offload, PLE offload, and the whole-config head-to-head); forward-then-backward ordering (tuning/blocksweep.py) for multi-value sweeps. The null spread was measured twice with the identical config in both arms: 0.13% decode / 1.0% TTFT (n=5 x 2 blocks) and 1.0% decode / 0.6% TTFT (n=10 per arm). Treat ~1% as the noise floor; anything at or below it is reported as a null. The whole-config decode delta is +2.5% to +6.2% across two runs of the same test and is partly noise - it is a range, not a point estimate.",
+  "coordinator_verification": {
+    "note": "Independent re-measurement by the campaign coordinator after the agent returned. See NOTES.md 'Coordinator verification'.",
+    "headline_paired": {
+      "defaults_decode_tps": 86.5,
+      "final_decode_tps": 96.56,
+      "delta_pct": 11.6,
+      "defaults_total_ms": 3575,
+      "final_total_ms": 3218,
+      "defaults_ttft_ms": 115.0,
+      "final_ttft_ms": 123.1,
+      "n_per_arm": 12,
+      "artifact": "tuning/block-coord-defaults-vs-coord-final.json"
+    },
+    "null_floor_within_pair_pct": 0.3,
+    "cross_block_spread_pct": 13.0,
+    "moe_offload_rejection": {
+      "ple_only_decode_tps": 97.03,
+      "frac075_decode_tps": 62.58,
+      "ple_only_ttft_ms": 121.4,
+      "frac075_ttft_ms": 209.4,
+      "ple_only_resident_gb": 73.77,
+      "frac075_resident_gb": 57.16,
+      "verdict": "rejected - saves 16.6 GB that is not needed, costs 35% decode",
+      "artifact": "tuning/block-coord-pleonly-vs-coord-frac075.json"
+    },
+    "ple_offload_cold_prefill": {
+      "on_ttft_ms": 32196.9,
+      "on_decode_tps": 74.54,
+      "off_ttft_ms": 55188.6,
+      "off_decode_tps": 19.83,
+      "n_per_arm": 3,
+      "verdict": "confirmed - 23.0 s and 3.8x",
+      "artifact": "tuning/coldprefill-coord-pleon-vs-coord-pleoff.json"
+    },
+    "corrections": [
+      "Whole-config gain revised up from +2.5-6.2% to +6-12%.",
+      "Cross-block spread (~13%) is far larger than the within-pair null (0.3%) and was not reported by the agent.",
+      "MoE rejection reason restated: memory is saved but not needed, not 'memory not saved'.",
+      "qwen4_ple_ssd_offload_forced reads true on the restored config; the reported flip was transient."
+    ]
+  }
+}

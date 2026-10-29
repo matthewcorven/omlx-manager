@@ -1,0 +1,248 @@
+{
+  "mtp-off": {
+    "patch": {
+      "enable_thinking": false,
+      "qwen4_ple_ssd_offload": true,
+      "moe_expert_offload_enabled": false,
+      "mtp_enabled": false,
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "top_k": 20
+    },
+    "n": 8,
+    "ttft_ms": 117.5,
+    "decode_tps": 58.53,
+    "total_ms": 5238.0,
+    "resident_bytes": 79211939549,
+    "resident_gb": 79.21,
+    "ceiling_gb": 98.74,
+    "samples": [
+      {
+        "ttft_ms": 124.7,
+        "decode_tps": 55.75,
+        "total_ms": 5488.3
+      },
+      {
+        "ttft_ms": 130.0,
+        "decode_tps": 56.01,
+        "total_ms": 5468.9
+      },
+      {
+        "ttft_ms": 123.9,
+        "decode_tps": 55.37,
+        "total_ms": 5524.7
+      },
+      {
+        "ttft_ms": 140.7,
+        "decode_tps": 53.59,
+        "total_ms": 5720.1
+      },
+      {
+        "ttft_ms": 111.0,
+        "decode_tps": 61.06,
+        "total_ms": 5007.8
+      },
+      {
+        "ttft_ms": 108.7,
+        "decode_tps": 61.24,
+        "total_ms": 4991.8
+      },
+      {
+        "ttft_ms": 106.6,
+        "decode_tps": 61.43,
+        "total_ms": 4974.5
+      },
+      {
+        "ttft_ms": 107.5,
+        "decode_tps": 61.61,
+        "total_ms": 4961.1
+      }
+    ]
+  },
+  "mtp-adaptive": {
+    "patch": {
+      "enable_thinking": false,
+      "qwen4_ple_ssd_offload": true,
+      "moe_expert_offload_enabled": false,
+      "mtp_enabled": true,
+      "mtp_adaptive_max_depth": null,
+      "mtp_fixed_depth": null,
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "top_k": 20
+    },
+    "n": 8,
+    "ttft_ms": 120.7,
+    "decode_tps": 93.18,
+    "total_ms": 3335.0,
+    "resident_bytes": 79211939549,
+    "resident_gb": 79.21,
+    "ceiling_gb": 99.32,
+    "samples": [
+      {
+        "ttft_ms": 127.3,
+        "decode_tps": 87.66,
+        "total_ms": 3538.6
+      },
+      {
+        "ttft_ms": 134.2,
+        "decode_tps": 92.29,
+        "total_ms": 3374.3
+      },
+      {
+        "ttft_ms": 123.4,
+        "decode_tps": 90.22,
+        "total_ms": 3437.9
+      },
+      {
+        "ttft_ms": 123.8,
+        "decode_tps": 90.73,
+        "total_ms": 3419.5
+      },
+      {
+        "ttft_ms": 116.4,
+        "decode_tps": 94.07,
+        "total_ms": 3295.2
+      },
+      {
+        "ttft_ms": 115.8,
+        "decode_tps": 96.43,
+        "total_ms": 3216.7
+      },
+      {
+        "ttft_ms": 118.0,
+        "decode_tps": 96.19,
+        "total_ms": 3227.0
+      },
+      {
+        "ttft_ms": 116.0,
+        "decode_tps": 96.86,
+        "total_ms": 3203.2
+      }
+    ]
+  },
+  "mtp-fixed2": {
+    "patch": {
+      "enable_thinking": false,
+      "qwen4_ple_ssd_offload": true,
+      "moe_expert_offload_enabled": false,
+      "mtp_enabled": true,
+      "mtp_adaptive_max_depth": null,
+      "mtp_fixed_depth": 2,
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "top_k": 20
+    },
+    "n": 8,
+    "ttft_ms": 117.5,
+    "decode_tps": 91.14,
+    "total_ms": 3399.0,
+    "resident_bytes": 79211939549,
+    "resident_gb": 79.21,
+    "ceiling_gb": 99.39,
+    "samples": [
+      {
+        "ttft_ms": 118.1,
+        "decode_tps": 90.94,
+        "total_ms": 3406.4
+      },
+      {
+        "ttft_ms": 117.5,
+        "decode_tps": 90.07,
+        "total_ms": 3437.3
+      },
+      {
+        "ttft_ms": 118.9,
+        "decode_tps": 91.28,
+        "total_ms": 3395.3
+      },
+      {
+        "ttft_ms": 156.2,
+        "decode_tps": 90.07,
+        "total_ms": 3476.7
+      },
+      {
+        "ttft_ms": 115.9,
+        "decode_tps": 92.41,
+        "total_ms": 3351.7
+      },
+      {
+        "ttft_ms": 114.1,
+        "decode_tps": 93.21,
+        "total_ms": 3322.2
+      },
+      {
+        "ttft_ms": 117.4,
+        "decode_tps": 91.0,
+        "total_ms": 3403.5
+      },
+      {
+        "ttft_ms": 115.5,
+        "decode_tps": 92.39,
+        "total_ms": 3352.3
+      }
+    ]
+  },
+  "mtp-fixed4": {
+    "patch": {
+      "enable_thinking": false,
+      "qwen4_ple_ssd_offload": true,
+      "moe_expert_offload_enabled": false,
+      "mtp_enabled": true,
+      "mtp_adaptive_max_depth": null,
+      "mtp_fixed_depth": 4,
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "top_k": 20
+    },
+    "n": 8,
+    "ttft_ms": 119.3,
+    "decode_tps": 89.85,
+    "total_ms": 3448.0,
+    "resident_bytes": 79211939549,
+    "resident_gb": 79.21,
+    "ceiling_gb": 99.0,
+    "samples": [
+      {
+        "ttft_ms": 120.3,
+        "decode_tps": 89.43,
+        "total_ms": 3463.8
+      },
+      {
+        "ttft_ms": 118.5,
+        "decode_tps": 89.57,
+        "total_ms": 3457.1
+      },
+      {
+        "ttft_ms": 117.3,
+        "decode_tps": 90.15,
+        "total_ms": 3434.3
+      },
+      {
+        "ttft_ms": 121.8,
+        "decode_tps": 89.36,
+        "total_ms": 3467.9
+      },
+      {
+        "ttft_ms": 121.6,
+        "decode_tps": 89.99,
+        "total_ms": 3444.6
+      },
+      {
+        "ttft_ms": 116.6,
+        "decode_tps": 91.42,
+        "total_ms": 3387.5
+      },
+      {
+        "ttft_ms": 118.1,
+        "decode_tps": 89.71,
+        "total_ms": 3451.5
+      },
+      {
+        "ttft_ms": 120.1,
+        "decode_tps": 90.16,
+        "total_ms": 3437.0
+      }
+    ]
+  }
+}

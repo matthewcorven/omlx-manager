@@ -1,0 +1,100 @@
+{
+  "A": {
+    "label": "ctx-native",
+    "patch": {
+      "enable_thinking": false,
+      "qwen4_ple_ssd_offload": true,
+      "moe_expert_offload_enabled": false,
+      "mtp_enabled": true,
+      "max_context_window": null,
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "top_k": 20
+    },
+    "n": 6,
+    "ttft_ms": 123.4,
+    "decode_tps": 96.56,
+    "total_ms": 3219.0,
+    "samples": [
+      {
+        "ttft_ms": 124.9,
+        "decode_tps": 96.77,
+        "total_ms": 3214.8
+      },
+      {
+        "ttft_ms": 122.4,
+        "decode_tps": 96.87,
+        "total_ms": 3209.5
+      },
+      {
+        "ttft_ms": 124.8,
+        "decode_tps": 96.53,
+        "total_ms": 3222.6
+      },
+      {
+        "ttft_ms": 117.2,
+        "decode_tps": 96.6,
+        "total_ms": 3212.8
+      },
+      {
+        "ttft_ms": 119.7,
+        "decode_tps": 95.57,
+        "total_ms": 3248.5
+      },
+      {
+        "ttft_ms": 124.4,
+        "decode_tps": 95.59,
+        "total_ms": 3252.6
+      }
+    ]
+  },
+  "B": {
+    "label": "ctx-32768",
+    "patch": {
+      "enable_thinking": false,
+      "qwen4_ple_ssd_offload": true,
+      "moe_expert_offload_enabled": false,
+      "mtp_enabled": true,
+      "max_context_window": 32768,
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "top_k": 20
+    },
+    "n": 6,
+    "ttft_ms": 121.5,
+    "decode_tps": 96.12,
+    "total_ms": 3234.0,
+    "samples": [
+      {
+        "ttft_ms": 122.8,
+        "decode_tps": 96.12,
+        "total_ms": 3233.9
+      },
+      {
+        "ttft_ms": 120.8,
+        "decode_tps": 96.13,
+        "total_ms": 3231.5
+      },
+      {
+        "ttft_ms": 119.1,
+        "decode_tps": 96.9,
+        "total_ms": 3205.1
+      },
+      {
+        "ttft_ms": 122.1,
+        "decode_tps": 96.11,
+        "total_ms": 3233.4
+      },
+      {
+        "ttft_ms": 124.8,
+        "decode_tps": 95.7,
+        "total_ms": 3249.5
+      },
+      {
+        "ttft_ms": 120.9,
+        "decode_tps": 95.56,
+        "total_ms": 3250.3
+      }
+    ]
+  }
+}

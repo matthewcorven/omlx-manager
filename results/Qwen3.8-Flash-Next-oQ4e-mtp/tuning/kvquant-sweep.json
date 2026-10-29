@@ -1,0 +1,189 @@
+{
+  "kv-off": {
+    "patch": {
+      "enable_thinking": false,
+      "qwen4_ple_ssd_offload": true,
+      "moe_expert_offload_enabled": false,
+      "mtp_enabled": true,
+      "turboquant_kv_enabled": false,
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "top_k": 20
+    },
+    "n": 8,
+    "ttft_ms": 123.2,
+    "decode_tps": 96.68,
+    "total_ms": 3219.0,
+    "resident_bytes": 79211939549,
+    "resident_gb": 79.21,
+    "ceiling_gb": 99.26,
+    "samples": [
+      {
+        "ttft_ms": 124.9,
+        "decode_tps": 96.87,
+        "total_ms": 3211.6
+      },
+      {
+        "ttft_ms": 119.7,
+        "decode_tps": 97.11,
+        "total_ms": 3199.1
+      },
+      {
+        "ttft_ms": 125.4,
+        "decode_tps": 96.79,
+        "total_ms": 3215.1
+      },
+      {
+        "ttft_ms": 120.2,
+        "decode_tps": 96.95,
+        "total_ms": 3204.6
+      },
+      {
+        "ttft_ms": 120.8,
+        "decode_tps": 95.68,
+        "total_ms": 3246.0
+      },
+      {
+        "ttft_ms": 126.6,
+        "decode_tps": 96.57,
+        "total_ms": 3223.1
+      },
+      {
+        "ttft_ms": 121.4,
+        "decode_tps": 95.88,
+        "total_ms": 3240.1
+      },
+      {
+        "ttft_ms": 125.3,
+        "decode_tps": 96.31,
+        "total_ms": 3230.0
+      }
+    ]
+  },
+  "kv-8bit-skip": {
+    "patch": {
+      "enable_thinking": false,
+      "qwen4_ple_ssd_offload": true,
+      "moe_expert_offload_enabled": false,
+      "mtp_enabled": true,
+      "turboquant_kv_enabled": true,
+      "turboquant_kv_bits": 8,
+      "turboquant_skip_last": true,
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "top_k": 20
+    },
+    "n": 8,
+    "ttft_ms": 122.1,
+    "decode_tps": 96.28,
+    "total_ms": 3229.0,
+    "resident_bytes": 79211939549,
+    "resident_gb": 79.21,
+    "ceiling_gb": 99.28,
+    "samples": [
+      {
+        "ttft_ms": 123.3,
+        "decode_tps": 95.33,
+        "total_ms": 3260.0
+      },
+      {
+        "ttft_ms": 118.4,
+        "decode_tps": 95.87,
+        "total_ms": 3237.6
+      },
+      {
+        "ttft_ms": 119.1,
+        "decode_tps": 94.96,
+        "total_ms": 3268.2
+      },
+      {
+        "ttft_ms": 121.9,
+        "decode_tps": 96.21,
+        "total_ms": 3229.9
+      },
+      {
+        "ttft_ms": 124.0,
+        "decode_tps": 97.17,
+        "total_ms": 3201.4
+      },
+      {
+        "ttft_ms": 117.2,
+        "decode_tps": 96.67,
+        "total_ms": 3210.5
+      },
+      {
+        "ttft_ms": 122.2,
+        "decode_tps": 96.5,
+        "total_ms": 3220.8
+      },
+      {
+        "ttft_ms": 122.6,
+        "decode_tps": 96.36,
+        "total_ms": 3227.5
+      }
+    ]
+  },
+  "kv-4bit-skip": {
+    "patch": {
+      "enable_thinking": false,
+      "qwen4_ple_ssd_offload": true,
+      "moe_expert_offload_enabled": false,
+      "mtp_enabled": true,
+      "turboquant_kv_enabled": true,
+      "turboquant_kv_bits": 4,
+      "turboquant_skip_last": true,
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "top_k": 20
+    },
+    "n": 8,
+    "ttft_ms": 120.4,
+    "decode_tps": 96.49,
+    "total_ms": 3222.0,
+    "resident_bytes": 79211939549,
+    "resident_gb": 79.21,
+    "ceiling_gb": 98.86,
+    "samples": [
+      {
+        "ttft_ms": 119.7,
+        "decode_tps": 93.73,
+        "total_ms": 3310.0
+      },
+      {
+        "ttft_ms": 118.3,
+        "decode_tps": 97.26,
+        "total_ms": 3192.8
+      },
+      {
+        "ttft_ms": 117.6,
+        "decode_tps": 92.15,
+        "total_ms": 3362.5
+      },
+      {
+        "ttft_ms": 124.2,
+        "decode_tps": 96.46,
+        "total_ms": 3224.3
+      },
+      {
+        "ttft_ms": 124.0,
+        "decode_tps": 96.29,
+        "total_ms": 3229.5
+      },
+      {
+        "ttft_ms": 115.6,
+        "decode_tps": 96.52,
+        "total_ms": 3213.8
+      },
+      {
+        "ttft_ms": 124.2,
+        "decode_tps": 96.6,
+        "total_ms": 3219.7
+      },
+      {
+        "ttft_ms": 121.1,
+        "decode_tps": 96.68,
+        "total_ms": 3214.1
+      }
+    ]
+  }
+}

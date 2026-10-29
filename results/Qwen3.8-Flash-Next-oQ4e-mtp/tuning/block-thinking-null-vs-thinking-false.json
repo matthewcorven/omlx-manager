@@ -1,0 +1,138 @@
+{
+  "A": {
+    "label": "thinking-null",
+    "patch": {
+      "enable_thinking": null,
+      "qwen4_ple_ssd_offload": true,
+      "moe_expert_offload_enabled": false,
+      "mtp_enabled": true,
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "top_k": 20
+    },
+    "n": 10,
+    "ttft_ms": 117.3,
+    "decode_tps": 78.84,
+    "total_ms": 3912.0,
+    "samples": [
+      {
+        "ttft_ms": 115.6,
+        "decode_tps": 76.79,
+        "total_ms": 4010.2
+      },
+      {
+        "ttft_ms": 117.6,
+        "decode_tps": 80.34,
+        "total_ms": 3840.3
+      },
+      {
+        "ttft_ms": 119.5,
+        "decode_tps": 78.67,
+        "total_ms": 3920.9
+      },
+      {
+        "ttft_ms": 120.2,
+        "decode_tps": 79.56,
+        "total_ms": 3879.1
+      },
+      {
+        "ttft_ms": 115.1,
+        "decode_tps": 81.53,
+        "total_ms": 3783.1
+      },
+      {
+        "ttft_ms": 118.1,
+        "decode_tps": 78.11,
+        "total_ms": 3946.9
+      },
+      {
+        "ttft_ms": 116.4,
+        "decode_tps": 79.0,
+        "total_ms": 3902.1
+      },
+      {
+        "ttft_ms": 117.4,
+        "decode_tps": 78.19,
+        "total_ms": 3942.0
+      },
+      {
+        "ttft_ms": 117.2,
+        "decode_tps": 79.77,
+        "total_ms": 3866.4
+      },
+      {
+        "ttft_ms": 115.9,
+        "decode_tps": 77.28,
+        "total_ms": 3985.7
+      }
+    ]
+  },
+  "B": {
+    "label": "thinking-false",
+    "patch": {
+      "enable_thinking": false,
+      "qwen4_ple_ssd_offload": true,
+      "moe_expert_offload_enabled": false,
+      "mtp_enabled": true,
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "top_k": 20
+    },
+    "n": 10,
+    "ttft_ms": 129.9,
+    "decode_tps": 85.18,
+    "total_ms": 3637.0,
+    "samples": [
+      {
+        "ttft_ms": 126.9,
+        "decode_tps": 85.63,
+        "total_ms": 3619.4
+      },
+      {
+        "ttft_ms": 130.1,
+        "decode_tps": 86.28,
+        "total_ms": 3595.9
+      },
+      {
+        "ttft_ms": 130.0,
+        "decode_tps": 86.72,
+        "total_ms": 3578.2
+      },
+      {
+        "ttft_ms": 129.9,
+        "decode_tps": 86.27,
+        "total_ms": 3596.3
+      },
+      {
+        "ttft_ms": 130.7,
+        "decode_tps": 86.14,
+        "total_ms": 3602.3
+      },
+      {
+        "ttft_ms": 125.9,
+        "decode_tps": 84.73,
+        "total_ms": 3655.1
+      },
+      {
+        "ttft_ms": 132.2,
+        "decode_tps": 82.98,
+        "total_ms": 3735.8
+      },
+      {
+        "ttft_ms": 127.3,
+        "decode_tps": 84.36,
+        "total_ms": 3671.7
+      },
+      {
+        "ttft_ms": 129.5,
+        "decode_tps": 83.26,
+        "total_ms": 3721.3
+      },
+      {
+        "ttft_ms": 133.8,
+        "decode_tps": 84.1,
+        "total_ms": 3689.4
+      }
+    ]
+  }
+}

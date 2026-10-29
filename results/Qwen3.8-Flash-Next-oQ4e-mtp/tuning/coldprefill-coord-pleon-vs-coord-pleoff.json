@@ -1,0 +1,89 @@
+{
+  "A": {
+    "label": "coord-pleon",
+    "patch": {
+      "enable_thinking": false,
+      "qwen4_ple_ssd_offload": true,
+      "moe_expert_offload_enabled": false,
+      "mtp_enabled": true,
+      "temperature": 0.6,
+      "top_p": 0.95,
+      "top_k": 20
+    },
+    "n": 3,
+    "ttft_ms": 32196.9,
+    "decode_tps": 74.54,
+    "prefill_tps": 677.3,
+    "prompt_tokens": 21790,
+    "samples": [
+      {
+        "ttft_ms": 31592.3,
+        "decode_tps": 77.67,
+        "prompt_tokens": 21790,
+        "prefill_tps": 690.5,
+        "server_ttft_ms": 31560.0,
+        "chunks": 19
+      },
+      {
+        "ttft_ms": 32196.9,
+        "decode_tps": 74.54,
+        "prompt_tokens": 21784,
+        "prefill_tps": 677.3,
+        "server_ttft_ms": 32160.0,
+        "chunks": 19
+      },
+      {
+        "ttft_ms": 34357.4,
+        "decode_tps": 71.75,
+        "prompt_tokens": 21851,
+        "prefill_tps": 636.6,
+        "server_ttft_ms": 34320.0,
+        "chunks": 20
+      }
+    ]
+  },
+  "B": {
+    "label": "coord-pleoff",
+    "patch": {
+      "enable_thinking": false,
+      "qwen4_ple_ssd_offload": false,
+      "moe_expert_offload_enabled": true,
+      "moe_expert_offload_resident_fraction": 0.61,
+      "mtp_enabled": true,
+      "temperature": 0.6,
+      "top_p": 0.95,
+      "top_k": 20
+    },
+    "n": 3,
+    "ttft_ms": 55188.6,
+    "decode_tps": 19.83,
+    "prefill_tps": 427.3,
+    "prompt_tokens": 21716,
+    "samples": [
+      {
+        "ttft_ms": 55660.7,
+        "decode_tps": 19.97,
+        "prompt_tokens": 21716,
+        "prefill_tps": 422.0,
+        "server_ttft_ms": 51460.0,
+        "chunks": 49
+      },
+      {
+        "ttft_ms": 55188.6,
+        "decode_tps": 19.83,
+        "prompt_tokens": 21772,
+        "prefill_tps": 427.3,
+        "server_ttft_ms": 50960.0,
+        "chunks": 50
+      },
+      {
+        "ttft_ms": 54859.3,
+        "decode_tps": 19.71,
+        "prompt_tokens": 21734,
+        "prefill_tps": 428.8,
+        "server_ttft_ms": 50690.0,
+        "chunks": 49
+      }
+    ]
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "defaults": {
+    "patch": {
+      "enable_thinking": null,
+      "qwen4_ple_ssd_offload": true,
+      "moe_expert_offload_enabled": false,
+      "moe_expert_offload_resident_fraction": 0.25,
+      "mtp_enabled": true,
+      "mtp_adaptive_max_depth": null,
+      "mtp_fixed_depth": null,
+      "turboquant_kv_enabled": false,
+      "max_context_window": null,
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "top_k": 20,
+      "force_sampling": false
+    },
+    "n": 6,
+    "ttft_ms": 119.9,
+    "decode_tps": 79.72,
+    "total_ms": 3870.0,
+    "resident_bytes": 79211939549,
+    "resident_gb": 79.21,
+    "ceiling_gb": 98.6,
+    "samples": [
+      {
+        "ttft_ms": 118.8,
+        "decode_tps": 74.98,
+        "total_ms": 4107.7
+      },
+      {
+        "ttft_ms": 121.5,
+        "decode_tps": 77.6,
+        "total_ms": 3975.3
+      },
+      {
+        "ttft_ms": 121.0,
+        "decode_tps": 78.84,
+        "total_ms": 3914.5
+      },
+      {
+        "ttft_ms": 111.7,
+        "decode_tps": 80.6,
+        "total_ms": 3822.0
+      },
+      {
+        "ttft_ms": 115.3,
+        "decode_tps": 82.21,
+        "total_ms": 3752.9
+      },
+      {
+        "ttft_ms": 131.5,
+        "decode_tps": 80.97,
+        "total_ms": 3825.1
+      }
+    ]
+  }
+}

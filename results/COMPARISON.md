@@ -19,8 +19,9 @@ order-of-magnitude only.
 | `Jundot/gemma-4-31B-it-oQ4e-mtp` | oQ4e | dense 30.7B | 18.60 GiB | 18.88 GiB | 267.7 ms / 56.10 tps | 297.0 ms / 40.06 tps | ctx native, MTP on adaptive depth, KV off, DFlash off, temp 0.2 / top_p 0.95 / top_k 64, `force_sampling: false`, thinking off | 3/3 pass |
 | `Jundot/gemma-4-26B-A4B-it-oQ8e-mtp` | oQ8e | MoE 26.23B / 4.82B active | 26.86 GiB | 26.93 GiB | 116.0 ms / 113.18 tps | 117.3 ms / 118.6 tps | ctx native, MTP on **fixed depth 4**, KV off, DFlash off, temp 0.2 / top_p 0.95 / top_k 64, `force_sampling: false`, thinking off | 3/3 pass |
 | `Jundot/Qwen3.6-35B-A3B-oQ8e-mtp` | oQ8e | MoE 35.1B / ~3B active | 36 GiB | 37.75 GiB | 74.2 ms / 161.22 tps | 77.4 ms / 183.89 tps | ctx native, MTP on depth 4, KV off, **ANE prefill off**, temp 0.6 / top_p 0.95 / top_k 20, `force_sampling: false`, thinking off | 3/3 pass |
+| `Jundot/Qwen3.8-Flash-Next-oQ4e-mtp` | oQ4e | MoE 125B / ~6B active | 105.06 GiB | 73.77 GiB | 115.0 ms / 86.50 tps | 123.1 ms / 96.56 tps | ctx native, **PLE SSD offload on**, MoE expert offload off, MTP on adaptive depth, KV off, temp 0.6 / top_p 0.95 / top_k 20, `force_sampling: false`, thinking off | 3/3 pass |
 
-**Count: 6 models fully tested and tuned.**
+**Count: 7 models fully tested and tuned.**
 
 The rows are **not** comparable head-to-head. Ornith's 146 tps vs Qwen's 60 tps
 is not a 2.4× speed advantage — Qwen's final 5-run was taken with downloads
@@ -200,6 +201,42 @@ Notes on the Qwen3.6-35B-A3B-oQ8e-mtp row:
   [`tuning-log.md`](Qwen3.6-35B-A3B-oQ8e-mtp/tuning-log.md),
   [`quality.md`](Qwen3.6-35B-A3B-oQ8e-mtp/quality.md).
 
+Notes on the Qwen3.8-Flash-Next-oQ4e-mtp row:
+
+- **This model does not fit without PLE SSD offload, and PLE offload is also the
+  biggest lever.** `qwen4_ple_ssd_offload: true` takes resident from 112.81 GB
+  (over the ceiling) to **73.77 GB**, and on a cache-defeated ~21.7k-token
+  prefill it is worth **23.0 s of TTFT and 3.8× decode** (32.2 s / 74.54 tps vs
+  55.2 s / 19.83 tps, n=3/arm, coordinator re-measured). The PLE table is 79.2 GB
+  of mmap-able weights (`qwen4_ple_mmap_bytes`), so this is not a marginal knob —
+  it is the difference between loadable and not.
+- **MoE expert offload is rejected, and the reason matters.** The sweep is
+  monotonic on both axes with no knee: 0.10 / 0.25 / 0.50 / 0.75 give 12.66 /
+  20.00 / 38.43 / 63.77 tps at 14.97 / 25.70 / 43.54 / 61.38 GB, against
+  PLE-only at 89.07 tps / 79.21 GB. Coordinator re-measurement of the best arm
+  (0.75) gives **62.58 vs 97.03 tps** — 35% decode and 1.7× TTFT for 16.6 GB
+  that the model does not need. The rejection is "memory saved but not needed",
+  not "memory not saved".
+- **`enable_thinking: null` is not off here either.** `false` → 0 reasoning /
+  544 content chars; `null` → 1111 reasoning / 416 content, ttfc 4888 ms; `true`
+  is byte-identical to `null`. Same trap as Qwen3.6, different model.
+- **The whole-config gain is +6% to +12% decode, dominated by the thinking pin.**
+  The agent's two paired runs read +6.2% and +2.5%; the coordinator's
+  independent paired run reads **+11.6%** (86.50 → 96.56 tps, n=12/arm, −357 ms
+  total, +8.1 ms TTFT).
+- **Cross-block drift is the dominant error term on this model.** The same final
+  config measured 85.18, 89.72, 94.19, 94.07 and 96.56 tps in five different
+  blocks — a ~13% spread, against a within-pair null of 0.3%. Per-sample lists
+  show both arms falling from ~78 to ~61 tps over a run, which is a thermal or
+  memory-pressure ramp. **Only compare arms inside one block pair.**
+- **KV quant, context cap and sampler are all nulls** (≤0.5%). MTP adaptive over
+  fixed 2 is a null (+0.9%). MTP itself is worth +59% decode.
+- **`force_sampling: true` is an artifact** — it overrides the request's
+  `temperature: 0.0` with the model's 0.6 (1/3 vs 2/3 distinct outputs).
+- Full detail: [`Qwen3.8-Flash-Next-oQ4e-mtp/NOTES.md`](Qwen3.8-Flash-Next-oQ4e-mtp/NOTES.md),
+  [`tuning-log.md`](Qwen3.8-Flash-Next-oQ4e-mtp/tuning-log.md),
+  [`quality.md`](Qwen3.8-Flash-Next-oQ4e-mtp/quality.md).
+
 ## Downloaded, tuning not yet started
 
 All of these are on disk and pass a load smoke test or are queued for one. None
@@ -218,73 +255,33 @@ Not coding models, downloaded for other roles: `jinaai/jina-reranker-v3.5`
 |---|---|---|---|
 | `Jundot/GLM-5.3-Flash-oQ2e-mtp` | 102.7 GB | 115.82 GB | **Deferred — resident-memory-bound, MoE offload support unverified.** 321.3B total / 25.4B active MoE, 860205 native ctx, MTP. Resident exceeds the ~89.6 GB ceiling by ~26 GB. `GET /admin/api/models/{id}/moe-offload-fit` requires the model to be locally registered, so it cannot answer until 110 GB is downloaded — which is a poor trade to make on an unverified lever. Relocation to `/Volumes/NVMe` does **not** help: that relieves disk, not unified memory. Revisit only if a smaller quant or a confirmed offload fraction appears. |
 
-## Open issue: `Qwen3.8-Flash-Next-oQ4e-mtp` is resident-bound
+## Resolved: `Qwen3.8-Flash-Next-oQ4e-mtp` was resident-bound
 
-It is downloaded (105.06 GB on disk) but its resident size is **112.81 GB**
-against a ~89.6 GB practical ceiling, and it sits in the server's `unlock` tier
-requiring `wired_limit`. It is the single largest consumer of internal disk and
-cannot be loaded at its default residency.
+**Closed.** The model is tuned and in the tested table above. The resolution is
+`qwen4_ple_ssd_offload: true`, which takes resident from 112.81 GB to **73.77 GB**
+under a 91–114 GB ceiling. MoE expert offload was swept and rejected — it saves
+16.6 GB the model does not need and costs 35% decode.
 
-**The offload lever is confirmed available on this model.** Querying
-`GET /admin/api/models/Qwen3.8-Flash-Next-oQ4e-mtp/moe-offload-fit`:
+The investigation history is kept below because the reasoning errors are
+instructive: the first two readings of `moe-offload-fit` were both wrong, in
+opposite directions, and the third was right only because the slot was empty.
 
-| `mtp_enabled` | Status | Max offloadable | Bytes | Reserve |
-|---|---|---|---|---|
-| `true` | `fit` | 20% | 55,680,273,631 | 4 GiB |
-| `false` | `fit` | 21% | 55,343,520,991 | 4 GiB |
+### Reading 1 — pre-registration estimate (wrong)
 
-So ~55.7 GB of experts can live off-heap with MTP on, taking resident from
-112.81 GB to roughly **57 GB** — comfortably under the ~89.6 GB ceiling. The
-question is no longer *whether* it can be made to fit but *what it costs in
-decode throughput*, which is exactly what a tuning sweep measures.
+Before the model was registered, the fit endpoint returned 20% / 21% with
+~55.7 GB off-heap, suggesting resident would fall to ~57 GB. These were
+estimates, not measurements.
 
-Note the asymmetry with GLM: the same query on GLM would have needed 110 GB
-downloaded first, and GLM's ceiling gap is ~26 GB. Here the gap is ~23 GB and
-the model is already local, so this is the cheaper place to settle the question.
+### Reading 2 — registered, model loaded (wrong)
 
-Two options, neither taken yet:
+With the model local, the query returned 16% (MTP on, PLE off) and **63%**
+(MTP on, PLE on). This was read as "PLE offload frees room for 63% of experts",
+i.e. that the lever was bigger than assumed. That reading was backwards.
 
-1. Test `moe_expert_offload_enabled` at the reported ceiling, then sweep the
-   resident fraction downward to find the throughput/footprint knee. This needs
-   the model local, which it now is.
-2. If the offloaded configuration is unusable in throughput terms, shuttle the
-   105 GB to `/Volumes/NVMe` and treat it as available-but-not-resident.
+### Reading 3 — registered, slot empty (correct)
 
-### Re-probed 2026-10-29 — the numbers above are stale, and the lever is bigger
-
-The table above was taken before the model was registered. Re-querying the live
-server now that it is local gives a **different and more favourable** answer:
-
-| `mtp_enabled` | `qwen4_ple_ssd_offload` | Status | Max offloadable | Bytes |
-|---|---|---|---|---|
-| `true` | `false` | `fit` | **16%** | 52,893,355,231 |
-| `false` | `false` | `fit` | **18%** | 53,067,537,631 |
-| `true` | `true` | `fit` | **63%** | 52,875,560,669 |
-| `false` | `true` | `fit` | **64%** | 53,038,130,909 |
-
-Two corrections to the earlier reading:
-
-- The ceiling is **16%**, not 20%, with MTP on and PLE off. The 20%/21% figures
-  were pre-registration estimates.
-- `qwen4_ple_ssd_offload` is **forced on** for this model
-  (`qwen4_ple_ssd_offload_forced: true`, `config_model_type: qwen4_exp`), and it
-  changes the answer by a factor of four: 16% → **63%**. The PLE embedding table
-  is 79.2 GB of mmap-able weights (`qwen4_ple_mmap_bytes`), so offloading it
-  frees the room that lets 63% of experts stay resident instead of 16%.
-
-`moe_offload_allows_mtp: true` here, unlike gemma-4-26B — offload and MTP can be
-combined, so the MTP gain does not have to be traded away for residency.
-
-The `bytes` field is the off-heap expert payload and is roughly constant across
-all four rows (~52.9 GB); what changes is how much of the *rest* of the model
-stays resident. So the sweep to run is over `moe_expert_offload_resident_fraction`
-with PLE offload on, not over the offload on/off switch.
-
-### Re-probed again 2026-10-29, nothing loaded — the PLE row flipped
-
-The ceiling is dynamic (`model_memory_max` reads 90.95 GB with nothing loaded,
-88.81 GB with gemma-4-26B resident, 85.93 GB earlier), so the fit answer has to
-be taken with the slot empty. With nothing loaded:
+The ceiling is dynamic — `model_memory_max` read 85.93 GB, 88.81 GB, 90.95 GB
+and 113.35 GB at different points. Taken with nothing loaded:
 
 | `mtp_enabled` | `qwen4_ple_ssd_offload` | Status | Max offloadable | Bytes |
 |---|---|---|---|---|
@@ -292,18 +289,13 @@ be taken with the slot empty. With nothing loaded:
 | `true` | `true` | `resident` | — | 0 |
 | `false` | `true` | `resident` | — | 0 |
 
-This **inverts** the previous reading. The 63% row was not "PLE offload on frees
-room for 63% of experts" — with PLE offload on the model reports `resident`,
-meaning it already fits with no expert offload at all, and `max_percent` is
-`null` because there is nothing to offload. The 16%/18% rows are the ones where
-offload is actually required, and with the slot empty the requirement is 61%,
-not 16%.
+`resident` with `max_percent: null` means the model already fits with **no**
+expert offload. So PLE offload is the lever that makes the model fit, and MoE
+expert offload is only needed when PLE offload is off. The 61% requirement
+applies only to the PLE-off configuration.
 
-So the earlier "the lever is bigger than assumed" conclusion was wrong in the
-opposite direction: PLE offload is the lever that makes the model fit, and MoE
-expert offload is only needed if PLE offload is off. The sweep still runs over
-`moe_expert_offload_resident_fraction`, but the baseline to beat is the
-PLE-offload-on configuration, which needs no expert offload at all.
+**Lesson: `moe-offload-fit` must be queried with the slot empty.** The answer
+depends on the dynamic ceiling, and a loaded model changes it by 20+ GB.
 
 ## Storage
 

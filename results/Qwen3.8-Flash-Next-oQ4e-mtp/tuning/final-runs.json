@@ -1,0 +1,78 @@
+{
+  "final": {
+    "patch": {
+      "enable_thinking": false,
+      "qwen4_ple_ssd_offload": true,
+      "moe_expert_offload_enabled": false,
+      "moe_expert_offload_resident_fraction": 0.25,
+      "mtp_enabled": true,
+      "mtp_adaptive_max_depth": null,
+      "mtp_fixed_depth": null,
+      "turboquant_kv_enabled": false,
+      "max_context_window": null,
+      "temperature": 0.6,
+      "top_p": 0.95,
+      "top_k": 20,
+      "force_sampling": false
+    },
+    "n": 10,
+    "ttft_ms": 125.8,
+    "decode_tps": 88.92,
+    "total_ms": 3493.0,
+    "resident_bytes": 79211939549,
+    "resident_gb": 79.21,
+    "ceiling_gb": 98.52,
+    "samples": [
+      {
+        "ttft_ms": 114.9,
+        "decode_tps": 96.49,
+        "total_ms": 3213.9
+      },
+      {
+        "ttft_ms": 122.4,
+        "decode_tps": 96.58,
+        "total_ms": 3218.7
+      },
+      {
+        "ttft_ms": 119.4,
+        "decode_tps": 94.15,
+        "total_ms": 3295.7
+      },
+      {
+        "ttft_ms": 121.7,
+        "decode_tps": 88.42,
+        "total_ms": 3503.7
+      },
+      {
+        "ttft_ms": 125.6,
+        "decode_tps": 88.43,
+        "total_ms": 3507.0
+      },
+      {
+        "ttft_ms": 126.1,
+        "decode_tps": 89.42,
+        "total_ms": 3470.4
+      },
+      {
+        "ttft_ms": 132.6,
+        "decode_tps": 89.12,
+        "total_ms": 3488.0
+      },
+      {
+        "ttft_ms": 126.8,
+        "decode_tps": 87.75,
+        "total_ms": 3534.7
+      },
+      {
+        "ttft_ms": 127.6,
+        "decode_tps": 88.72,
+        "total_ms": 3497.9
+      },
+      {
+        "ttft_ms": 128.9,
+        "decode_tps": 87.67,
+        "total_ms": 3539.6
+      }
+    ]
+  }
+}

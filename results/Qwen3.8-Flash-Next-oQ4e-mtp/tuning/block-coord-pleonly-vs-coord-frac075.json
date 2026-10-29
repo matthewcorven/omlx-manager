@@ -1,0 +1,119 @@
+{
+  "A": {
+    "label": "coord-pleonly",
+    "patch": {
+      "enable_thinking": false,
+      "qwen4_ple_ssd_offload": true,
+      "moe_expert_offload_enabled": false,
+      "mtp_enabled": true,
+      "temperature": 0.6,
+      "top_p": 0.95,
+      "top_k": 20
+    },
+    "n": 8,
+    "ttft_ms": 121.4,
+    "decode_tps": 97.03,
+    "total_ms": 3216.0,
+    "samples": [
+      {
+        "ttft_ms": 125.7,
+        "decode_tps": 97.11,
+        "total_ms": 3205.1
+      },
+      {
+        "ttft_ms": 117.5,
+        "decode_tps": 95.48,
+        "total_ms": 3249.5
+      },
+      {
+        "ttft_ms": 125.2,
+        "decode_tps": 96.33,
+        "total_ms": 3229.7
+      },
+      {
+        "ttft_ms": 121.5,
+        "decode_tps": 95.39,
+        "total_ms": 3256.5
+      },
+      {
+        "ttft_ms": 117.3,
+        "decode_tps": 97.06,
+        "total_ms": 3198.4
+      },
+      {
+        "ttft_ms": 121.3,
+        "decode_tps": 97.83,
+        "total_ms": 3177.8
+      },
+      {
+        "ttft_ms": 119.4,
+        "decode_tps": 97.31,
+        "total_ms": 3192.2
+      },
+      {
+        "ttft_ms": 143.5,
+        "decode_tps": 96.99,
+        "total_ms": 3226.7
+      }
+    ]
+  },
+  "B": {
+    "label": "coord-frac075",
+    "patch": {
+      "enable_thinking": false,
+      "qwen4_ple_ssd_offload": true,
+      "moe_expert_offload_enabled": true,
+      "moe_expert_offload_resident_fraction": 0.75,
+      "mtp_enabled": true,
+      "temperature": 0.6,
+      "top_p": 0.95,
+      "top_k": 20
+    },
+    "n": 8,
+    "ttft_ms": 209.4,
+    "decode_tps": 62.58,
+    "total_ms": 4994.0,
+    "samples": [
+      {
+        "ttft_ms": 223.1,
+        "decode_tps": 59.57,
+        "total_ms": 5243.0
+      },
+      {
+        "ttft_ms": 207.4,
+        "decode_tps": 61.03,
+        "total_ms": 5107.3
+      },
+      {
+        "ttft_ms": 205.1,
+        "decode_tps": 62.9,
+        "total_ms": 4958.7
+      },
+      {
+        "ttft_ms": 208.4,
+        "decode_tps": 63.23,
+        "total_ms": 4937.7
+      },
+      {
+        "ttft_ms": 216.9,
+        "decode_tps": 60.55,
+        "total_ms": 5155.0
+      },
+      {
+        "ttft_ms": 210.4,
+        "decode_tps": 62.6,
+        "total_ms": 4987.0
+      },
+      {
+        "ttft_ms": 221.1,
+        "decode_tps": 62.55,
+        "total_ms": 5001.5
+      },
+      {
+        "ttft_ms": 194.0,
+        "decode_tps": 63.06,
+        "total_ms": 4935.6
+      }
+    ]
+  }
+}
