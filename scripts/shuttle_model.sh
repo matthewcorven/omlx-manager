@@ -114,11 +114,20 @@ if [ "$(df -P "$SRC" | awk 'NR==2{print $1}')" = "$(df -P "$DST_ROOT" | awk 'NR=
 else
   # rsync preserves the HF cache symlinks and blob layout that oMLX expects.
   # macOS ships rsync 2.6.9, which lacks --info=progress2; --progress works there.
-  rsync -aH --progress "$SRC/" "$DST/" || {
+  # --partial keeps resumable chunks, but a killed rsync leaves a partial tree
+  # behind, so the copy is verified before the source is removed.
+  rsync -aH --progress --partial "$SRC/" "$DST/" || {
     echo "FAILED: rsync did not complete; leaving source in place" >&2
     rm -rf "$DST"
     exit 1
   }
+  SRC_N=$(find "$SRC" -type f | wc -l | tr -d ' ')
+  DST_N=$(find "$DST" -type f | wc -l | tr -d ' ')
+  if [ "$SRC_N" != "$DST_N" ]; then
+    echo "FAILED: copy incomplete ($DST_N/$SRC_N files); leaving source in place" >&2
+    rm -rf "$DST"
+    exit 1
+  fi
   rm -rf "$SRC"
 fi
 
