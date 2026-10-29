@@ -9,6 +9,17 @@ no config change, driven by Hugging Face download I/O and WindowServer. Only
 sweeps) are trustworthy within a model. Across models, treat the numbers as
 order-of-magnitude only.
 
+## Campaign status
+
+**7 of 10 candidates tuned and verified.** The three that are not in the table
+below are accounted for, not skipped:
+
+| Candidate | Outcome |
+|---|---|
+| `Jundot/GLM-5.3-Flash-oQ2e-mtp` | **Deferred** — resident-bound at 115.82 GB against a ~90 GB ceiling, and MoE offload support cannot be verified without a 110 GB download. See "Rejected / deferred". |
+| `jinaai/jina-reranker-v3.5` | **PASS** — not an LLM, no decode to tune. Fixed by swapping the Transformers checkpoint for the MLX conversion. See `non-llm/`. |
+| `mlx-community/Unlimited-OCR-2-8bit` | **FAIL** — blocked upstream, needs an unmerged mlx-vlm DASH attention. See `non-llm/`. |
+
 ## Tested and tuned
 
 | Model | Quant | Params | DL | Resident | Baseline TTFT / decode | Final TTFT / decode | Final settings | Quality |
