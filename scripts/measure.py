@@ -39,9 +39,11 @@ def post_stream(base: str, payload: dict, timeout: float) -> dict:
         method="POST",
     )
     t0 = time.perf_counter()
-    ttft = None
+    ttft = None          # first token of any kind (reasoning or content)
+    ttfc = None          # first *content* token
     last = None
     chunks = 0
+    reasoning_chunks = 0
     text_parts: list[str] = []
     usage = None
     finish = None
@@ -62,11 +64,18 @@ def post_stream(base: str, payload: dict, timeout: float) -> dict:
                 usage = obj["usage"]
             for choice in obj.get("choices") or []:
                 delta = choice.get("delta") or {}
-                piece = delta.get("content")
-                if piece:
-                    now = time.perf_counter()
+                now = time.perf_counter()
+                if delta.get("reasoning_content"):
                     if ttft is None:
                         ttft = now - t0
+                    last = now
+                    reasoning_chunks += 1
+                piece = delta.get("content")
+                if piece:
+                    if ttft is None:
+                        ttft = now - t0
+                    if ttfc is None:
+                        ttfc = now - t0
                     last = now
                     chunks += 1
                     text_parts.append(piece)
@@ -75,20 +84,22 @@ def post_stream(base: str, payload: dict, timeout: float) -> dict:
 
     end = time.perf_counter()
     if ttft is None:
-        raise RuntimeError("no content tokens received")
+        raise RuntimeError("no tokens received (neither reasoning nor content)")
 
     prompt_tokens = (usage or {}).get("prompt_tokens")
-    completion_tokens = (usage or {}).get("completion_tokens") or chunks
+    completion_tokens = (usage or {}).get("completion_tokens") or (chunks + reasoning_chunks)
     decode_span = (last - t0 - ttft) if last else 0.0
     decode_tps = (completion_tokens - 1) / decode_span if decode_span > 0 else 0.0
 
     return {
         "ttft_ms": round(ttft * 1000, 1),
+        "ttfc_ms": round(ttfc * 1000, 1) if ttfc is not None else None,
         "decode_tps": round(decode_tps, 2),
         "prefill_tps": round(prompt_tokens / ttft, 1) if prompt_tokens and ttft else None,
         "total_ms": round((end - t0) * 1000, 1),
         "prompt_tokens": prompt_tokens,
         "completion_tokens": completion_tokens,
+        "reasoning_chunks": reasoning_chunks,
         "finish_reason": finish,
         "text": "".join(text_parts),
     }
@@ -103,13 +114,14 @@ def pad_context(base: str, model: str, target_tokens: int) -> str:
         try:
             req = urllib.request.Request(
                 f"{base}/tokenize",
-                data=json.dumps({"model": model, "text": text}).encode(),
+                data=json.dumps({"model": model, "prompt": text}).encode(),
                 headers={"Content-Type": "application/json"},
                 method="POST",
             )
             with urllib.request.urlopen(req, timeout=30) as r:
                 n = len(json.load(r).get("tokens", []))
-        except Exception:
+        except Exception as e:  # noqa: BLE001
+            print(f"tokenize failed ({e}); estimating from chars", file=sys.stderr)
             n = len(text) // 4
         if n >= target_tokens:
             return text
@@ -159,9 +171,10 @@ def main() -> int:
             print(f"run {i+1}: {type(e).__name__}: {e}", file=sys.stderr)
             return 2
         results.append(r)
-        print(f"run {i+1}: ttft={r['ttft_ms']}ms decode={r['decode_tps']}tps "
-              f"prefill={r['prefill_tps']}tps total={r['total_ms']}ms "
-              f"pt={r['prompt_tokens']} ct={r['completion_tokens']}")
+        print(f"run {i+1}: ttft={r['ttft_ms']}ms ttfc={r['ttfc_ms']}ms "
+              f"decode={r['decode_tps']}tps prefill={r['prefill_tps']}tps "
+              f"total={r['total_ms']}ms pt={r['prompt_tokens']} "
+              f"ct={r['completion_tokens']} reasoning={r['reasoning_chunks']}")
 
     summary = {
         "model": args.model,
@@ -170,6 +183,8 @@ def main() -> int:
         "temperature": args.temperature,
         "context_pad": args.context_pad,
         "ttft_ms_median": round(statistics.median(r["ttft_ms"] for r in results), 1),
+        "ttfc_ms_median": (round(statistics.median(r["ttfc_ms"] for r in results), 1)
+                           if all(r["ttfc_ms"] is not None for r in results) else None),
         "decode_tps_median": round(statistics.median(r["decode_tps"] for r in results), 2),
         "total_ms_median": round(statistics.median(r["total_ms"] for r in results), 1),
         "samples": results,

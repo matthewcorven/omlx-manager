@@ -1,0 +1,49 @@
+{
+  "model": "Qwen3.8-27B-oQ4e-mtp",
+  "runs": 3,
+  "max_tokens": 300,
+  "temperature": 0.0,
+  "context_pad": 0,
+  "ttft_ms_median": 213.5,
+  "ttfc_ms_median": null,
+  "decode_tps_median": 65.72,
+  "total_ms_median": 4710.7,
+  "samples": [
+    {
+      "ttft_ms": 597.1,
+      "ttfc_ms": null,
+      "decode_tps": 52.69,
+      "prefill_tps": 145.7,
+      "total_ms": 6273.8,
+      "prompt_tokens": 87,
+      "completion_tokens": 300,
+      "reasoning_chunks": 24,
+      "finish_reason": "length",
+      "text": ""
+    },
+    {
+      "ttft_ms": 213.5,
+      "ttfc_ms": null,
+      "decode_tps": 66.54,
+      "prefill_tps": 407.4,
+      "total_ms": 4708.4,
+      "prompt_tokens": 87,
+      "completion_tokens": 300,
+      "reasoning_chunks": 21,
+      "finish_reason": "length",
+      "text": ""
+    },
+    {
+      "ttft_ms": 160.0,
+      "ttfc_ms": null,
+      "decode_tps": 65.72,
+      "prefill_tps": 543.9,
+      "total_ms": 4710.7,
+      "prompt_tokens": 87,
+      "completion_tokens": 300,
+      "reasoning_chunks": 21,
+      "finish_reason": "length",
+      "text": ""
+    }
+  ]
+}
