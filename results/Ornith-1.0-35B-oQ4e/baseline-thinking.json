@@ -1,0 +1,36 @@
+{
+  "note": "thinking-on baselines, paired against thinking-off in the same interleaved block",
+  "thinking_on_budget_512": {
+    "ttft_ms": 61.0,
+    "ttfc_ms": 4076.1,
+    "decode_tps": 131.95,
+    "runs": 3,
+    "max_tokens": 1500,
+    "paired_thinking_off": {
+      "ttft_ms": 62.2,
+      "ttfc_ms": 62.2,
+      "decode_tps": 145.52
+    },
+    "verdict": "unusable - ttfc 4076 ms vs 62 ms, 65x worse time-to-answer"
+  },
+  "thinking_on_unbudgeted": {
+    "ttft_ms": 58.4,
+    "ttfc_ms": null,
+    "decode_tps": 142.81,
+    "runs": 2,
+    "max_tokens": 1500,
+    "paired_thinking_off": {
+      "ttft_ms": 63.6,
+      "ttfc_ms": 63.6,
+      "decode_tps": 144.83
+    },
+    "verdict": "unusable - never emitted a content token in 1500 tokens (ttfc null in 2/2 runs)"
+  },
+  "probe_300_tokens": {
+    "note": "single probe at max_tokens=300 on defaults (thinking on, no budget)",
+    "ttft_ms": 319.1,
+    "ttfc_ms": null,
+    "decode_tps": 155.89,
+    "verdict": "no content token at all; the whole 300-token budget went to reasoning_content"
+  }
+}

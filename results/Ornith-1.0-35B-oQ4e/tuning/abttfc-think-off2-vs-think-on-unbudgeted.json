@@ -1,0 +1,66 @@
+{
+  "A": {
+    "label": "think-off2",
+    "patch": {
+      "enable_thinking": false
+    },
+    "n": 2,
+    "max_tokens": 1500,
+    "ttft_ms": 63.6,
+    "ttfc_ms": 63.6,
+    "ttfc_n": 2,
+    "decode_tps": 144.83,
+    "total_ms": 2280.0,
+    "samples": [
+      {
+        "ttft_ms": 64.5,
+        "ttfc_ms": 64.5,
+        "decode_tps": 144.49,
+        "total_ms": 2286.5,
+        "completion_tokens": 322,
+        "reasoning_chunks": 0
+      },
+      {
+        "ttft_ms": 62.7,
+        "ttfc_ms": 62.7,
+        "decode_tps": 145.17,
+        "total_ms": 2274.3,
+        "completion_tokens": 322,
+        "reasoning_chunks": 0
+      }
+    ]
+  },
+  "B": {
+    "label": "think-on-unbudgeted",
+    "patch": {
+      "enable_thinking": true,
+      "thinking_budget_enabled": false,
+      "thinking_budget_tokens": null
+    },
+    "n": 2,
+    "max_tokens": 1500,
+    "ttft_ms": 58.4,
+    "ttfc_ms": null,
+    "ttfc_n": 0,
+    "decode_tps": 142.81,
+    "total_ms": 10557.0,
+    "samples": [
+      {
+        "ttft_ms": 56.7,
+        "ttfc_ms": null,
+        "decode_tps": 143.19,
+        "total_ms": 10527.4,
+        "completion_tokens": 1500,
+        "reasoning_chunks": 51
+      },
+      {
+        "ttft_ms": 60.0,
+        "ttfc_ms": null,
+        "decode_tps": 142.44,
+        "total_ms": 10585.8,
+        "completion_tokens": 1500,
+        "reasoning_chunks": 51
+      }
+    ]
+  }
+}
