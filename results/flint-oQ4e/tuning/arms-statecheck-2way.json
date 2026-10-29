@@ -1,0 +1,90 @@
+{
+  "fp16-true": {
+    "patch": {
+      "activation_fp16_enabled": true,
+      "turboquant_kv_enabled": false,
+      "max_context_window": null
+    },
+    "n": 6,
+    "decode_tps": 107.87,
+    "ttft_ms": 37.1,
+    "min_decode": 107.16,
+    "max_decode": 109.37,
+    "samples": [
+      {
+        "ttft_ms": 36.6,
+        "decode_tps": 108.17,
+        "total_ms": 2801.1
+      },
+      {
+        "ttft_ms": 36.9,
+        "decode_tps": 109.37,
+        "total_ms": 2771.1
+      },
+      {
+        "ttft_ms": 37.4,
+        "decode_tps": 107.16,
+        "total_ms": 2827.9
+      },
+      {
+        "ttft_ms": 37.3,
+        "decode_tps": 108.41,
+        "total_ms": 2795.8
+      },
+      {
+        "ttft_ms": 39.1,
+        "decode_tps": 107.28,
+        "total_ms": 2826.5
+      },
+      {
+        "ttft_ms": 36.5,
+        "decode_tps": 107.56,
+        "total_ms": 2816.6
+      }
+    ]
+  },
+  "fp16-false": {
+    "patch": {
+      "activation_fp16_enabled": false,
+      "turboquant_kv_enabled": false,
+      "max_context_window": null
+    },
+    "n": 6,
+    "decode_tps": 37.43,
+    "ttft_ms": 72.2,
+    "min_decode": 37.25,
+    "max_decode": 37.5,
+    "samples": [
+      {
+        "ttft_ms": 72.3,
+        "decode_tps": 37.5,
+        "total_ms": 8046.6
+      },
+      {
+        "ttft_ms": 74.5,
+        "decode_tps": 37.42,
+        "total_ms": 8065.3
+      },
+      {
+        "ttft_ms": 71.7,
+        "decode_tps": 37.48,
+        "total_ms": 8050.7
+      },
+      {
+        "ttft_ms": 72.3,
+        "decode_tps": 37.41,
+        "total_ms": 8066.1
+      },
+      {
+        "ttft_ms": 72.2,
+        "decode_tps": 37.25,
+        "total_ms": 8099.4
+      },
+      {
+        "ttft_ms": 71.7,
+        "decode_tps": 37.44,
+        "total_ms": 8057.9
+      }
+    ]
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "kv-off": {
+    "patch": {
+      "turboquant_kv_enabled": false
+    },
+    "n": 3,
+    "ttft_ms": 336.4,
+    "decode_tps": 34.88,
+    "samples": [
+      {
+        "ttft_ms": 326.4,
+        "decode_tps": 35.36,
+        "total_ms": 8783.3
+      },
+      {
+        "ttft_ms": 337.8,
+        "decode_tps": 34.73,
+        "total_ms": 8948.7
+      },
+      {
+        "ttft_ms": 336.4,
+        "decode_tps": 34.88,
+        "total_ms": 8909.2
+      }
+    ]
+  },
+  "kv-4bit-skip": {
+    "patch": {
+      "turboquant_kv_enabled": true,
+      "turboquant_kv_bits": 4,
+      "turboquant_skip_last": true
+    },
+    "n": 3,
+    "ttft_ms": 285.6,
+    "decode_tps": 93.48,
+    "samples": [
+      {
+        "ttft_ms": 398.4,
+        "decode_tps": 93.48,
+        "total_ms": 3597.6
+      },
+      {
+        "ttft_ms": 285.6,
+        "decode_tps": 93.54,
+        "total_ms": 3482.9
+      },
+      {
+        "ttft_ms": 279.6,
+        "decode_tps": 93.43,
+        "total_ms": 3480.9
+      }
+    ]
+  }
+}
