@@ -1,0 +1,82 @@
+{
+  "A": {
+    "label": "force-sampling-off",
+    "patch": {
+      "force_sampling": false,
+      "temperature": 0.6,
+      "top_p": 0.95,
+      "top_k": 20
+    },
+    "n": 5,
+    "ttft_ms": 82.9,
+    "decode_tps": 166.11,
+    "total_ms": 1877.0,
+    "samples": [
+      {
+        "ttft_ms": 78.2,
+        "decode_tps": 183.78,
+        "total_ms": 1705.5
+      },
+      {
+        "ttft_ms": 77.0,
+        "decode_tps": 166.11,
+        "total_ms": 1877.4
+      },
+      {
+        "ttft_ms": 83.8,
+        "decode_tps": 165.33,
+        "total_ms": 1892.7
+      },
+      {
+        "ttft_ms": 82.9,
+        "decode_tps": 165.25,
+        "total_ms": 1892.7
+      },
+      {
+        "ttft_ms": 86.5,
+        "decode_tps": 167.17,
+        "total_ms": 1875.5
+      }
+    ]
+  },
+  "B": {
+    "label": "force-sampling-on",
+    "patch": {
+      "force_sampling": true,
+      "temperature": 0.6,
+      "top_p": 0.95,
+      "top_k": 20
+    },
+    "n": 5,
+    "ttft_ms": 90.5,
+    "decode_tps": 171.9,
+    "total_ms": 1842.0,
+    "samples": [
+      {
+        "ttft_ms": 111.4,
+        "decode_tps": 199.97,
+        "total_ms": 1606.9
+      },
+      {
+        "ttft_ms": 111.3,
+        "decode_tps": 172.78,
+        "total_ms": 1842.1
+      },
+      {
+        "ttft_ms": 87.6,
+        "decode_tps": 163.09,
+        "total_ms": 1921.3
+      },
+      {
+        "ttft_ms": 90.5,
+        "decode_tps": 171.9,
+        "total_ms": 1655.6
+      },
+      {
+        "ttft_ms": 87.9,
+        "decode_tps": 169.84,
+        "total_ms": 1848.6
+      }
+    ]
+  }
+}

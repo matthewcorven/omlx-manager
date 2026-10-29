@@ -1,0 +1,89 @@
+{
+  "A": {
+    "label": "ane-off-32k",
+    "patch": {
+      "qwen35_ane_prefill_enabled": false,
+      "max_context_window": null
+    },
+    "n": 6,
+    "ttft_ms": 475.3,
+    "decode_tps": 140.78,
+    "total_ms": 2607.0,
+    "samples": [
+      {
+        "ttft_ms": 464.6,
+        "decode_tps": 139.57,
+        "total_ms": 2607.3
+      },
+      {
+        "ttft_ms": 479.3,
+        "decode_tps": 140.62,
+        "total_ms": 2606.0
+      },
+      {
+        "ttft_ms": 472.6,
+        "decode_tps": 140.95,
+        "total_ms": 2594.5
+      },
+      {
+        "ttft_ms": 475.2,
+        "decode_tps": 139.98,
+        "total_ms": 2611.8
+      },
+      {
+        "ttft_ms": 504.9,
+        "decode_tps": 141.29,
+        "total_ms": 2621.5
+      },
+      {
+        "ttft_ms": 475.4,
+        "decode_tps": 141.4,
+        "total_ms": 2590.5
+      }
+    ]
+  },
+  "B": {
+    "label": "ane-on-32k",
+    "patch": {
+      "qwen35_ane_prefill_enabled": true,
+      "qwen35_ane_prefill_tail_padding_min_tokens": 0,
+      "max_context_window": null
+    },
+    "n": 6,
+    "ttft_ms": 481.4,
+    "decode_tps": 140.45,
+    "total_ms": 2611.0,
+    "samples": [
+      {
+        "ttft_ms": 493.5,
+        "decode_tps": 141.73,
+        "total_ms": 2603.6
+      },
+      {
+        "ttft_ms": 486.7,
+        "decode_tps": 139.71,
+        "total_ms": 2627.5
+      },
+      {
+        "ttft_ms": 479.7,
+        "decode_tps": 140.19,
+        "total_ms": 2613.0
+      },
+      {
+        "ttft_ms": 482.9,
+        "decode_tps": 140.72,
+        "total_ms": 2608.1
+      },
+      {
+        "ttft_ms": 479.9,
+        "decode_tps": 139.25,
+        "total_ms": 2627.7
+      },
+      {
+        "ttft_ms": 476.3,
+        "decode_tps": 140.92,
+        "total_ms": 2598.5
+      }
+    ]
+  }
+}

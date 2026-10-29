@@ -18,8 +18,9 @@ order-of-magnitude only.
 | `Jundot/flint-oQ4e` | oQ4e | MoE 2.5B active | 22 GB | 22.84 GB | 251.0 ms / 114.6 tps | 252.0 ms / 113.23 tps | ctx native, KV off, no MTP/draft head, temp 1.0 / top_p 0.95 / top_k 20, `activation_fp16_enabled: false` | 3/3 pass |
 | `Jundot/gemma-4-31B-it-oQ4e-mtp` | oQ4e | dense 30.7B | 18.60 GiB | 18.88 GiB | 267.7 ms / 56.10 tps | 297.0 ms / 40.06 tps | ctx native, MTP on adaptive depth, KV off, DFlash off, temp 0.2 / top_p 0.95 / top_k 64, `force_sampling: false`, thinking off | 3/3 pass |
 | `Jundot/gemma-4-26B-A4B-it-oQ8e-mtp` | oQ8e | MoE 26.23B / 4.82B active | 26.86 GiB | 26.93 GiB | 116.0 ms / 113.18 tps | 117.3 ms / 118.6 tps | ctx native, MTP on **fixed depth 4**, KV off, DFlash off, temp 0.2 / top_p 0.95 / top_k 64, `force_sampling: false`, thinking off | 3/3 pass |
+| `Jundot/Qwen3.6-35B-A3B-oQ8e-mtp` | oQ8e | MoE 35.1B / ~3B active | 36 GiB | 37.75 GiB | 74.2 ms / 161.22 tps | 77.4 ms / 183.89 tps | ctx native, MTP on depth 4, KV off, **ANE prefill off**, temp 0.6 / top_p 0.95 / top_k 20, `force_sampling: false`, thinking off | 3/3 pass |
 
-**Count: 5 models fully tested and tuned.**
+**Count: 6 models fully tested and tuned.**
 
 The rows are **not** comparable head-to-head. Ornith's 146 tps vs Qwen's 60 tps
 is not a 2.4× speed advantage — Qwen's final 5-run was taken with downloads
@@ -60,8 +61,20 @@ What the four models agree on, and where they diverge:
   depth 6 over adaptive. gemma-4-31B loses 21–36% at every fixed depth 1–6 and
   only ties at depth 8. gemma-4-26B-A4B gains ~+4% from fixed depth 4 — the same
   direction as Qwen, the opposite of its 31B sibling, on the same `gemma4` arch.
-  Re-sweep depth per model; never carry a number across, not even between two
-  gemmas.
+  Qwen3.6-35B-A3B is a **null**: the agent's two paired tests read +1.0% and
+  +0.7%, but three coordinator re-runs read +8.2%, −2.4% (arms swapped) and
+  +3.8%, and a null test with the identical config in both arms produced a 1.8%
+  spread. Re-sweep depth per model; never carry a number across, not even between
+  two gemmas, and check the null spread before believing a ~1% effect.
+- **ANE prefill is available on Qwen3.6-35B-A3B and buys nothing.** It is the one
+  model in the set with `ane_prefill_backend: qwen` (default fraction 0.53), so it
+  was the distinctive TTFT lever to test. It compiles and runs, and it is a null
+  on short prompts, a null at 8k and 32k padding, and 0.4–6% *worse* on a
+  cache-defeated cold ~21.7k-token prefill. Rejected. Note the trap that hid this
+  for every earlier model: the default benchmark prompt is identical each run, so
+  the prefix cache serves the whole prefill and TTFT measures cache restore, not
+  prefill — any prefill-path knob looks null until you defeat the cache with a
+  per-request nonce.
 
 Notes on the Qwen3.8-27B row:
 
@@ -155,6 +168,38 @@ Notes on the gemma-4-26B-A4B-it-oQ8e-mtp row:
   [`tuning-log.md`](gemma-4-26B-A4B-it-oQ8e-mtp/tuning-log.md),
   [`quality.md`](gemma-4-26B-A4B-it-oQ8e-mtp/quality.md).
 
+Notes on the Qwen3.6-35B-A3B-oQ8e-mtp row:
+
+- **The +14% is a configuration correction, not a tuning win.** The model ships
+  with `enable_thinking: null`, and on this model `null` is **not** off: a plain
+  300-token request emits reasoning chunks and no content, and with
+  `enable_thinking: true` it never emits a content token at all (0 content chars,
+  2397 reasoning chars at max_tokens 900; still 0 content and 10583 reasoning
+  chars in 16.7 s at 3000, `finish_reason: length` every time). Pinning it to
+  `false` is worth +7.1% decode on its own and is the difference between an
+  answer and no answer. The paired whole-config test (n=10/arm) reads 183.89 vs
+  161.22 tps, −225 ms total, +3.2 ms TTFT — coordinator re-measurement gives
+  +14.0%, −226 ms, +3.2 ms.
+- **MTP depth 4 over adaptive is a null.** See the depth bullet above. Left
+  applied because it never hurt and depths 6/8 cost 11%/33%, but not a gain.
+- **KV quant is a loss** (off 190.96 vs 8-bit+skip 185.81 / 4-bit+skip 176.84 /
+  4-bit no-skip 177.69 tps, n=6 × 4 arms). Note `turboquant_skip_last: false`
+  under MTP did **not** reproduce the hard error the gemmas showed — 3 coherent
+  requests, `error: null`.
+- **Context capping is a null** at 49 tokens and ~8k, matching every model except
+  Qwen3.8-27B.
+- **ANE prefill is available and rejected** — see the ANE bullet above.
+- **`force_sampling` is a measurement trap, not a lever.** It overrides the
+  request's `temperature: 0.0` with the model's 0.6, so a harness that relies on
+  determinism sees an apparent +4% that is really just sampling variance.
+  Verified: with it off, three identical temp-0 requests return the same string;
+  with it on, three different strings.
+- **MoE expert offload is N/A** — `moe-offload-fit` returns `resident`, 37.75 GiB
+  sits under the ceiling.
+- Full detail: [`Qwen3.6-35B-A3B-oQ8e-mtp/NOTES.md`](Qwen3.6-35B-A3B-oQ8e-mtp/NOTES.md),
+  [`tuning-log.md`](Qwen3.6-35B-A3B-oQ8e-mtp/tuning-log.md),
+  [`quality.md`](Qwen3.6-35B-A3B-oQ8e-mtp/quality.md).
+
 ## Downloaded, tuning not yet started
 
 All of these are on disk and pass a load smoke test or are queued for one. None
@@ -162,8 +207,6 @@ has a `final.json` yet.
 
 | Model | On disk | Resident | MoE | MTP | Native ctx | Smarts | Status |
 |---|---|---|---|---|---|---|---|
-| `mlx-community/flint-oQ4e` | 22.84 GB | — | — | — | 262144 | — | next in queue |
-| `Jundot/Qwen3.6-35B-A3B-oQ8e-mtp` | 37.75 GB | — | yes | yes | 262144 | — | queued |
 | `Jundot/Qwen3.8-Flash-Next-oQ4e-mtp` | 105.06 GB | 112.81 GB | yes | yes | 262144 | 5.327 | **resident-bound, see below** |
 
 Not coding models, downloaded for other roles: `jinaai/jina-reranker-v3.5`

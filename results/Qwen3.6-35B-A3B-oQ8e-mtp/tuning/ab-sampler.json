@@ -1,0 +1,80 @@
+{
+  "A": {
+    "label": "card-sampler",
+    "patch": {
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "top_k": 20
+    },
+    "n": 5,
+    "ttft_ms": 91.9,
+    "decode_tps": 160.54,
+    "total_ms": 1965.0,
+    "samples": [
+      {
+        "ttft_ms": 91.9,
+        "decode_tps": 148.71,
+        "total_ms": 2102.8
+      },
+      {
+        "ttft_ms": 101.9,
+        "decode_tps": 160.54,
+        "total_ms": 1964.7
+      },
+      {
+        "ttft_ms": 91.0,
+        "decode_tps": 159.03,
+        "total_ms": 1971.5
+      },
+      {
+        "ttft_ms": 97.0,
+        "decode_tps": 161.34,
+        "total_ms": 1950.7
+      },
+      {
+        "ttft_ms": 84.8,
+        "decode_tps": 160.56,
+        "total_ms": 1947.4
+      }
+    ]
+  },
+  "B": {
+    "label": "coding-sampler",
+    "patch": {
+      "temperature": 0.6,
+      "top_p": 0.95,
+      "top_k": 20
+    },
+    "n": 5,
+    "ttft_ms": 102.5,
+    "decode_tps": 160.77,
+    "total_ms": 1963.0,
+    "samples": [
+      {
+        "ttft_ms": 102.5,
+        "decode_tps": 160.77,
+        "total_ms": 1962.6
+      },
+      {
+        "ttft_ms": 88.5,
+        "decode_tps": 156.02,
+        "total_ms": 2005.3
+      },
+      {
+        "ttft_ms": 96.4,
+        "decode_tps": 161.31,
+        "total_ms": 1950.3
+      },
+      {
+        "ttft_ms": 111.6,
+        "decode_tps": 159.05,
+        "total_ms": 1991.8
+      },
+      {
+        "ttft_ms": 104.3,
+        "decode_tps": 163.05,
+        "total_ms": 1938.4
+      }
+    ]
+  }
+}

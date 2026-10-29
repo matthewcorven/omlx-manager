@@ -1,0 +1,88 @@
+{
+  "A": {
+    "label": "enable_thinking true",
+    "patch": {
+      "enable_thinking": true
+    },
+    "n": 3,
+    "ttft_ms": 57.1,
+    "ttfc_ms": null,
+    "elapsed_ms": 3780.0,
+    "content_chars": 0,
+    "reasoning_chars": 2397,
+    "finish_reasons": [
+      "length",
+      "length",
+      "length"
+    ],
+    "samples": [
+      {
+        "content": "",
+        "reasoning_content": "\nThe user wants a Python function `merge_intervals(intervals)` that:\n1. Takes a list of closed intervals (presumably tuples or lists of two numbers)\n2. Merges overlapping intervals\n3. Returns the merged intervals sorted\n4. Includes a docstring\n5. Includes three doctest examples\n6. Output only the code\n\nLet's think about the algorithm:\n1. Sort the intervals by their start times\n2. Initialize a result list with the first interval\n3. Iterate through the remaining intervals\n4. For each interval, check if it overlaps with the last interval in the result list\n5. If it overlaps (current start <= last end), merge them by updating the end of the last interval to max(last end, current end)\n6. If it doesn't overlap, append the current interval to the result list\n7. Return the result list\n\nEdge cases:\n- Empty input list\n- Single interval\n- All overlapping\n- No overlapping\n- Intervals with same start or end points\n\nLet's write the code:\n\n```python\ndef merge_intervals(intervals):\n    \"\"\"\n    Merges overlapping closed intervals and returns them sorted.\n    \n    Args:\n        intervals: A list of tuples/lists representing closed intervals [start, end].\n        \n    Returns:\n        A list of merged intervals sorted by start time.\n        \n    Examples:\n        >>> merge_intervals([[1, 3], [2, 6], [8, 10], [15, 18]])\n        [[1, 6], [8, 10], [15, 18]]\n        >>> merge_intervals([[1, 4], [4, 5]])\n        [[1, 5]]\n        >>> merge_intervals([[1, 4], [0, 4]])\n        [[0, 4]]\n    \"\"\"\n    if not intervals:\n        return []\n    \n    sorted_intervals = sorted(intervals, key=lambda x: x[0])\n    merged = [sorted_intervals[0]]\n    \n    for current in sorted_intervals[1:]:\n        last = merged[-1]\n        if current[0] <= last[1]:\n            merged[-1] = [last[0], max(last[1], current[1])]\n        else:\n            merged.append(current)\n            \n    return merged\n```\n\nWait, the docstring examples should match the expected output format. Let's verify:\nExample 1: `[[1, 3], [2, 6], [8, 10], [15, 18]]` -> `[[1, 6], [8, 10], [15, 18]]` \u2713\nExample 2: `[[1, 4], [4, 5]]` -> `[[1, 5]]` \u2713 (closed intervals overlap at 4)\nExample 3: `[[1, 4], [0, 4]]` -> `[[0, 4]]` \u2713\n\nThe function handles tuples or lists. I'll make sure it returns lists for consistency, or just keep them as they are. The problem says \"closed intervals\", so `[start, end]` format is standard.\n\nLet's double check the do",
+        "finish_reason": "length",
+        "ttft_ms": 56.4,
+        "ttfc_ms": null,
+        "elapsed_ms": 3819.7
+      },
+      {
+        "content": "",
+        "reasoning_content": "\nThe user wants a Python function `merge_intervals(intervals)` that:\n1. Takes a list of closed intervals (likely represented as tuples or lists of two elements: start and end).\n2. Merges overlapping intervals.\n3. Returns the merged intervals sorted.\n4. Includes a docstring.\n5. Includes three doctest examples.\n6. Output only the code.\n\nLet's think about the algorithm:\n- Sort the intervals by their start times.\n- Initialize a result list with the first interval.\n- Iterate through the rest of the intervals.\n- For each interval, compare its start with the end of the last interval in the result.\n- If it overlaps (start <= last_end), merge them by updating the end of the last interval to max(last_end, current_end).\n- Otherwise, append the current interval to the result.\n- Return the result.\n\nEdge cases:\n- Empty input list.\n- Single interval.\n- Non-overlapping intervals.\n- Intervals contained within others.\n- Intervals with same start or end.\n\nLet's write the code:\n\n```python\ndef merge_intervals(intervals):\n    \"\"\"\n    Merges overlapping closed intervals and returns them sorted.\n    \n    Args:\n        intervals: A list of tuples or lists representing closed intervals [start, end].\n        \n    Returns:\n        A list of merged intervals sorted by start time.\n        \n    Examples:\n        >>> merge_intervals([[1, 3], [2, 6], [8, 10], [15, 18]])\n        [[1, 6], [8, 10], [15, 18]]\n        \n        >>> merge_intervals([[1, 4], [4, 5]])\n        [[1, 5]]\n        \n        >>> merge_intervals([[1, 4], [0, 4]])\n        [[0, 4]]\n    \"\"\"\n    if not intervals:\n        return []\n        \n    sorted_intervals = sorted(intervals, key=lambda x: x[0])\n    merged = [sorted_intervals[0]]\n    \n    for current in sorted_intervals[1:]:\n        last = merged[-1]\n        if current[0] <= last[1]:\n            merged[-1] = [last[0], max(last[1], current[1])]\n        else:\n            merged.append(list(current))\n            \n    return merged\n```\n\nWait, the doctest examples should be carefully checked.\nExample 1: `[[1, 3], [2, 6], [8, 10], [15, 18]]` -> `[[1, 6], [8, 10], [15, 18]]` (correct)\nExample 2: `[[1, 4], [4, 5]]` -> `[[1, 5]]` (correct, closed intervals overlap at 4)\nExample 3: `[[1, 4], [0, 4]]` -> `[[0, 4]]` (correct, [0,4] contains [1,4])\n\nLet's verify the third example manually:\nsorted: `[[0, 4], [1, ",
+        "finish_reason": "length",
+        "ttft_ms": 57.2,
+        "ttfc_ms": null,
+        "elapsed_ms": 3693.2
+      },
+      {
+        "content": "",
+        "reasoning_content": "\nThe user wants a Python function `merge_intervals(intervals)` that:\n1. Takes a list of closed intervals (presumably tuples or lists of two numbers).\n2. Merges overlapping intervals.\n3. Returns the merged intervals sorted.\n4. Includes a docstring.\n5. Includes three doctest examples.\n6. Output only the code.\n\nLet's think about the algorithm:\n- Sort the intervals by their start times.\n- Initialize a result list with the first interval.\n- Iterate through the rest of the intervals.\n- For each interval, compare its start with the end of the last interval in the result.\n- If it overlaps (start <= last_end), merge them by updating the end of the last interval to max(last_end, current_end).\n- Otherwise, append the current interval to the result.\n- Return the result.\n\nEdge cases:\n- Empty input list.\n- Single interval.\n- Intervals that are completely contained within others.\n- Intervals that are adjacent (e.g., [1,2] and [2,3] should merge since they are closed intervals).\n\nLet's write the code:\n\n```python\ndef merge_intervals(intervals):\n    \"\"\"\n    Merges overlapping closed intervals and returns them sorted.\n    \n    Args:\n        intervals: A list of tuples or lists representing closed intervals [start, end].\n        \n    Returns:\n        A list of merged intervals sorted by start time.\n        \n    Examples:\n        >>> merge_intervals([[1, 3], [2, 6], [8, 10], [15, 18]])\n        [[1, 6], [8, 10], [15, 18]]\n        \n        >>> merge_intervals([[1, 4], [4, 5]])\n        [[1, 5]]\n        \n        >>> merge_intervals([[1, 4], [0, 4]])\n        [[0, 4]]\n    \"\"\"\n    if not intervals:\n        return []\n        \n    # Sort intervals by start time\n    sorted_intervals = sorted(intervals, key=lambda x: x[0])\n    \n    merged = [sorted_intervals[0]]\n    \n    for current in sorted_intervals[1:]:\n        last = merged[-1]\n        # If the current interval overlaps with the last merged interval\n        if current[0] <= last[1]:\n            # Merge them by updating the end of the last interval\n            last[1] = max(last[1], current[1])\n        else:\n            merged.append(current)\n            \n    return merged\n```\n\nWait, the problem says \"closed intervals\", so [1,2] and [2,3] should indeed merge. The condition `current[0] <= last[1]` handles this correctly.\n\nLet's verify the doctests:\n1. `[[1, 3], [2, 6], [8, 10], [15, 18]]` -> sorted: same. merged: [1,6], [8,10], [15,18]. Correct.\n2. `[[1, 4], [4, 5]]` -> sorted: same. merged: [",
+        "finish_reason": "length",
+        "ttft_ms": 57.1,
+        "ttfc_ms": null,
+        "elapsed_ms": 3780.0
+      }
+    ]
+  },
+  "B": {
+    "label": "enable_thinking false",
+    "patch": {
+      "enable_thinking": false
+    },
+    "n": 3,
+    "ttft_ms": 59.1,
+    "ttfc_ms": 59.1,
+    "elapsed_ms": 1658.1,
+    "content_chars": 1095,
+    "reasoning_chars": 0,
+    "finish_reasons": [
+      "stop",
+      "stop",
+      "stop"
+    ],
+    "samples": [
+      {
+        "content": "```python\ndef merge_intervals(intervals):\n    \"\"\"\n    Merge overlapping closed intervals and return them sorted.\n\n    Args:\n        intervals: A list of tuples, each representing a closed interval (start, end).\n\n    Returns:\n        A list of merged, non-overlapping intervals sorted by start time.\n\n    Examples:\n        >>> merge_intervals([(1, 3), (2, 6), (8, 10), (15, 18)])\n        [(1, 6), (8, 10), (15, 18)]\n        >>> merge_intervals([(1, 4), (4, 5)])\n        [(1, 5)]\n        >>> merge_intervals([(1, 4), (0, 4)])\n        [(0, 4)]\n    \"\"\"\n    if not intervals:\n        return []\n\n    # Sort intervals by start time\n    sorted_intervals = sorted(intervals, key=lambda x: x[0])\n\n    merged = [sorted_intervals[0]]\n\n    for current in sorted_intervals[1:]:\n        last = merged[-1]\n        # If the current interval overlaps with the last merged interval\n        if current[0] <= last[1]:\n            # Merge them by updating the end of the last interval\n            merged[-1] = (last[0], max(last[1], current[1]))\n        else:\n            merged.append(current)\n\n    return merged\n```",
+        "reasoning_content": "",
+        "finish_reason": "stop",
+        "ttft_ms": 58.9,
+        "ttfc_ms": 58.9,
+        "elapsed_ms": 1658.1
+      },
+      {
+        "content": "```python\ndef merge_intervals(intervals):\n    \"\"\"\n    Merge overlapping closed intervals and return them sorted.\n\n    Given a list of closed intervals, this function merges any overlapping\n    or adjacent intervals and returns the resulting list of non-overlapping\n    intervals, sorted by their start times.\n\n    Args:\n        intervals: A list of tuples, where each tuple represents a closed\n                   interval (start, end) with start <= end.\n\n    Returns:\n        A list of merged, non-overlapping intervals sorted by start time.\n\n    Examples:\n        >>> merge_intervals([(1, 3), (2, 6), (8, 10)])\n        [(1, 6), (8, 10)]\n        >>> merge_intervals([(1, 4), (4, 5)])\n        [(1, 5)]\n        >>> merge_intervals([(1, 4), (0, 4)])\n        [(0, 4)]\n    \"\"\"\n    if not intervals:\n        return []\n\n    # Sort intervals by start time\n    sorted_intervals = sorted(intervals, key=lambda x: x[0])\n\n    merged = [sorted_intervals[0]]\n\n    for current in sorted_intervals[1:]:\n        last = merged[-1]\n        # If current interval overlaps with the last merged interval\n        if current[0] <= last[1]:\n            # Merge them by extending the end of the last interval\n            merged[-1] = (last[0], max(last[1], current[1]))\n        else:\n            merged.append(current)\n\n    return merged\n```",
+        "reasoning_content": "",
+        "finish_reason": "stop",
+        "ttft_ms": 59.1,
+        "ttfc_ms": 59.1,
+        "elapsed_ms": 1853.9
+      },
+      {
+        "content": "```python\ndef merge_intervals(intervals):\n    \"\"\"\n    Merge overlapping closed intervals and return them sorted.\n\n    Args:\n        intervals: A list of tuples, each representing a closed interval (start, end).\n\n    Returns:\n        A list of merged non-overlapping intervals, sorted by start time.\n\n    Examples:\n        >>> merge_intervals([(1, 3), (2, 6), (8, 10), (15, 18)])\n        [(1, 6), (8, 10), (15, 18)]\n        >>> merge_intervals([(1, 4), (4, 5)])\n        [(1, 5)]\n        >>> merge_intervals([(1, 4), (0, 4)])\n        [(0, 4)]\n    \"\"\"\n    if not intervals:\n        return []\n\n    # Sort intervals by start time\n    sorted_intervals = sorted(intervals, key=lambda x: x[0])\n\n    merged = [sorted_intervals[0]]\n\n    for current in sorted_intervals[1:]:\n        last = merged[-1]\n        # If the current interval overlaps with the last merged interval\n        if current[0] <= last[1]:\n            # Merge them by updating the end of the last interval\n            merged[-1] = (last[0], max(last[1], current[1]))\n        else:\n            merged.append(current)\n\n    return merged\n```",
+        "reasoning_content": "",
+        "finish_reason": "stop",
+        "ttft_ms": 59.8,
+        "ttfc_ms": 59.8,
+        "elapsed_ms": 1649.1
+      }
+    ]
+  }
+}

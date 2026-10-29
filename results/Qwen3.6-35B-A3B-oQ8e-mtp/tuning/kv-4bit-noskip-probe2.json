@@ -1,0 +1,26 @@
+[
+  {
+    "pad": 0,
+    "maxtok": 300,
+    "chars": 1079,
+    "finish": "length",
+    "error": null,
+    "head": "```python\ndef merge_intervals(intervals):\n    \"\"\"\n    Merge overlapping closed intervals and return the result sorted by start time.\n\n    Args:\n        intervals: A list of tuples, where each tuple re"
+  },
+  {
+    "pad": 8000,
+    "maxtok": 300,
+    "chars": 1013,
+    "finish": "length",
+    "error": null,
+    "head": "```python\ndef merge_intervals(intervals):\n    \"\"\"\n    Merge overlapping closed intervals and return them sorted by start time.\n    \n    Args:\n        intervals: A list of tuples, where each tuple repr"
+  },
+  {
+    "pad": 0,
+    "maxtok": 900,
+    "chars": 1375,
+    "finish": "stop",
+    "error": null,
+    "head": "```python\ndef merge_intervals(intervals):\n    \"\"\"\n    Merge overlapping closed intervals and return them sorted.\n\n    Given a list of intervals where each interval is a tuple (start, end),\n    this fu"
+  }
+]
