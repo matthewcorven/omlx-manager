@@ -18,7 +18,7 @@ below are accounted for, not skipped:
 |---|---|
 | `Jundot/GLM-5.3-Flash-oQ2e-mtp` | **Deferred** — resident-bound at 115.82 GB against a ~90 GB ceiling, and MoE offload support cannot be verified without a 110 GB download. See "Rejected / deferred". |
 | `jinaai/jina-reranker-v3.5` | **PASS** — not an LLM, no decode to tune. Fixed by swapping the Transformers checkpoint for the MLX conversion. See `non-llm/`. |
-| `mlx-community/Unlimited-OCR-2-8bit` | **FAIL** — blocked upstream, needs an unmerged mlx-vlm DASH attention. See `non-llm/`. |
+| `mlx-community/Unlimited-OCR-2-8bit` | **PASS** — not an LLM, no decode to tune. Fixed by updating oMLX's vendored `unlimited_ocr` package to the mlx-vlm 0.7.11 implementation (DASH attention). See `non-llm/`. |
 
 ## Tested and tuned
 

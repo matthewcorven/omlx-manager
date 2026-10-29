@@ -1,9 +1,9 @@
 # Unlimited-OCR-2-8bit — smoke test
 
-**Status: FAILED — requires an mlx-vlm feature that is not in oMLX 0.7.3rc1.
-Not fixable from this repo; no action taken.**
+**Status: PASS — fixed by updating oMLX's vendored `unlimited_ocr` package to
+the mlx-vlm 0.7.11 implementation.**
 
-## Symptom
+## Original symptom
 
 ```
 POST /admin/api/models/Unlimited-OCR-2-8bit/load
@@ -15,39 +15,112 @@ language_model.model.layers.0.self_attn.dash_router.k_proj.weight,
 language_model.model.layers.0.self_attn.dash_router.q_norm.weight, ..."}
 ```
 
-## Diagnosis
+## Root cause
 
-The model card states the requirement plainly:
+The checkpoint sets `sparse_attention_config.training_stage: "dash"` and
+`use_sparse_attention: true`, so its decoder is DASH block-sparse attention
+(page2d RoPE plus a per-layer router) rather than the R-SWA ring cache of the
+original Unlimited-OCR.
 
-> Unlimited-OCR-2 support (page2d RoPE and DASH block-sparse attention) is being
-> upstreamed to mlx-vlm. Until it is released, install from the branch that adds it:
-> `pip install -U "git+https://github.com/shuuul/mlx-vlm.git"`
+oMLX 0.7.3rc1 bundles **mlx-vlm 0.7.10**. DASH landed in **mlx-vlm 0.7.11**.
+The 0.7.10 `models/unlimited_ocr/` package exists but has no `dash.py`, so the
+60 `dash_router.*` tensors have no destination and are rejected as unexpected
+parameters. The earlier note that the bundled mlx-vlm "has no `dash_router`
+module" was directionally right but imprecise: the module exists, the DASH
+implementation does not.
 
-The 60 unexpected parameters are the per-layer DASH router, which the card says
-stays in bfloat16 alongside the SAM and CLIP vision towers. The bundled mlx-vlm
-in `/Applications/oMLX.app` has no `dash_router` module, so it cannot load them.
+## Why a full mlx-vlm wheel swap was rejected
 
-This is not a download or config problem: the checkpoint is a legitimate
-`mlx-community` conversion (8-bit affine, group size 64) and the tensors match
-what the model's own `dash_attention.py` defines.
+Replacing the bundled mlx-vlm with 0.7.11 would change the inference stack for
+every model in the campaign:
 
-## Why no fix is attempted
+- `models/qwen3_5/language.py` adds `and h.shape[1] > 1` to the single-row
+  decode fast path — a decode-path change for the Qwen3.5 family, which
+  includes two tuned models.
+- `models/minimax_m3_vl/language.py` is a large rewrite.
+- `utils.py` changes model-type remapping and quantization handling.
+- 0.7.11 requires `mlx-audio>=0.6.2` (bundled: 0.5.7) and `datasets` (absent).
 
-Fixing it means installing a forked mlx-vlm into the oMLX app bundle, which
-replaces the inference stack for **every** model in the campaign. That is far
-too invasive to do for one non-LLM model, and it would invalidate the tuning
-results already recorded for the three LLMs.
+## The fix that was applied
 
-## What would unblock it
+oMLX already ships a compat patch at
+`/Applications/oMLX.app/Contents/Resources/omlx/patches/mlx_vlm_unlimited_ocr_compat/`.
+It prepends `vendor/mlx_vlm` to `mlx_vlm.__path__` and
+`mlx_vlm.models.__path__`, so a vendored package shadows the wheel's, and it is
+applied **only** when `for_vlm and model_type == "unlimited-ocr"`
+(`omlx/utils/model_loading.py:828-836`). That makes it a surgical extension
+point: nothing the seven tuned LLMs use is touched.
 
-- An oMLX release bundling the upstreamed mlx-vlm that includes DASH attention.
-- Or a separate venv running `shuuul/mlx-vlm` directly for OCR only, outside
-  oMLX, if OCR is actually needed. The card's CLI invocation works there:
+The vendored `unlimited_ocr` package was an oMLX-modified fork of 0.7.10. It was
+updated to the 0.7.11 implementation, preserving the three oMLX modifications:
 
-  ```sh
-  mlx_vlm.generate --model mlx-community/Unlimited-OCR-2-8bit --image page.png \
-      --prompt "Multi page parsing." --max-tokens 8192 --temperature 0
-  ```
+1. `language.py` — `RingSlidingKVCache.memory_profile` removed, along with the
+   now-unused `replace` / `ceil` imports. Safe: oMLX never calls
+   `.memory_profile(`.
+2. `unlimitedocr.py` — `from transformers import AutoProcessor` plus
+   `AutoProcessor.register("unlimited-ocr", UnlimitedOCRProcessor)`.
+3. `processing_unlimitedocr.py` — `default_chat_template` property removed.
 
-The 3.8 GB download is retained; it is not harmful and will work after an oMLX
-upgrade.
+Files changed under `vendor/mlx_vlm/models/`:
+
+| File | Change |
+|---|---|
+| `unlimited_ocr/dash.py` | **new** — DASH router, page2d RoPE, sparse attention, dash cache |
+| `unlimited_ocr/config.py` | 0.7.11 — `sparse_attention_config` on `TextConfig`, `layer_norm_eps` on `VisionConfig` |
+| `unlimited_ocr/language.py` | 0.7.11 + oMLX mod 1 |
+| `unlimited_ocr/unlimitedocr.py` | 0.7.11 + oMLX mod 2 |
+| `unlimited_ocr/processing_unlimitedocr.py` | 0.7.11 + oMLX mod 3 |
+| `deepseekocr/` | **new vendored copy** — 0.7.10 base with 0.7.11 `vision.py` and `sam.py` |
+
+`deepseekocr` had to be vendored rather than patched in place because it is
+shared with `deepseekocr_2`; the 0.7.11 changes there are `quick_gelu` in the
+CLIP `MLP` (matching the checkpoint's reference `deepencoder.py`) and
+antialiased bicubic positional-embedding interpolation, plus align-corners=False
+relative-position indices in `sam.py`. The rest of the package is byte-identical
+between 0.7.10 and 0.7.11, as are `base.py`, `cache.py`, and `kernels.py`.
+
+## Verification
+
+Load succeeds with no unexpected-parameter error. Two real requests on the
+checkpoint's own assets, `max_tokens` 1200 and 900, temperature 0, prompt
+`Multi page parsing.`:
+
+`assets/leaderboard.png` — 290 completion tokens, `finish_reason: stop`:
+
+```
+<PAGE><BLOCK>header[55, 13, 150, 28]<FORK>Unlimited OCR 2 (Ours)
+<BLOCK>header[180, 13, 234, 28]<FORK>Qwen3.8-Max
+<BLOCK>header[264, 13, 342, 28]<FORK>Qwen-3.8-Flash-Next
+...
+<BLOCK>footer[873, 976, 961, 992]<FORK>ReadOrder (1-Edit)
+```
+
+`assets/Unlimited-OCR2.png` — 431 completion tokens, `finish_reason: stop`:
+
+```
+<PAGE><BLOCK>image_caption[51, 24, 138, 62]<FORK>(a) R-SWA
+<BLOCK>image_caption[202, 19, 405, 51]<FORK>Visual token cost overload
+<BLOCK>image_caption[529, 24, 626, 62]<FORK>(b) SR-SWA
+<BLOCK>image_caption[663, 19, 948, 51]<FORK>Human-like selection of visual tokens
+...
+```
+
+Both outputs are the documented `<PAGE>` / `<BLOCK>label[x0, y0, x1, y1]<FORK>text`
+format, with labels and coordinates that match the images. Not garbage, not
+repetition.
+
+Regression check: all seven tuned LLMs were loaded and served a real request
+after the change — `Qwen3.8-27B-oQ4e-mtp`, `Ornith-1.0-35B-oQ4e`, `flint-oQ4e`,
+`gemma-4-31B-it-oQ4e-mtp`, `gemma-4-26B-A4B-it-oQ8e-mtp`,
+`Qwen3.6-35B-A3B-oQ8e-mtp`, `Qwen3.8-Flash-Next-oQ4e-mtp`. All returned `OK`.
+
+## Caveats
+
+- The change lives in the app bundle, not this repo, so an oMLX upgrade will
+  overwrite it. Re-apply if a future release still bundles mlx-vlm < 0.7.11.
+- The vendored `deepseekocr` shadows the wheel's for any model loaded in the
+  same process. No `deepseekocr` / `deepseekocr_2` model is on disk, so this is
+  inert; if one is added later, re-check it.
+- The patch is process-global once applied, but it is only applied when an
+  `unlimited-ocr` model loads, and it only shadows two model packages.
+- Backup of the pre-change vendor tree: `/tmp/ocr_vendor_backup/` (transient).
