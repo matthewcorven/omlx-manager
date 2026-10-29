@@ -107,17 +107,30 @@ against a ~89.6 GB practical ceiling, and it sits in the server's `unlock` tier
 requiring `wired_limit`. It is the single largest consumer of internal disk and
 cannot be loaded at its default residency.
 
+**The offload lever is confirmed available on this model.** Querying
+`GET /admin/api/models/Qwen3.8-Flash-Next-oQ4e-mtp/moe-offload-fit`:
+
+| `mtp_enabled` | Status | Max offloadable | Bytes | Reserve |
+|---|---|---|---|---|
+| `true` | `fit` | 20% | 55,680,273,631 | 4 GiB |
+| `false` | `fit` | 21% | 55,343,520,991 | 4 GiB |
+
+So ~55.7 GB of experts can live off-heap with MTP on, taking resident from
+112.81 GB to roughly **57 GB** — comfortably under the ~89.6 GB ceiling. The
+question is no longer *whether* it can be made to fit but *what it costs in
+decode throughput*, which is exactly what a tuning sweep measures.
+
+Note the asymmetry with GLM: the same query on GLM would have needed 110 GB
+downloaded first, and GLM's ceiling gap is ~26 GB. Here the gap is ~23 GB and
+the model is already local, so this is the cheaper place to settle the question.
+
 Two options, neither taken yet:
 
-1. Shuttle it to `/Volumes/NVMe` to reclaim ~105 GB of internal space, and treat
-   it as available-but-not-resident.
-2. Test `moe_expert_offload_enabled` with a reduced
-   `moe_expert_offload_resident_fraction` — it is a true MoE, so the lever
-   applies — accepting the decode-speed cost. This needs the model local, which
-   it now is.
-
-This is the one model where MoE offload can actually be measured, so it is the
-right place to answer the offload question before spending 110 GB on GLM.
+1. Test `moe_expert_offload_enabled` at the reported 20% ceiling, then sweep the
+   resident fraction downward to find the throughput/footprint knee. This needs
+   the model local, which it now is.
+2. If the offloaded configuration is unusable in throughput terms, shuttle the
+   105 GB to `/Volumes/NVMe` and treat it as available-but-not-resident.
 
 ## Storage
 
