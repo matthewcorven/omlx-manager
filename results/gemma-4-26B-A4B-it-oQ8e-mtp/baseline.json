@@ -1,0 +1,44 @@
+{
+  "model": "gemma-4-26B-A4B-it-oQ8e-mtp",
+  "runs": 3,
+  "max_tokens": 300,
+  "context_pad": 0,
+  "ttft_ms_median": 116.0,
+  "decode_tps_median": 113.18,
+  "prefill_tps_median": 422.4,
+  "total_ms_median": 2743.3,
+  "completion_tokens_median": 300,
+  "reasoning_chunks_median": 0,
+  "samples": [
+    {
+      "ttft_ms": 101.0,
+      "ttfc_ms": 101.0,
+      "decode_tps": 113.18,
+      "total_ms": 2743.3,
+      "prefill_tps": 485.1,
+      "prompt_tokens": 49,
+      "completion_tokens": 300,
+      "reasoning_chunks": 0
+    },
+    {
+      "ttft_ms": 116.0,
+      "ttfc_ms": 116.0,
+      "decode_tps": 109.69,
+      "total_ms": 2842.3,
+      "prefill_tps": 422.4,
+      "prompt_tokens": 49,
+      "completion_tokens": 300,
+      "reasoning_chunks": 0
+    },
+    {
+      "ttft_ms": 128.0,
+      "ttfc_ms": 128.0,
+      "decode_tps": 116.09,
+      "total_ms": 2703.9,
+      "prefill_tps": 382.8,
+      "prompt_tokens": 49,
+      "completion_tokens": 300,
+      "reasoning_chunks": 0
+    }
+  ]
+}
