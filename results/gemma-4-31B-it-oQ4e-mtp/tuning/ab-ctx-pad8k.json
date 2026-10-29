@@ -1,0 +1,56 @@
+{
+  "A": {
+    "label": "ctx-native-pad8k",
+    "patch": {
+      "max_context_window": null
+    },
+    "n": 3,
+    "ttft_ms": 458.2,
+    "decode_tps": 30.43,
+    "total_ms": 10659.0,
+    "samples": [
+      {
+        "ttft_ms": 3656.5,
+        "decode_tps": 33.44,
+        "total_ms": 12598.3
+      },
+      {
+        "ttft_ms": 458.2,
+        "decode_tps": 29.31,
+        "total_ms": 10658.6
+      },
+      {
+        "ttft_ms": 457.8,
+        "decode_tps": 30.43,
+        "total_ms": 10284.9
+      }
+    ]
+  },
+  "B": {
+    "label": "ctx-32768-pad8k",
+    "patch": {
+      "max_context_window": 32768
+    },
+    "n": 3,
+    "ttft_ms": 451.6,
+    "decode_tps": 29.14,
+    "total_ms": 10712.0,
+    "samples": [
+      {
+        "ttft_ms": 463.2,
+        "decode_tps": 29.8,
+        "total_ms": 10498.4
+      },
+      {
+        "ttft_ms": 446.5,
+        "decode_tps": 28.48,
+        "total_ms": 10944.4
+      },
+      {
+        "ttft_ms": 451.6,
+        "decode_tps": 29.14,
+        "total_ms": 10711.7
+      }
+    ]
+  }
+}

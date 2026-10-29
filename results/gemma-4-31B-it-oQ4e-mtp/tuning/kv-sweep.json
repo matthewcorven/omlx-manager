@@ -1,0 +1,132 @@
+{
+  "kv-off": {
+    "patch": {
+      "turboquant_kv_enabled": false
+    },
+    "n": 4,
+    "ttft_ms": 279.8,
+    "decode_tps": 20.59,
+    "total_ms": 14811.0,
+    "samples": [
+      {
+        "ttft_ms": 279.0,
+        "decode_tps": 20.05,
+        "total_ms": 15193.1
+      },
+      {
+        "ttft_ms": 284.1,
+        "decode_tps": 20.11,
+        "total_ms": 15156.2
+      },
+      {
+        "ttft_ms": 251.7,
+        "decode_tps": 21.22,
+        "total_ms": 14345.4
+      },
+      {
+        "ttft_ms": 280.6,
+        "decode_tps": 21.08,
+        "total_ms": 14466.6
+      }
+    ]
+  },
+  "kv-8bit-skip": {
+    "patch": {
+      "turboquant_kv_enabled": true,
+      "turboquant_kv_bits": 8.0,
+      "turboquant_skip_last": true
+    },
+    "n": 4,
+    "ttft_ms": 279.3,
+    "decode_tps": 20.63,
+    "total_ms": 14789.0,
+    "samples": [
+      {
+        "ttft_ms": 309.4,
+        "decode_tps": 20.69,
+        "total_ms": 14764.2
+      },
+      {
+        "ttft_ms": 280.0,
+        "decode_tps": 20.57,
+        "total_ms": 14814.5
+      },
+      {
+        "ttft_ms": 254.5,
+        "decode_tps": 21.05,
+        "total_ms": 14458.4
+      },
+      {
+        "ttft_ms": 278.6,
+        "decode_tps": 20.12,
+        "total_ms": 15139.1
+      }
+    ]
+  },
+  "kv-4bit-skip": {
+    "patch": {
+      "turboquant_kv_enabled": true,
+      "turboquant_kv_bits": 4.0,
+      "turboquant_skip_last": true
+    },
+    "n": 4,
+    "ttft_ms": 270.9,
+    "decode_tps": 20.96,
+    "total_ms": 14550.0,
+    "samples": [
+      {
+        "ttft_ms": 310.5,
+        "decode_tps": 21.03,
+        "total_ms": 14526.6
+      },
+      {
+        "ttft_ms": 270.2,
+        "decode_tps": 20.9,
+        "total_ms": 14573.8
+      },
+      {
+        "ttft_ms": 257.2,
+        "decode_tps": 21.16,
+        "total_ms": 14387.0
+      },
+      {
+        "ttft_ms": 271.7,
+        "decode_tps": 20.39,
+        "total_ms": 14937.2
+      }
+    ]
+  },
+  "kv-4bit-noskip": {
+    "patch": {
+      "turboquant_kv_enabled": true,
+      "turboquant_kv_bits": 4.0,
+      "turboquant_skip_last": false
+    },
+    "n": 4,
+    "ttft_ms": 286.0,
+    "decode_tps": 20.95,
+    "total_ms": 14565.0,
+    "samples": [
+      {
+        "ttft_ms": 258.4,
+        "decode_tps": 21.2,
+        "total_ms": 14365.0
+      },
+      {
+        "ttft_ms": 297.0,
+        "decode_tps": 20.96,
+        "total_ms": 14562.6
+      },
+      {
+        "ttft_ms": 283.7,
+        "decode_tps": 20.93,
+        "total_ms": 14567.8
+      },
+      {
+        "ttft_ms": 288.3,
+        "decode_tps": 20.82,
+        "total_ms": 14651.0
+      }
+    ]
+  }
+}
