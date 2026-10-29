@@ -1,0 +1,62 @@
+{
+  "model": "Ornith-1.0-35B-oQ4e",
+  "runs": 3,
+  "max_tokens": 300,
+  "temperature": 0.0,
+  "context_pad": 0,
+  "ttft_ms_median": 52.0,
+  "ttfc_ms_median": 52.0,
+  "decode_tps_median": 146.72,
+  "total_ms_median": 2090.3,
+  "samples": [
+    {
+      "ttft_ms": 63.4,
+      "ttfc_ms": 63.4,
+      "decode_tps": 148.25,
+      "prefill_tps": 741.3,
+      "total_ms": 2080.7,
+      "prompt_tokens": 47,
+      "completion_tokens": 300,
+      "reasoning_chunks": 0,
+      "finish_reason": "length",
+      "text": "```python\ndef merge_intervals(intervals):\n    \"\"\"\n    Merge overlapping closed intervals and return them sorted.\n\n    Given a list of closed intervals, this function merges all overlapping\n    intervals and returns the resulting non-overlapping intervals sorted by\n    their start values.\n\n    Parameters:\n        intervals (list of tuples): A list of (start, end) tuples representing\n            closed intervals. Each tuple must have exactly two elements where\n            start <= end.\n\n    Returns:\n        list of tuples: A list of merged (start, end) tuples, sorted by start.\n\n    Examples:\n        >>> merge_intervals([(1, 3), (2, 6), (8, 10), (15, 18)])\n        [(1, 6), (8, 10), (15, 18)]\n        >>> merge_intervals([(1, 4), (4, 5)])\n        [(1, 5)]\n        >>> merge_intervals([(1, 2), (3, 5), (4, 7), (8, 10)])\n        [(1, 2), (3, 7), (8, 10)]\n    \"\"\"\n    if not intervals:\n        return []\n\n    # Sort intervals by start value\n    sorted_intervals = sorted(intervals, key=lambda x: x[0])\n\n    merged = ["
+    },
+    {
+      "ttft_ms": 52.0,
+      "ttfc_ms": 52.0,
+      "decode_tps": 146.72,
+      "prefill_tps": 903.6,
+      "total_ms": 2090.3,
+      "prompt_tokens": 47,
+      "completion_tokens": 300,
+      "reasoning_chunks": 0,
+      "finish_reason": "length",
+      "text": "```python\ndef merge_intervals(intervals):\n    \"\"\"\n    Merge overlapping closed intervals and return them sorted.\n\n    Given a list of closed intervals, this function merges all overlapping\n    intervals and returns the resulting non-overlapping intervals sorted by\n    their start values.\n\n    Parameters:\n        intervals (list of tuples): A list of (start, end) tuples representing\n            closed intervals. Each tuple must have exactly two elements where\n            start <= end.\n\n    Returns:\n        list of tuples: A list of merged (start, end) tuples, sorted by start.\n\n    Examples:\n        >>> merge_intervals([(1, 3), (2, 6), (8, 10), (15, 18)])\n        [(1, 6), (8, 10), (15, 18)]\n        >>> merge_intervals([(1, 4), (4, 5)])\n        [(1, 5)]\n        >>> merge_intervals([(1, 2), (3, 5), (4, 7), (8, 10)])\n        [(1, 2), (3, 7), (8, 10)]\n    \"\"\"\n    if not intervals:\n        return []\n\n    # Sort intervals by start value\n    sorted_intervals = sorted(intervals, key=lambda x: x[0])\n\n    merged = ["
+    },
+    {
+      "ttft_ms": 48.9,
+      "ttfc_ms": 48.9,
+      "decode_tps": 136.31,
+      "prefill_tps": 960.8,
+      "total_ms": 2242.8,
+      "prompt_tokens": 47,
+      "completion_tokens": 300,
+      "reasoning_chunks": 0,
+      "finish_reason": "length",
+      "text": "```python\ndef merge_intervals(intervals):\n    \"\"\"\n    Merge overlapping closed intervals and return them sorted.\n\n    Given a list of closed intervals, this function merges all overlapping\n    intervals and returns the resulting non-overlapping intervals sorted by\n    their start values.\n\n    Parameters:\n        intervals (list of tuples): A list of (start, end) tuples representing\n            closed intervals. Each tuple must have exactly two elements where\n            start <= end.\n\n    Returns:\n        list of tuples: A list of merged (start, end) tuples, sorted by start.\n\n    Examples:\n        >>> merge_intervals([(1, 3), (2, 6), (8, 10), (15, 18)])\n        [(1, 6), (8, 10), (15, 18)]\n        >>> merge_intervals([(1, 4), (4, 5)])\n        [(1, 5)]\n        >>> merge_intervals([(1, 2), (3, 5), (4, 7), (8, 10)])\n        [(1, 2), (3, 7), (8, 10)]\n    \"\"\"\n    if not intervals:\n        return []\n\n    # Sort intervals by start value\n    sorted_intervals = sorted(intervals, key=lambda x: x[0])\n\n    merged = ["
+    }
+  ],
+  "note": "defaults with enable_thinking=false; one warmup discarded. Measured on a quiet machine (decode ~147 tps).",
+  "settings": {
+    "enable_thinking": false,
+    "max_context_window": null,
+    "turboquant_kv_enabled": false,
+    "dflash_enabled": false,
+    "specprefill_enabled": false,
+    "mtp_enabled": false,
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 20,
+    "force_sampling": false
+  }
+}
