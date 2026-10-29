@@ -201,11 +201,41 @@ the model is already local, so this is the cheaper place to settle the question.
 
 Two options, neither taken yet:
 
-1. Test `moe_expert_offload_enabled` at the reported 20% ceiling, then sweep the
+1. Test `moe_expert_offload_enabled` at the reported ceiling, then sweep the
    resident fraction downward to find the throughput/footprint knee. This needs
    the model local, which it now is.
 2. If the offloaded configuration is unusable in throughput terms, shuttle the
    105 GB to `/Volumes/NVMe` and treat it as available-but-not-resident.
+
+### Re-probed 2026-10-29 — the numbers above are stale, and the lever is bigger
+
+The table above was taken before the model was registered. Re-querying the live
+server now that it is local gives a **different and more favourable** answer:
+
+| `mtp_enabled` | `qwen4_ple_ssd_offload` | Status | Max offloadable | Bytes |
+|---|---|---|---|---|
+| `true` | `false` | `fit` | **16%** | 52,893,355,231 |
+| `false` | `false` | `fit` | **18%** | 53,067,537,631 |
+| `true` | `true` | `fit` | **63%** | 52,875,560,669 |
+| `false` | `true` | `fit` | **64%** | 53,038,130,909 |
+
+Two corrections to the earlier reading:
+
+- The ceiling is **16%**, not 20%, with MTP on and PLE off. The 20%/21% figures
+  were pre-registration estimates.
+- `qwen4_ple_ssd_offload` is **forced on** for this model
+  (`qwen4_ple_ssd_offload_forced: true`, `config_model_type: qwen4_exp`), and it
+  changes the answer by a factor of four: 16% → **63%**. The PLE embedding table
+  is 79.2 GB of mmap-able weights (`qwen4_ple_mmap_bytes`), so offloading it
+  frees the room that lets 63% of experts stay resident instead of 16%.
+
+`moe_offload_allows_mtp: true` here, unlike gemma-4-26B — offload and MTP can be
+combined, so the MTP gain does not have to be traded away for residency.
+
+The `bytes` field is the off-heap expert payload and is roughly constant across
+all four rows (~52.9 GB); what changes is how much of the *rest* of the model
+stays resident. So the sweep to run is over `moe_expert_offload_resident_fraction`
+with PLE offload on, not over the offload on/off switch.
 
 ## Storage
 
