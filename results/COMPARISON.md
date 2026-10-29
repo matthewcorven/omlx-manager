@@ -15,10 +15,11 @@ order-of-magnitude only.
 |---|---|---|---|---|---|---|---|---|
 | `Jundot/Qwen3.8-27B-oQ4e-mtp` | oQ4e | dense 27.8B | 15.81 GiB | 16.60 GiB | 233.6 ms / 78.33 tps | 252.0 ms / 59.65 tps | ctx 32768, MTP on depth 6, KV 4-bit + `skip_last`, temp 0.2 / top_p 0.95 / top_k 20, thinking off | 3/3 pass |
 | `Jundot/Ornith-1.0-35B-oQ4e` | oQ4e | MoE 35B | 21.1 GB | 19.96 GB | 52.0 ms / 146.72 tps | 48.0 ms / 146.34 tps | ctx native, all spec/quant/offload off, temp 1.0 / top_p 0.95 / top_k 20, thinking off | 3/3 pass |
+| `Jundot/flint-oQ4e` | oQ4e | MoE 2.5B active | 22 GB | 22.84 GB | 251.0 ms / 114.6 tps | 252.0 ms / 113.23 tps | ctx native, KV off, no MTP/draft head, temp 1.0 / top_p 0.95 / top_k 20, `activation_fp16_enabled: false` | 3/3 pass |
 
-**Count: 2 models fully tested and tuned.**
+**Count: 3 models fully tested and tuned.**
 
-The two rows are **not** comparable head-to-head. Ornith's 146 tps vs Qwen's 60 tps
+The rows are **not** comparable head-to-head. Ornith's 146 tps vs Qwen's 60 tps
 is not a 2.4× speed advantage — Qwen's final 5-run was taken with downloads
 active and Ornith's with the machine quiet. The honest statement is that both
 were measured on their own terms, and that the *decisions* in each row are sound
@@ -157,3 +158,28 @@ Per `AGENTS.md`, a model only gets a row in **Tested and tuned** when its
 
 Every setting verdict must come from a paired comparison. A number measured in
 one block is never compared to a number from another block.
+
+Notes on the flint-oQ4e row:
+
+- **The corrected baseline is the final config.** Every wired-up knob was
+  measured paired and lost or tied, so nothing was changed. The 1.2% gap between
+  baseline and final is drift, measured on the same config twice.
+- **`activation_fp16_enabled` is a corruption switch on this model, not a
+  speedup.** The first tuning pass recorded a 26× TTFT win from `true`; it was
+  the model emitting noise without ever entering its reasoning phase. See
+  [`flint-oQ4e/CORRECTION.md`](flint-oQ4e/CORRECTION.md).
+- **A saturated SSD prefix cache was a second, independent fault.** At
+  185 GB / 185 GB the cache served poisoned prefixes and broke coherence even
+  with the safe setting. Quarantining the cache fixed it.
+- **KV quant cost 16–18% decode** (114.94 → 94.22–96.78 tps) plus 5–11 ms TTFT.
+  A 2.5B-active MoE is bandwidth-bound; dequant per step costs more than the
+  bandwidth saved.
+- **`max_context_window: 32768` was a null result** at 34 tokens, 16k and 20k
+  prompts, with byte-identical `model_memory_used`. Native was kept because it
+  is free and accepts prompts that 32768 rejects with HTTP 400.
+- **`thinking_budget_enabled` / `_tokens` are not enforced on flint.** The API
+  accepts and echoes them; measured reasoning length was unchanged.
+- **TTFT 250 ms is misleading for this model.** TTFC is 3.8–14.8 s because it
+  always streams ~250 reasoning tokens first. Reasoning-length variance
+  (3.7k–8.9k chars) dominates everything a setting can control — the throughput
+  knobs are worth 0–20% of decode, the reasoning phase 15–60× that.
