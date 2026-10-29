@@ -14,10 +14,36 @@ order-of-magnitude only.
 | Model | Quant | Params | DL | Resident | Baseline TTFT / decode | Final TTFT / decode | Final settings | Quality |
 |---|---|---|---|---|---|---|---|---|
 | `Jundot/Qwen3.8-27B-oQ4e-mtp` | oQ4e | dense 27.8B | 15.81 GiB | 16.60 GiB | 233.6 ms / 78.33 tps | 252.0 ms / 59.65 tps | ctx 32768, MTP on depth 6, KV 4-bit + `skip_last`, temp 0.2 / top_p 0.95 / top_k 20, thinking off | 3/3 pass |
+| `Jundot/Ornith-1.0-35B-oQ4e` | oQ4e | MoE 35B | 21.1 GB | 19.96 GB | 52.0 ms / 146.72 tps | 48.0 ms / 146.34 tps | ctx native, all spec/quant/offload off, temp 1.0 / top_p 0.95 / top_k 20, thinking off | 3/3 pass |
 
-**Count: 1 model fully tested and tuned.**
+**Count: 2 models fully tested and tuned.**
 
-Notes on the one completed row:
+The two rows are **not** comparable head-to-head. Ornith's 146 tps vs Qwen's 60 tps
+is not a 2.4× speed advantage — Qwen's final 5-run was taken with downloads
+active and Ornith's with the machine quiet. The honest statement is that both
+were measured on their own terms, and that the *decisions* in each row are sound
+because each came from a paired comparison.
+
+What the two models agree on, and where they diverge:
+
+- **Thinking off is a hard constraint for both.** Qwen never emitted an answer
+  with thinking on (all 300 tokens went to `reasoning_content`); Ornith unbudgeted
+  emitted zero content tokens in 2/2 runs, and a 512-token budget cost 65×
+  time-to-first-answer-token. `thinking_budget_tokens` is a floor, not a cap.
+- **KV quantization is model-dependent.** A real win on Qwen3.8-27B (4-bit +
+  `skip_last` beat quant-off 60.62 vs 48.61 tps) and a clear loss on Ornith
+  (14–16% slower in every quantized variant). Do not assume it from one model.
+- **Context: 32768 helped Qwen, did nothing for Ornith.** Native was kept for
+  Ornith (58.8 ms / 151.90 tps vs 59.0 ms / 151.24 tps — inside noise), so the
+  Qwen3.8 "smaller window is faster" result did **not** reproduce. Treat that
+  finding as model-specific, not a general rule.
+- **Speculative decoding needs a draft head.** Ornith has no MTP head and both
+  `dflash_draft_model` and `specprefill_draft_model` are null, so those flags are
+  no-ops — DFlash landed inside noise, SpecPrefill was 1.9% slower. On Qwen, MTP
+  was the single dominant lever (2× decode). Which spec lever exists, not which
+  is "better", drives the outcome.
+
+Notes on the Qwen3.8-27B row:
 
 - Baseline was measured on a quiet machine; the final 5-run was measured later
   with downloads active. The 78.33 → 59.65 tps drop is machine load, **not** a
@@ -34,6 +60,24 @@ Notes on the one completed row:
   [`tuning-log.md`](Qwen3.8-27B-oQ4e-mtp/tuning-log.md),
   [`quality.md`](Qwen3.8-27B-oQ4e-mtp/quality.md).
 
+Notes on the Ornith-1.0-35B row:
+
+- **Nothing helped.** Every performance knob was tested with paired comparisons
+  and every one was neutral or negative. The final config is the default config
+  plus two changes: thinking off (a correctness fix — without it the model never
+  emits an answer) and the model card's sampler.
+- MoE expert offload was considered and is **not applicable**: 19.96 GB resident
+  is far under the ~89.6 GB ceiling, so there is no residency pressure to relieve.
+- Quality passed 3/3 with 0 reasoning tokens and `finish_reason: stop`.
+- **Live-setting drift, unexplained:** `enable_thinking` reverted to `true` on its
+  own after the final config was applied and verified. It was re-applied,
+  reloaded, and re-diffed to 0 diffs, and the live value is confirmed `false`
+  now. The cause was not identified — re-verify this key before any future
+  benchmark on this model.
+- Full detail: [`Ornith-1.0-35B-oQ4e/NOTES.md`](Ornith-1.0-35B-oQ4e/NOTES.md),
+  [`tuning-log.md`](Ornith-1.0-35B-oQ4e/tuning-log.md),
+  [`quality.md`](Ornith-1.0-35B-oQ4e/quality.md).
+
 ## Downloaded, tuning not yet started
 
 All of these are on disk and pass a load smoke test or are queued for one. None
@@ -41,8 +85,7 @@ has a `final.json` yet.
 
 | Model | On disk | Resident | MoE | MTP | Native ctx | Smarts | Status |
 |---|---|---|---|---|---|---|---|
-| `Jundot/Ornith-1.0-35B-oQ4e` | 20.64 GB | 22.16 GB | yes | no | 262144 | 3.807 | next in queue |
-| `mlx-community/flint-oQ4e` | 22.84 GB | — | — | — | 262144 | — | queued |
+| `mlx-community/flint-oQ4e` | 22.84 GB | — | — | — | 262144 | — | next in queue |
 | `Jundot/gemma-4-31B-it-oQ4e-mtp` | 19.50 GB | 21.53 GB | no | yes | 262144 | 4.929 | queued |
 | `Jundot/gemma-4-26B-A4B-it-oQ8e-mtp` | 28.17 GB | — | yes | yes | 262144 | — | queued |
 | `Jundot/Qwen3.6-35B-A3B-oQ8e-mtp` | 37.75 GB | — | yes | yes | 262144 | — | queued |
