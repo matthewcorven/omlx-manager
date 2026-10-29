@@ -17,8 +17,9 @@ order-of-magnitude only.
 | `Jundot/Ornith-1.0-35B-oQ4e` | oQ4e | MoE 35B | 21.1 GB | 19.96 GB | 52.0 ms / 146.72 tps | 48.0 ms / 146.34 tps | ctx native, all spec/quant/offload off, temp 1.0 / top_p 0.95 / top_k 20, thinking off | 3/3 pass |
 | `Jundot/flint-oQ4e` | oQ4e | MoE 2.5B active | 22 GB | 22.84 GB | 251.0 ms / 114.6 tps | 252.0 ms / 113.23 tps | ctx native, KV off, no MTP/draft head, temp 1.0 / top_p 0.95 / top_k 20, `activation_fp16_enabled: false` | 3/3 pass |
 | `Jundot/gemma-4-31B-it-oQ4e-mtp` | oQ4e | dense 30.7B | 18.60 GiB | 18.88 GiB | 267.7 ms / 56.10 tps | 297.0 ms / 40.06 tps | ctx native, MTP on adaptive depth, KV off, DFlash off, temp 0.2 / top_p 0.95 / top_k 64, `force_sampling: false`, thinking off | 3/3 pass |
+| `Jundot/gemma-4-26B-A4B-it-oQ8e-mtp` | oQ8e | MoE 26.23B / 4.82B active | 26.86 GiB | 26.93 GiB | 116.0 ms / 113.18 tps | 117.3 ms / 118.6 tps | ctx native, MTP on **fixed depth 4**, KV off, DFlash off, temp 0.2 / top_p 0.95 / top_k 64, `force_sampling: false`, thinking off | 3/3 pass |
 
-**Count: 4 models fully tested and tuned.**
+**Count: 5 models fully tested and tuned.**
 
 The rows are **not** comparable head-to-head. Ornith's 146 tps vs Qwen's 60 tps
 is not a 2.4× speed advantage — Qwen's final 5-run was taken with downloads
@@ -28,15 +29,17 @@ because each came from a paired comparison.
 
 What the four models agree on, and where they diverge:
 
-- **Thinking off is a hard constraint for all four, for three different reasons.**
+- **Thinking off is a hard constraint for all five, for three different reasons.**
   Qwen never emitted an answer with thinking on (all 300 tokens went to
   `reasoning_content`); Ornith unbudgeted emitted zero content tokens in 2/2 runs,
   and a 512-token budget cost 65× time-to-first-answer-token
   (`thinking_budget_tokens` is a floor, not a cap); flint always streams ~250
   reasoning tokens first, so TTFT 250 ms hides a 3.8–14.8 s TTFC. On
   gemma-4-31B thinking **works properly** — real reasoning, real answer — and is
-  still rejected at 48× TTFC. "Thinking is broken" is not a universal property of
-  this server; "thinking is too slow for small coding tasks" is.
+  still rejected at 48× TTFC. gemma-4-26B-A4B also works properly and is rejected
+  at 84× TTFC (8.95 s vs 0.106 s to the first content token). "Thinking is broken"
+  is not a universal property of this server; "thinking is too slow for small
+  coding tasks" is.
 - **KV quantization is model-dependent, and usually a loss.** A real win on
   Qwen3.8-27B (4-bit + `skip_last` beat quant-off 60.62 vs 48.61 tps); a clear
   loss on Ornith (14–16% slower in every quantized variant) and on flint
@@ -55,7 +58,10 @@ What the four models agree on, and where they diverge:
   outcome.
 - **Depth tuning does not transfer.** Qwen3.8-27B gained +7% from hard-coding
   depth 6 over adaptive. gemma-4-31B loses 21–36% at every fixed depth 1–6 and
-  only ties at depth 8. Re-sweep depth per model; never carry a number across.
+  only ties at depth 8. gemma-4-26B-A4B gains ~+4% from fixed depth 4 — the same
+  direction as Qwen, the opposite of its 31B sibling, on the same `gemma4` arch.
+  Re-sweep depth per model; never carry a number across, not even between two
+  gemmas.
 
 Notes on the Qwen3.8-27B row:
 
@@ -121,6 +127,34 @@ Notes on the gemma-4-31B-it-oQ4e-mtp row:
   [`tuning-log.md`](gemma-4-31B-it-oQ4e-mtp/tuning-log.md),
   [`quality.md`](gemma-4-31B-it-oQ4e-mtp/quality.md).
 
+Notes on the gemma-4-26B-A4B-it-oQ8e-mtp row:
+
+- **The defaults were already good; the win is MTP draft depth.** MTP was on at
+  adaptive depth out of the box, and turning it off costs 32% decode (76.71 vs
+  113.00 tps). Pinning `mtp_fixed_depth: 4` beats adaptive by ~+4% decode and
+  −10 ms TTFT in a paired alternating-block test. Depths 1, 2, 6 and 8 all lose
+  9–22%, so the curve is a single peak at 4.
+- **This is the opposite of gemma-4-31B on the same architecture.** The 31B loses
+  at every fixed depth 1–6; the 26B-A4B gains at 4. Depth must be re-swept per
+  model even within one family.
+- **KV quant is a loss.** 8-bit costs 5.5% decode and 5 ms TTFT; 4-bit with
+  `skip_last` costs 2.5% decode and 6 ms TTFT. 4-bit **without** `skip_last` is a
+  hard runtime error under MTP (`_QuantizedStateProxy` passed into
+  `scaled_dot_product_attention`) — the same failure gemma-4-31B showed.
+- **Context capping is a null result** at 49 tokens and at ~8k tokens, matching
+  Ornith, flint and gemma-4-31B. Native kept.
+- **Thinking works properly and is rejected at 84× TTFC** — 8.95 s to the first
+  content token vs 0.106 s, and a 900-token budget is spent entirely on reasoning.
+- **MoE expert offload is N/A** — `moe-offload-fit` returns `resident` with 0
+  bytes; 26.93 GiB sits far under the ceiling.
+- **Coordinator correction:** the agent reported +8.7% for depth 4 over adaptive;
+  independent re-measurement gives **+3.8%**. The direction and the setting are
+  right, the magnitude was inflated by a low adaptive arm. See the verification
+  section in the model's `NOTES.md`.
+- Full detail: [`gemma-4-26B-A4B-it-oQ8e-mtp/NOTES.md`](gemma-4-26B-A4B-it-oQ8e-mtp/NOTES.md),
+  [`tuning-log.md`](gemma-4-26B-A4B-it-oQ8e-mtp/tuning-log.md),
+  [`quality.md`](gemma-4-26B-A4B-it-oQ8e-mtp/quality.md).
+
 ## Downloaded, tuning not yet started
 
 All of these are on disk and pass a load smoke test or are queued for one. None
@@ -129,7 +163,6 @@ has a `final.json` yet.
 | Model | On disk | Resident | MoE | MTP | Native ctx | Smarts | Status |
 |---|---|---|---|---|---|---|---|
 | `mlx-community/flint-oQ4e` | 22.84 GB | — | — | — | 262144 | — | next in queue |
-| `Jundot/gemma-4-26B-A4B-it-oQ8e-mtp` | 28.17 GB | — | yes | yes | 262144 | — | queued |
 | `Jundot/Qwen3.6-35B-A3B-oQ8e-mtp` | 37.75 GB | — | yes | yes | 262144 | — | queued |
 | `Jundot/Qwen3.8-Flash-Next-oQ4e-mtp` | 105.06 GB | 112.81 GB | yes | yes | 262144 | 5.327 | **resident-bound, see below** |
 

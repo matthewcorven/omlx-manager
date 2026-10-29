@@ -162,3 +162,26 @@ on all 14 keys. `enable_thinking` was re-read after the final benchmark and is s
   fault is not implicated in anything here.
 - The three guardrail prompts (`quality.md`) all returned coherent, correct code
   with empty `reasoning_content` and `finish_reason: stop`.
+
+## Coordinator verification (independent re-measurement)
+
+The headline claim — fixed depth 4 beating adaptive — was re-measured by the
+coordinator against the live server, because three of the four prior tuning
+agents returned a confident wrong conclusion.
+
+| check | agent | coordinator | verdict |
+|---|---|---|---|
+| settings drift after reload | 0 diffs on 14 keys | 0 diffs on 12 checked keys | confirmed |
+| d4 vs adaptive, decode | 119.28 vs 109.72 tps (+8.7%) | 122.87 vs 118.36 tps (+3.8%) | **direction confirmed, magnitude overstated** |
+| d4 vs adaptive, TTFT | 107.4 vs 120.3 ms | 111.6 vs 122.1 ms | confirmed |
+| output coherence at d4 | coherent Python | coherent Python, 125.5 tps | confirmed |
+
+**The +8.7% does not reproduce; the real effect is ~+3.8% decode and −10 ms TTFT.**
+The agent's adaptive arm read 109.72 tps where the coordinator's read 118.36 tps
+in the same session — the known cross-session drift, which moved both arms
+together. The paired verdict (d4 wins on both axes) is sound and the setting is
+correct; only the quoted magnitude was inflated. `final.json` retains the agent's
+original numbers as measured, with this note as the correction.
+
+Coordinator samples: `tuning/block-coord-adaptive-vs-coord-d4.json` (n=8 per arm,
+two alternating blocks, warmup discarded).
