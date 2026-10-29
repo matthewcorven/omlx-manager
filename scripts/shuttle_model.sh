@@ -113,7 +113,8 @@ if [ "$(df -P "$SRC" | awk 'NR==2{print $1}')" = "$(df -P "$DST_ROOT" | awk 'NR=
   mv "$SRC" "$DST"
 else
   # rsync preserves the HF cache symlinks and blob layout that oMLX expects.
-  rsync -aH --info=progress2 "$SRC/" "$DST/" || {
+  # macOS ships rsync 2.6.9, which lacks --info=progress2; --progress works there.
+  rsync -aH --progress "$SRC/" "$DST/" || {
     echo "FAILED: rsync did not complete; leaving source in place" >&2
     rm -rf "$DST"
     exit 1
