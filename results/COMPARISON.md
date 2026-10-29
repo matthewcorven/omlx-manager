@@ -301,13 +301,14 @@ depends on the dynamic ceiling, and a loaded model changes it by 20+ GB.
 
 | Volume | Size | Free | Role |
 |---|---|---|---|
-| Internal (`/`) | 1.8 TiB | 292 GiB | active downloads and tuning |
-| `/Volumes/NVMe` | 931 GiB | 814 GiB | finished models, registered in `model.model_dirs` |
+| Internal (`/`) | 1.8 TiB | 332 GiB | active downloads and tuning |
+| `/Volumes/NVMe` | 931 GiB | 713 GiB | finished models, registered in `model.model_dirs` |
 
-Internal free space fell from 396 GiB to 180 GiB as the download set completed,
-then recovered to 292 GiB once the five finished models were shuttled to NVMe
-(117 GiB there: Ornith 20G, Qwen3.8-27B 16G, gemma-4-31B 19G, gemma-4-26B 27G,
-Qwen3.6-35B-A3B 36G).
+All seven tuned models now live on NVMe (217 GiB: Ornith 20G, Qwen3.8-27B 16G,
+gemma-4-31B 19G, gemma-4-26B 27G, Qwen3.6-35B-A3B 36G, Flash-Next 100G).
+Internal free space recovered from 180 GiB at the peak of the download set to
+332 GiB.
+
 Both directories are registered, so a shuttled model still loads — moving it is
 a disk operation only, never a "make it usable" step.
 
