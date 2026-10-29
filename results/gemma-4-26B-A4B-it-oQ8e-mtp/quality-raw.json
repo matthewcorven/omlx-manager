@@ -1,0 +1,50 @@
+[
+  {
+    "name": "pure-function",
+    "prompt": "Write a Python function `merge_intervals(intervals)` that takes a list of [start, end] pairs, merges all overlapping or adjacent intervals, and returns the result sorted by start. Include a docstring. Output only the code.",
+    "content": "```python\ndef merge_intervals(intervals):\n    \"\"\"\n    Merges all overlapping or adjacent intervals in a list of [start, end] pairs.\n\n    Args:\n        intervals (list of list of int): A list of intervals where each interval \n                                        is represented as [start, end].\n\n    Returns:\n        list of list of int: A sorted list of merged intervals.\n    \"\"\"\n    if not intervals:\n        return []\n\n    # Sort intervals based on the start time\n    intervals.sort(key=lambda x: x[0])\n\n    merged = []\n    for interval in intervals:\n        # If the list of merged intervals is empty or if the current \n        # interval does not overlap with the previous, append it.\n        # Note: 'interval[0] <= merged[-1][1]' handles overlapping.\n        # To handle adjacent intervals (e.g., [1, 2] and [2, 3]), \n        # we use '<=' which covers both cases.\n        if not merged or interval[0] > merged[-1][1]:\n            merged.append(interval)\n        else:\n            # There is an overlap or they are adjacent, merge by updating \n            # the end of the last interval in merged.\n            merged[-1][1] = max(merged[-1][1], interval[1])\n\n    return merged\n```",
+    "reasoning_content": "",
+    "finish_reason": "stop",
+    "ttft_ms": 231.2,
+    "ttfc_ms": 231.2,
+    "elapsed_ms": 2922.8,
+    "sampler": {
+      "temperature": 0.2,
+      "top_p": 0.95,
+      "top_k": 64,
+      "max_tokens": 700
+    }
+  },
+  {
+    "name": "bug-fix",
+    "prompt": "This function should return the average of a list of numbers, but it crashes on an empty list and returns the wrong value for integers. Find the bug and give the corrected function.\n\n```python\ndef average(nums):\n    total = 0\n    for n in nums:\n        total += n\n    return total / len(nums)\n```\n\nOutput only the corrected code.",
+    "content": "```python\ndef average(nums):\n    if not nums:\n        return 0\n    total = 0\n    for n in nums:\n        total += n\n    return total / len(nums)\n```",
+    "reasoning_content": "",
+    "finish_reason": "stop",
+    "ttft_ms": 217.8,
+    "ttfc_ms": 217.8,
+    "elapsed_ms": 570.8,
+    "sampler": {
+      "temperature": 0.2,
+      "top_p": 0.95,
+      "top_k": 64,
+      "max_tokens": 700
+    }
+  },
+  {
+    "name": "refactor",
+    "prompt": "Refactor this into something more readable without changing behaviour. Output only the refactored code.\n\n```python\ndef proc(d, k):\n    r = []\n    for i in range(len(k)):\n        if k[i] in d:\n            if d[k[i]] != None:\n                r.append((k[i], d[k[i]]))\n    return r\n```",
+    "content": "```python\ndef proc(d, k):\n    return [(key, d[key]) for key in k if d.get(key) is not None]\n```",
+    "reasoning_content": "",
+    "finish_reason": "stop",
+    "ttft_ms": 179.7,
+    "ttfc_ms": 179.7,
+    "elapsed_ms": 496.3,
+    "sampler": {
+      "temperature": 0.2,
+      "top_p": 0.95,
+      "top_k": 64,
+      "max_tokens": 700
+    }
+  }
+]

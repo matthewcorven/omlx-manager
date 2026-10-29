@@ -1,0 +1,385 @@
+{
+  "model_id": "gemma-4-26B-A4B-it-oQ8e-mtp",
+  "repo_id": "mlx-community/Jundot/gemma-4-26B-A4B-it-oQ8e-mtp",
+  "quant": "oQ8e (8-bit affine group-64 base, imatrix-calibrated; BF16 embed/lm_head, tied)",
+  "architecture": "gemma4 MoE, 26.23B total / 4.82B active, 30 layers, hidden 2816, 128 experts with top-8 routing, moe_intermediate 704, sliding-window 1024 on 5 of every 6 layers, tied embeddings, vocab 262144, vision-capable (engine_type vlm), MTP head present (model-mtp.safetensors, mtp_num_hidden_layers 4)",
+  "native_context": 262144,
+  "download_size": "26.86 GiB",
+  "download_size_bytes": 28835597716,
+  "resident_size": "26.93 GiB",
+  "resident_size_bytes": 28920467328,
+  "model_path": "/Users/core/.omlx/models/mlx-community/Jundot/gemma-4-26B-A4B-it-oQ8e-mtp",
+  "profile": "coding-tuned",
+  "baseline": {
+    "note": "Server defaults as discovered: MTP already on with adaptive depth, KV quant off, native context, card sampler (temp 1.0 / top_p 0.95 / top_k 64), force_sampling false, thinking unset (null, effective off). 3 runs after one discarded warmup.",
+    "ttft_ms": 116.0,
+    "decode_tps": 113.18,
+    "total_ms": 2743.3,
+    "runs": 3,
+    "max_tokens": 300,
+    "context_pad": 0
+  },
+  "final_medians": {
+    "ttft_ms": 117.3,
+    "ttfc_ms": 117.3,
+    "decode_tps": 118.6,
+    "total_ms": 2635.8,
+    "runs": 5,
+    "max_tokens": 300,
+    "note": "5-run measurement after one discarded warmup on the applied final config. The valid comparison against the baseline is the paired whole-config test (tuning/block-baseline-defaults-vs-final-config.json, n=6 per arm): final 123.06 tps / 114.2 ms vs defaults 118.52 tps / 120.3 ms. TTFC equals TTFT because thinking is off and no reasoning_content is emitted."
+  },
+  "sweep": [
+    {
+      "stage": "mtp",
+      "variant": "MTP off",
+      "ttft_ms": 81.9,
+      "decode_tps": 76.71,
+      "method": "alternating blocks, n=3 x 2 blocks",
+      "verdict": "rejected - 32% slower than MTP on"
+    },
+    {
+      "stage": "mtp",
+      "variant": "MTP off",
+      "ttft_ms": 75.2,
+      "decode_tps": 81.88,
+      "method": "forward+backward ordered sweep, n=4",
+      "verdict": "rejected - 32% slower than MTP on"
+    },
+    {
+      "stage": "mtp",
+      "variant": "MTP on, adaptive depth (default)",
+      "ttft_ms": 118.4,
+      "decode_tps": 113.0,
+      "method": "alternating blocks, n=3 x 2 blocks",
+      "verdict": "KEPT over MTP off"
+    },
+    {
+      "stage": "mtp",
+      "variant": "MTP on, adaptive depth (default)",
+      "ttft_ms": 116.9,
+      "decode_tps": 112.14,
+      "method": "forward+backward ordered sweep, n=4",
+      "verdict": "superseded by fixed depth 4"
+    },
+    {
+      "stage": "mtp",
+      "variant": "MTP on, fixed depth 1",
+      "ttft_ms": 104.7,
+      "decode_tps": 97.07,
+      "method": "forward+backward ordered sweep, n=4",
+      "verdict": "rejected - 18% slower than depth 4"
+    },
+    {
+      "stage": "mtp",
+      "variant": "MTP on, fixed depth 2",
+      "ttft_ms": 103.6,
+      "decode_tps": 108.85,
+      "method": "forward+backward ordered sweep, n=4",
+      "verdict": "rejected - 9% slower than depth 4"
+    },
+    {
+      "stage": "mtp",
+      "variant": "MTP on, fixed depth 3",
+      "ttft_ms": 112.9,
+      "decode_tps": 112.32,
+      "method": "forward+backward ordered sweep, n=4",
+      "verdict": "runner-up - lost the head-to-head"
+    },
+    {
+      "stage": "mtp",
+      "variant": "MTP on, fixed depth 4",
+      "ttft_ms": 102.1,
+      "decode_tps": 119.03,
+      "method": "forward+backward ordered sweep, n=4",
+      "verdict": "best in sweep"
+    },
+    {
+      "stage": "mtp",
+      "variant": "MTP on, fixed depth 6",
+      "ttft_ms": 103.7,
+      "decode_tps": 101.0,
+      "method": "forward+backward ordered sweep, n=4",
+      "verdict": "rejected - 15% slower than depth 4"
+    },
+    {
+      "stage": "mtp",
+      "variant": "MTP on, fixed depth 8",
+      "ttft_ms": 109.3,
+      "decode_tps": 93.44,
+      "method": "forward+backward ordered sweep, n=4",
+      "verdict": "rejected - 22% slower than depth 4"
+    },
+    {
+      "stage": "mtp",
+      "variant": "MTP on, adaptive depth (head-to-head)",
+      "ttft_ms": 120.3,
+      "decode_tps": 109.72,
+      "method": "alternating blocks, n=5 x 2 blocks (n=10 per arm)",
+      "verdict": "rejected - 8.7% slower than depth 4"
+    },
+    {
+      "stage": "mtp",
+      "variant": "MTP on, fixed depth 4 (head-to-head)",
+      "ttft_ms": 107.4,
+      "decode_tps": 119.28,
+      "method": "alternating blocks, n=5 x 2 blocks (n=10 per arm)",
+      "verdict": "KEPT"
+    },
+    {
+      "stage": "mtp",
+      "variant": "MTP on, fixed depth 3 (head-to-head)",
+      "ttft_ms": 107.7,
+      "decode_tps": 116.83,
+      "method": "alternating blocks, n=5 x 2 blocks (n=10 per arm)",
+      "verdict": "rejected - depth 4 better on both axes"
+    },
+    {
+      "stage": "kv-quant",
+      "variant": "KV quant off",
+      "ttft_ms": 99.8,
+      "decode_tps": 118.04,
+      "method": "forward+backward ordered sweep, n=4",
+      "verdict": "KEPT"
+    },
+    {
+      "stage": "kv-quant",
+      "variant": "8-bit + skip_last",
+      "ttft_ms": 105.0,
+      "decode_tps": 111.54,
+      "method": "forward+backward ordered sweep, n=4",
+      "verdict": "rejected - 5.5% slower decode, 5 ms worse TTFT"
+    },
+    {
+      "stage": "kv-quant",
+      "variant": "4-bit + skip_last",
+      "ttft_ms": 105.7,
+      "decode_tps": 115.07,
+      "method": "forward+backward ordered sweep, n=4",
+      "verdict": "rejected - 2.5% slower decode, 6 ms worse TTFT, no memory need"
+    },
+    {
+      "stage": "kv-quant",
+      "variant": "4-bit, skip_last false",
+      "ttft_ms": null,
+      "decode_tps": null,
+      "method": "single PUT probe + one streamed request",
+      "verdict": "rejected - hard runtime error in attention (see failure_modes)"
+    },
+    {
+      "stage": "context",
+      "variant": "native 262144 (short prompt)",
+      "ttft_ms": 104.7,
+      "decode_tps": 121.38,
+      "method": "interleaved paired A/B, n=5",
+      "verdict": "KEPT - null result"
+    },
+    {
+      "stage": "context",
+      "variant": "32768 cap (short prompt)",
+      "ttft_ms": 106.2,
+      "decode_tps": 121.31,
+      "method": "interleaved paired A/B, n=5",
+      "verdict": "rejected - no gain"
+    },
+    {
+      "stage": "context",
+      "variant": "native 262144 (~8k prompt)",
+      "ttft_ms": 178.9,
+      "decode_tps": 96.93,
+      "method": "interleaved paired A/B, n=5, --context-pad 8000",
+      "verdict": "KEPT - null result"
+    },
+    {
+      "stage": "context",
+      "variant": "32768 cap (~8k prompt)",
+      "ttft_ms": 181.3,
+      "decode_tps": 96.92,
+      "method": "interleaved paired A/B, n=5, --context-pad 8000",
+      "verdict": "rejected - no gain"
+    },
+    {
+      "stage": "sampling",
+      "variant": "card sampler temp 1.0 / top_p 0.95 / top_k 64",
+      "ttft_ms": 117.5,
+      "decode_tps": 118.22,
+      "method": "interleaved paired A/B, n=5",
+      "verdict": "rejected - 1.1% slower and non-deterministic"
+    },
+    {
+      "stage": "sampling",
+      "variant": "coding sampler temp 0.2 / top_p 0.95 / top_k 64",
+      "ttft_ms": 113.7,
+      "decode_tps": 116.9,
+      "method": "interleaved paired A/B, n=5",
+      "verdict": "KEPT - within noise on throughput, deterministic"
+    },
+    {
+      "stage": "sampling",
+      "variant": "force_sampling false",
+      "ttft_ms": 111.0,
+      "decode_tps": 114.86,
+      "method": "interleaved paired A/B, n=5",
+      "verdict": "KEPT"
+    },
+    {
+      "stage": "sampling",
+      "variant": "force_sampling true",
+      "ttft_ms": 115.9,
+      "decode_tps": 113.7,
+      "method": "interleaved paired A/B, n=5",
+      "verdict": "rejected - 1.0% slower, no benefit"
+    },
+    {
+      "stage": "thinking",
+      "variant": "enable_thinking true",
+      "ttft_ms": 8951.0,
+      "decode_tps": null,
+      "method": "interleaved paired A/B, n=3, max_tokens 900, streaming",
+      "verdict": "rejected - 8.95 s to first CONTENT token vs 0.106 s; TTFT 333.4 ms"
+    },
+    {
+      "stage": "thinking",
+      "variant": "enable_thinking false",
+      "ttft_ms": 106.2,
+      "decode_tps": null,
+      "method": "interleaved paired A/B, n=3, max_tokens 900, streaming",
+      "verdict": "KEPT"
+    },
+    {
+      "stage": "dflash",
+      "variant": "dflash_enabled true with MTP on",
+      "ttft_ms": null,
+      "decode_tps": null,
+      "method": "single PUT probe",
+      "verdict": "rejected - HTTP 400, mutually exclusive with MTP"
+    },
+    {
+      "stage": "dflash",
+      "variant": "dflash_enabled / specprefill_enabled",
+      "ttft_ms": null,
+      "decode_tps": null,
+      "method": "settings inspection",
+      "verdict": "no-op - dflash_draft_model and specprefill_draft_model are both null, nothing to draft from"
+    },
+    {
+      "stage": "moe-offload",
+      "variant": "moe_expert_offload_enabled",
+      "ttft_ms": null,
+      "decode_tps": null,
+      "method": "GET /admin/api/models/{id}/moe-offload-fit?mtp_enabled=true",
+      "verdict": "not applicable - status resident, bytes 0; the model fits in RAM so there is nothing to offload"
+    },
+    {
+      "stage": "whole-config",
+      "variant": "server defaults (adaptive MTP, card sampler)",
+      "ttft_ms": 120.3,
+      "decode_tps": 118.52,
+      "method": "alternating blocks, n=3 x 2 blocks",
+      "verdict": "superseded"
+    },
+    {
+      "stage": "whole-config",
+      "variant": "final config (depth 4, coding sampler)",
+      "ttft_ms": 114.2,
+      "decode_tps": 123.06,
+      "method": "alternating blocks, n=3 x 2 blocks",
+      "verdict": "KEPT - +3.8% decode, -6 ms TTFT"
+    }
+  ],
+  "settings": {
+    "max_context_window": null,
+    "max_tokens": null,
+    "temperature": 0.2,
+    "top_p": 0.95,
+    "top_k": 64,
+    "repetition_penalty": null,
+    "min_p": null,
+    "presence_penalty": null,
+    "force_sampling": false,
+    "max_tool_result_tokens": null,
+    "chat_template_kwargs": null,
+    "forced_ct_kwargs": null,
+    "ttl_seconds": null,
+    "model_type_override": null,
+    "model_alias": null,
+    "index_cache_freq": null,
+    "enable_thinking": false,
+    "qwen4_ple_ssd_offload": false,
+    "qwen4_gdn_decode_wide_proj": false,
+    "deepseek_v41_engram_ssd_offload": false,
+    "deepseek_v41_ced_prefill_enabled": false,
+    "activation_fp16_enabled": false,
+    "preserve_thinking": null,
+    "cache_reasoning_output": null,
+    "thinking_budget_enabled": false,
+    "thinking_budget_tokens": null,
+    "gpu_power_limit_w": null,
+    "reasoning_parser": null,
+    "guided_grammar_enabled": false,
+    "guided_grammar": null,
+    "turboquant_kv_enabled": false,
+    "turboquant_kv_scheme": "turboquant",
+    "turboquant_kv_bits": 4.0,
+    "turboquant_skip_last": true,
+    "qwen35_ane_prefill_enabled": false,
+    "qwen35_ane_prefill_sequence_length": 2048,
+    "qwen35_ane_prefill_tail_padding_min_tokens": 0,
+    "qwen35_ane_prefill_fraction": null,
+    "qwen35_ane_prefill_shared_fraction": 1.0,
+    "qwen35_ane_prefill_fused_down": false,
+    "qwen35_ane_prefill_max_layers": 64,
+    "qwen35_ane_prefill_dual_ane": true,
+    "qwen35_ane_prefill_gdn": true,
+    "qwen35_ane_prefill_gdn_fraction": 0.5,
+    "qwen35_ane_prefill_gdn_max_layers": 48,
+    "qwen35_ane_prefill_cpu_enabled": false,
+    "qwen35_ane_prefill_cpu_fraction": 0.135,
+    "qwen35_ane_prefill_cpu_down_fraction": 0.0,
+    "qwen35_ane_prefill_cpu_gdn_fraction": 0.0,
+    "qwen35_ane_prefill_cpu_threads": 8,
+    "qwen35_ane_prefill_cpu_shared_resource": true,
+    "qwen35_oq_a8_enabled": false,
+    "qwen35_oq_a8_min_tokens": 128,
+    "moe_expert_offload_enabled": false,
+    "moe_expert_offload_resident_fraction": 0.25,
+    "specprefill_enabled": false,
+    "specprefill_draft_model": null,
+    "specprefill_keep_pct": null,
+    "specprefill_threshold": null,
+    "dflash_enabled": false,
+    "dflash_draft_model": null,
+    "dflash_draft_quant_enabled": null,
+    "dflash_draft_quant_weight_bits": null,
+    "dflash_draft_quant_group_size": null,
+    "dflash_draft_window_size": null,
+    "dflash_block_size": null,
+    "dflash_verify_mode": null,
+    "mtp_enabled": true,
+    "mtp_adaptive_max_depth": null,
+    "mtp_fixed_depth": 4,
+    "vlm_mtp_enabled": false,
+    "vlm_mtp_draft_model": null,
+    "vlm_mtp_draft_block_size": null,
+    "is_pinned": false,
+    "is_default": false,
+    "is_hidden": false,
+    "is_favorite": false,
+    "external_engine": null,
+    "trust_remote_code": false,
+    "embedding_audio_enabled": false,
+    "embedding_audio_max_seconds": null,
+    "display_name": null,
+    "description": null,
+    "active_profile_name": null
+  },
+  "rationale": "MTP is the dominant lever and it was already on: turning it off costs 32% decode (paired alternating blocks, 76.71 vs 113.00 tps, n=6 per arm) at a better TTFT, so the speculative path is unambiguously worth its 37 ms of prefill. What the sweep could actually improve was the draft depth, and here this model differs from gemma-4-31B. The forward+backward sweep put fixed depth 4 first at 119.03 tps against 112.14 for adaptive, and two head-to-head alternating-block runs (n=10 per arm) confirmed it: depth 4 119.28 tps / 107.4 ms vs adaptive 109.72 tps / 120.3 ms, a paired +8.7% decode and -13 ms TTFT. Depth 3, the runner-up at 116.83 tps, lost to depth 4 on both axes in its own head-to-head. Depths 1, 2, 6 and 8 all lose 9-22%, so the curve is a clear single peak at 4 rather than the monotone ramp the 31B showed. KV quantization is rejected: with MTP at depth 4, 8-bit costs 5.5% decode and 5 ms TTFT, 4-bit with skip_last costs 2.5% decode and 6 ms TTFT, and 4-bit without skip_last does not run at all under MTP. There is no memory argument either, since 26.93 GiB resident sits far under the ceiling on a 128 GB machine. Context window is a true no-op - at a 49-token prompt and again at an ~8k-token prompt the paired differences are 1.5 ms and 2.4 ms, both inside the interleaved noise - so native 262144 is kept because it is free and accepts prompts a 32768 cap would reject. Sampling is throughput-neutral: the card sampler and a temp-0.2 coding sampler are within 1.3 tps of each other and both produced correct code on all three guardrail prompts, so the coding sampler is kept for determinism. force_sampling costs 1.0% decode and stays false. Thinking is the interesting negative result: enable_thinking genuinely works - the template switches and the model emits 2.7-2.9k chars of real reasoning_content - but time-to-first-CONTENT-token is 8.95 s against 0.106 s with it off (an 84x penalty, and even the 333 ms TTFT is only the first reasoning token), and all three thinking runs hit finish_reason length at 900 tokens having emitted exactly one character of answer. No small coding task can absorb that, so it is pinned off. DFlash and SpecPrefill are no-ops here: both draft models are null, and dflash_enabled with MTP on is an HTTP 400 because the two speculative paths are mutually exclusive. MoE expert offload does not apply - moe-offload-fit returns resident with 0 bytes, so there is nothing to offload on this machine. The final config is the default config with three deliberate changes: MTP depth pinned to 4, the coding sampler, and thinking pinned off. Its paired head-to-head against the defaults is 123.06 vs 118.52 tps and 114.2 vs 120.3 ms TTFT, so the tuning bought a real but modest +3.8% decode - the performance was mostly already in the MTP default.",
+  "failure_modes": [
+    "turboquant_kv_enabled true with turboquant_kv_bits 4.0 and turboquant_skip_last false is a hard runtime error under MTP: the PUT succeeds (requires_reload, auto_unloaded), the model loads, and then the first decode returns an SSE error event - 'scaled_dot_product_attention(): incompatible function arguments ... Invoked with types: mlx.core.array, mlx_vlm.turboquant._QuantizedStateProxy, mlx_vlm.turboquant._QuantizedStateProxy'. The quantized KV state is passed straight into attention without being materialized. skip_last must stay true whenever KV quant is on.",
+    "dflash_enabled true together with mtp_enabled true returns HTTP 400: 'mtp_enabled and dflash_enabled cannot both be True; choose one speculative-decoding path per model'. Recorded in tuning/dflash-with-mtp-put.json.",
+    "dflash_draft_model and specprefill_draft_model are both null for this model, so even with MTP off there is no draft model to draft from - DFlash and SpecPrefill are no-ops rather than tunable knobs.",
+    "moe_offload_allows_mtp is false, so MoE expert offload and MTP can never be combined here; it is moot anyway because moe-offload-fit returns status resident (0 bytes needed) - the model fits entirely in RAM.",
+    "enable_thinking true works but is unusable for interactive coding: 8.95 s to the first content token against 0.106 s, and with a 900-token budget the model spends all of it on reasoning_content and returns a single character of answer with finish_reason length. An empty content field here is a reasoning-budget artifact, not corruption.",
+    "activation_fp16_supported is false on this model, so activation_fp16_enabled is left false. (On flint this knob produced a 26x apparent speedup that was actually numerical corruption - it was not probed here.)"
+  ],
+  "measurement_caveat": "Absolute throughput on this machine drifts, and no number in this report is comparable to a number from a different block. Every verdict is a paired comparison: interleaved A/B (tuning/ab.py) for the non-reloading knobs - context window, sampler, force_sampling; alternating blocks (tuning/block.py) for the reload-requiring MTP depth finalists and for the whole-config head-to-head; forward+backward ordered sweeps (tuning/sweep.py) for the multi-value MTP and KV sweeps, so a monotonic load ramp cancels and a step change shows up as a forward/backward disagreement. Drift over this pass was modest - the baseline 5-run read 113.18 tps and the final 5-run read 118.6 tps with real config differences between them - but the paired whole-config test (123.06 vs 118.52 tps, n=6 per arm) is the only legitimate comparison of the two configs, and it is the one quoted in the rationale."
+}
