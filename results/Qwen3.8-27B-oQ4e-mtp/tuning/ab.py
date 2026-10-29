@@ -4,7 +4,7 @@
 Alternates two settings values round-robin, one request each, so drift
 affects both arms equally. Reports per-arm median over N samples.
 """
-import json, os, statistics, subprocess, sys, urllib.request
+import json, os, statistics, subprocess, sys, time, urllib.request
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
@@ -20,11 +20,20 @@ def put(patch):
         return json.load(r)
 
 def measure():
-    out = subprocess.run(
-        ["python3", "scripts/measure.py", "--model", MODEL,
-         "--runs", "1", "--max-tokens", "300"],
-        capture_output=True, text=True, check=True, cwd=REPO).stdout
-    line = [l for l in out.splitlines() if l.startswith("run 1:")][0]
+    last_err = None
+    for attempt in range(3):
+        r = subprocess.run(
+            ["python3", "scripts/measure.py", "--model", MODEL,
+             "--runs", "1", "--max-tokens", "300"],
+            capture_output=True, text=True, cwd=REPO)
+        lines = [l for l in r.stdout.splitlines() if l.startswith("run 1:")]
+        if lines:
+            line = lines[0]
+            break
+        last_err = (r.stdout + r.stderr).strip()[-300:]
+        time.sleep(3)
+    else:
+        raise RuntimeError(f"measure failed 3x: {last_err}")
     d = dict(kv.split("=") for kv in line.split()[2:])
     f = lambda k, suf: float(d[k].removesuffix(suf))
     return {"ttft_ms": f("ttft", "ms"), "decode_tps": f("decode", "tps"),

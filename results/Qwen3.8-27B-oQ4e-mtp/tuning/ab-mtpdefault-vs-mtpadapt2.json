@@ -1,0 +1,77 @@
+{
+  "A": {
+    "label": "mtpdefault",
+    "patch": {
+      "max_context_window": 32768
+    },
+    "n": 5,
+    "ttft_ms": 215.9,
+    "decode_tps": 54.27,
+    "total_ms": 5710.0,
+    "samples": [
+      {
+        "ttft_ms": 200.1,
+        "decode_tps": 63.93,
+        "total_ms": 4862.2
+      },
+      {
+        "ttft_ms": 221.6,
+        "decode_tps": 50.28,
+        "total_ms": 6152.8
+      },
+      {
+        "ttft_ms": 215.2,
+        "decode_tps": 54.06,
+        "total_ms": 5728.2
+      },
+      {
+        "ttft_ms": 215.9,
+        "decode_tps": 59.56,
+        "total_ms": 5219.9
+      },
+      {
+        "ttft_ms": 219.0,
+        "decode_tps": 54.27,
+        "total_ms": 5710.3
+      }
+    ]
+  },
+  "B": {
+    "label": "mtpadapt2",
+    "patch": {
+      "max_context_window": 32768,
+      "mtp_adaptive_max_depth": 2
+    },
+    "n": 5,
+    "ttft_ms": 220.7,
+    "decode_tps": 55.34,
+    "total_ms": 5599.0,
+    "samples": [
+      {
+        "ttft_ms": 220.7,
+        "decode_tps": 63.39,
+        "total_ms": 4922.0
+      },
+      {
+        "ttft_ms": 229.2,
+        "decode_tps": 53.17,
+        "total_ms": 5852.9
+      },
+      {
+        "ttft_ms": 238.9,
+        "decode_tps": 53.9,
+        "total_ms": 5767.9
+      },
+      {
+        "ttft_ms": 214.4,
+        "decode_tps": 59.66,
+        "total_ms": 5209.5
+      },
+      {
+        "ttft_ms": 214.2,
+        "decode_tps": 55.34,
+        "total_ms": 5599.1
+      }
+    ]
+  }
+}
