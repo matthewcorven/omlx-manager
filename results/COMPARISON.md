@@ -16,8 +16,9 @@ order-of-magnitude only.
 | `Jundot/Qwen3.8-27B-oQ4e-mtp` | oQ4e | dense 27.8B | 15.81 GiB | 16.60 GiB | 233.6 ms / 78.33 tps | 252.0 ms / 59.65 tps | ctx 32768, MTP on depth 6, KV 4-bit + `skip_last`, temp 0.2 / top_p 0.95 / top_k 20, thinking off | 3/3 pass |
 | `Jundot/Ornith-1.0-35B-oQ4e` | oQ4e | MoE 35B | 21.1 GB | 19.96 GB | 52.0 ms / 146.72 tps | 48.0 ms / 146.34 tps | ctx native, all spec/quant/offload off, temp 1.0 / top_p 0.95 / top_k 20, thinking off | 3/3 pass |
 | `Jundot/flint-oQ4e` | oQ4e | MoE 2.5B active | 22 GB | 22.84 GB | 251.0 ms / 114.6 tps | 252.0 ms / 113.23 tps | ctx native, KV off, no MTP/draft head, temp 1.0 / top_p 0.95 / top_k 20, `activation_fp16_enabled: false` | 3/3 pass |
+| `Jundot/gemma-4-31B-it-oQ4e-mtp` | oQ4e | dense 30.7B | 18.60 GiB | 18.88 GiB | 267.7 ms / 56.10 tps | 297.0 ms / 40.06 tps | ctx native, MTP on adaptive depth, KV off, DFlash off, temp 0.2 / top_p 0.95 / top_k 64, `force_sampling: false`, thinking off | 3/3 pass |
 
-**Count: 3 models fully tested and tuned.**
+**Count: 4 models fully tested and tuned.**
 
 The rows are **not** comparable head-to-head. Ornith's 146 tps vs Qwen's 60 tps
 is not a 2.4× speed advantage — Qwen's final 5-run was taken with downloads
@@ -25,24 +26,36 @@ active and Ornith's with the machine quiet. The honest statement is that both
 were measured on their own terms, and that the *decisions* in each row are sound
 because each came from a paired comparison.
 
-What the two models agree on, and where they diverge:
+What the four models agree on, and where they diverge:
 
-- **Thinking off is a hard constraint for both.** Qwen never emitted an answer
-  with thinking on (all 300 tokens went to `reasoning_content`); Ornith unbudgeted
-  emitted zero content tokens in 2/2 runs, and a 512-token budget cost 65×
-  time-to-first-answer-token. `thinking_budget_tokens` is a floor, not a cap.
-- **KV quantization is model-dependent.** A real win on Qwen3.8-27B (4-bit +
-  `skip_last` beat quant-off 60.62 vs 48.61 tps) and a clear loss on Ornith
-  (14–16% slower in every quantized variant). Do not assume it from one model.
-- **Context: 32768 helped Qwen, did nothing for Ornith.** Native was kept for
-  Ornith (58.8 ms / 151.90 tps vs 59.0 ms / 151.24 tps — inside noise), so the
-  Qwen3.8 "smaller window is faster" result did **not** reproduce. Treat that
-  finding as model-specific, not a general rule.
-- **Speculative decoding needs a draft head.** Ornith has no MTP head and both
-  `dflash_draft_model` and `specprefill_draft_model` are null, so those flags are
-  no-ops — DFlash landed inside noise, SpecPrefill was 1.9% slower. On Qwen, MTP
-  was the single dominant lever (2× decode). Which spec lever exists, not which
-  is "better", drives the outcome.
+- **Thinking off is a hard constraint for all four, for three different reasons.**
+  Qwen never emitted an answer with thinking on (all 300 tokens went to
+  `reasoning_content`); Ornith unbudgeted emitted zero content tokens in 2/2 runs,
+  and a 512-token budget cost 65× time-to-first-answer-token
+  (`thinking_budget_tokens` is a floor, not a cap); flint always streams ~250
+  reasoning tokens first, so TTFT 250 ms hides a 3.8–14.8 s TTFC. On
+  gemma-4-31B thinking **works properly** — real reasoning, real answer — and is
+  still rejected at 48× TTFC. "Thinking is broken" is not a universal property of
+  this server; "thinking is too slow for small coding tasks" is.
+- **KV quantization is model-dependent, and usually a loss.** A real win on
+  Qwen3.8-27B (4-bit + `skip_last` beat quant-off 60.62 vs 48.61 tps); a clear
+  loss on Ornith (14–16% slower in every quantized variant) and on flint
+  (16–18% decode). On gemma-4-31B it is neutral-to-negative with no memory
+  argument. Do not assume it from one model.
+- **Context: 32768 helped Qwen and did nothing for the other three.** Native was
+  kept for Ornith (58.8 vs 59.0 ms — inside noise), flint (null at 34 tokens, 16k
+  and 20k), and gemma-4-31B (null at 49 tokens and ~8k). The Qwen3.8 "smaller
+  window is faster" result has **not** reproduced once. Treat it as
+  model-specific, not a general rule.
+- **Speculative decoding needs a draft head, and MTP is the dominant lever when
+  it exists.** Ornith has no MTP head and both `dflash_draft_model` and
+  `specprefill_draft_model` are null, so those flags are no-ops — DFlash landed
+  inside noise, SpecPrefill was 1.9% slower. On Qwen and gemma-4-31B, MTP is worth
+  ~2–2.4× decode. Which spec lever exists, not which is "better", drives the
+  outcome.
+- **Depth tuning does not transfer.** Qwen3.8-27B gained +7% from hard-coding
+  depth 6 over adaptive. gemma-4-31B loses 21–36% at every fixed depth 1–6 and
+  only ties at depth 8. Re-sweep depth per model; never carry a number across.
 
 Notes on the Qwen3.8-27B row:
 
@@ -79,6 +92,35 @@ Notes on the Ornith-1.0-35B row:
   [`tuning-log.md`](Ornith-1.0-35B-oQ4e/tuning-log.md),
   [`quality.md`](Ornith-1.0-35B-oQ4e/quality.md).
 
+Notes on the gemma-4-31B-it-oQ4e-mtp row:
+
+- **The model was already tuned by its defaults.** MTP was on at adaptive depth out
+  of the box, and no fixed depth beat it: depths 1–6 lose 21–36% decode, and depth 8
+  only ties it (49.72 vs 49.47 tps over 9 alternating blocks each). The final config
+  differs from the defaults in three ways — thinking pinned off, the coding sampler,
+  and `force_sampling: false` — and is throughput-identical to the defaults in a
+  paired A/B (37.39 vs 37.06 tps, 319.5 vs 316.3 ms TTFT).
+- **MTP is a 2.4× decode win** (50.62 vs 21.45 tps) and, unlike Ornith, the draft head
+  is real here (`model-mtp.safetensors`, 0.47B).
+- **KV quant is a clear loss.** 8-bit costs 5% decode and 21 ms TTFT; 4-bit is inside
+  noise on decode and also 21 ms worse on TTFT. 4-bit **without** `skip_last` does not
+  run at all under MTP — hard error, `_QuantizedStateProxy` passed into
+  `scaled_dot_product_attention`.
+- **Context capping is a null result** at both 49 tokens and ~8k tokens, matching
+  Ornith and flint and contradicting Qwen3.8-27B. Native kept.
+- **`force_sampling: true` costs 6.6% decode** (39.49 vs 42.29 tps). Left `false`.
+- **Thinking genuinely works on this model** — the only one in this repo where it
+  does. Real `reasoning_content`, real answer. Still rejected: 15.9 s to the first
+  content token vs 0.33 s, a 48× penalty, and a 700-token budget is exhausted by
+  reasoning before the answer completes.
+- **DFlash is unavailable in practice**: mutually exclusive with MTP (HTTP 400), and
+  with MTP off and no draft model it is a no-op at 21.71 tps.
+- **MoE expert offload is N/A** — `moe-offload-fit` returns HTTP 400 for this dense
+  model. Recorded as not-applicable, not as an error.
+- Full detail: [`gemma-4-31B-it-oQ4e-mtp/NOTES.md`](gemma-4-31B-it-oQ4e-mtp/NOTES.md),
+  [`tuning-log.md`](gemma-4-31B-it-oQ4e-mtp/tuning-log.md),
+  [`quality.md`](gemma-4-31B-it-oQ4e-mtp/quality.md).
+
 ## Downloaded, tuning not yet started
 
 All of these are on disk and pass a load smoke test or are queued for one. None
@@ -87,7 +129,6 @@ has a `final.json` yet.
 | Model | On disk | Resident | MoE | MTP | Native ctx | Smarts | Status |
 |---|---|---|---|---|---|---|---|
 | `mlx-community/flint-oQ4e` | 22.84 GB | — | — | — | 262144 | — | next in queue |
-| `Jundot/gemma-4-31B-it-oQ4e-mtp` | 19.50 GB | 21.53 GB | no | yes | 262144 | 4.929 | queued |
 | `Jundot/gemma-4-26B-A4B-it-oQ8e-mtp` | 28.17 GB | — | yes | yes | 262144 | — | queued |
 | `Jundot/Qwen3.6-35B-A3B-oQ8e-mtp` | 37.75 GB | — | yes | yes | 262144 | — | queued |
 | `Jundot/Qwen3.8-Flash-Next-oQ4e-mtp` | 105.06 GB | 112.81 GB | yes | yes | 262144 | 5.327 | **resident-bound, see below** |
