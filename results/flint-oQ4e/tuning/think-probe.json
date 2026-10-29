@@ -1,0 +1,110 @@
+[
+  {
+    "label": "plain",
+    "extra": {},
+    "completion_tokens": 803,
+    "reasoning_tokens": 619,
+    "content_chars": 642,
+    "reasoning_chars": 2513,
+    "finish_reason": "stop",
+    "gen_tps": 108.36
+  },
+  {
+    "label": "reasoning_effort=low",
+    "extra": {
+      "reasoning_effort": "low"
+    },
+    "completion_tokens": 803,
+    "reasoning_tokens": 619,
+    "content_chars": 642,
+    "reasoning_chars": 2513,
+    "finish_reason": "stop",
+    "gen_tps": 107.47
+  },
+  {
+    "label": "reasoning_effort=medium",
+    "extra": {
+      "reasoning_effort": "medium"
+    },
+    "completion_tokens": 803,
+    "reasoning_tokens": 619,
+    "content_chars": 642,
+    "reasoning_chars": 2513,
+    "finish_reason": "stop",
+    "gen_tps": 106.67
+  },
+  {
+    "label": "reasoning_effort=high",
+    "extra": {
+      "reasoning_effort": "high"
+    },
+    "completion_tokens": 803,
+    "reasoning_tokens": 619,
+    "content_chars": 642,
+    "reasoning_chars": 2513,
+    "finish_reason": "stop",
+    "gen_tps": 106.99
+  },
+  {
+    "label": "reasoning_effort=xhigh",
+    "extra": {
+      "reasoning_effort": "xhigh"
+    },
+    "completion_tokens": 803,
+    "reasoning_tokens": 619,
+    "content_chars": 642,
+    "reasoning_chars": 2513,
+    "finish_reason": "stop",
+    "gen_tps": 106.67
+  },
+  {
+    "label": "reasoning_effort=max",
+    "extra": {
+      "reasoning_effort": "max"
+    },
+    "completion_tokens": 803,
+    "reasoning_tokens": 619,
+    "content_chars": 642,
+    "reasoning_chars": 2513,
+    "finish_reason": "stop",
+    "gen_tps": 106.72
+  },
+  {
+    "label": "enable_thinking=false",
+    "extra": {
+      "enable_thinking": false
+    },
+    "completion_tokens": 803,
+    "reasoning_tokens": 619,
+    "content_chars": 642,
+    "reasoning_chars": 2513,
+    "finish_reason": "stop",
+    "gen_tps": 105.88
+  },
+  {
+    "label": "ctk.enable_thinking=false",
+    "extra": {
+      "chat_template_kwargs": {
+        "enable_thinking": false
+      }
+    },
+    "completion_tokens": 803,
+    "reasoning_tokens": 619,
+    "content_chars": 642,
+    "reasoning_chars": 2513,
+    "finish_reason": "stop",
+    "gen_tps": 107.03
+  },
+  {
+    "label": "thinking_budget=64",
+    "extra": {
+      "thinking_budget": 64
+    },
+    "completion_tokens": 803,
+    "reasoning_tokens": 619,
+    "content_chars": 642,
+    "reasoning_chars": 2513,
+    "finish_reason": "stop",
+    "gen_tps": 106.26
+  }
+]

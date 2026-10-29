@@ -1,0 +1,44 @@
+{
+  "model": "flint-oQ4e",
+  "runs": 3,
+  "max_tokens": 300,
+  "context_pad": 0,
+  "ttft_ms_median": 254.1,
+  "decode_tps_median": 116.29,
+  "prefill_tps_median": 133.8,
+  "total_ms_median": 2827.6,
+  "completion_tokens_median": 300,
+  "reasoning_chunks_median": 13,
+  "samples": [
+    {
+      "ttft_ms": 259.4,
+      "ttfc_ms": null,
+      "decode_tps": 116.29,
+      "total_ms": 2831.5,
+      "prefill_tps": 131.1,
+      "prompt_tokens": 34,
+      "completion_tokens": 300,
+      "reasoning_chunks": 13
+    },
+    {
+      "ttft_ms": 250.1,
+      "ttfc_ms": null,
+      "decode_tps": 116.78,
+      "total_ms": 2811.1,
+      "prefill_tps": 136.0,
+      "prompt_tokens": 34,
+      "completion_tokens": 300,
+      "reasoning_chunks": 13
+    },
+    {
+      "ttft_ms": 254.1,
+      "ttfc_ms": null,
+      "decode_tps": 116.22,
+      "total_ms": 2827.6,
+      "prefill_tps": 133.8,
+      "prompt_tokens": 34,
+      "completion_tokens": 300,
+      "reasoning_chunks": 13
+    }
+  ]
+}
