@@ -186,3 +186,13 @@ TTFT 48.0 ms, TTFC 48.0 ms, decode 146.34 tps, total 2091.7 ms.
   only signal that thinking swallowed the whole budget.
 - `ab_ttfc.py` initially crashed on `ttfc=None` because it did
   `float("None".removesuffix("ms"))`; fixed to return `None` explicitly.
+- **`enable_thinking` reverted to `true` on its own after the final config was
+  applied and verified.** A post-hoc re-read of `.settings` showed
+  `enable_thinking: true` with every other key still correct. Re-applying
+  `final-settings.json` (which sets `requires_reload: true` +
+  `auto_unloaded: true`), reloading, and re-diffing restored 0 diffs, and a
+  post-reload smoke test returned `finish_reason: stop` with 0 reasoning tokens.
+  Cause not identified — most likely another process writing the model's
+  settings. **Anyone consuming this config should re-verify `enable_thinking`
+  before benchmarking**, because a silent revert makes the model look like it
+  hangs.

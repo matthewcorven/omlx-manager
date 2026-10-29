@@ -61,6 +61,11 @@ and it is a real one — do not spend another session re-testing these.
   true` blocks later MTP PUTs.
 - `measure.py` intermittently exits non-zero with no `run 1:` line — retry up to
   3×.
+- **`enable_thinking` reverted to `true` by itself** after the final config was
+  applied and verified. Every other key held. Re-applying `final-settings.json`
+  + reload + re-diff restored 0 diffs. Cause unknown; re-verify this key before
+  any future benchmark, because a silent revert makes the model appear to hang
+  rather than answer.
 
 ## Recommendation
 
