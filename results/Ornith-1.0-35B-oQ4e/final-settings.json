@@ -1,0 +1,12 @@
+{
+  "enable_thinking": false,
+  "max_context_window": null,
+  "dflash_enabled": false,
+  "specprefill_enabled": false,
+  "turboquant_kv_enabled": false,
+  "moe_expert_offload_enabled": false,
+  "temperature": 1.0,
+  "top_p": 0.95,
+  "top_k": 20,
+  "force_sampling": true
+}
