@@ -37,6 +37,50 @@ copying back is needed to run a model that lives there.
 > loaded models and re-discovers**. Never call it while a benchmark is running.
 > `model_dirs` is a **top-level** field, not nested under `model`.
 
+### Shuttle strategy
+
+The internal SSD is the bottleneck for breadth — each 20–40 GB model takes a
+large share of ~430 GB free. Finished models are shuttled to the external volume
+so several candidates can stay on disk at once:
+
+```sh
+scripts/shuttle_model.sh <model_id>            # internal -> external
+scripts/shuttle_model.sh --back <model_id>     # external -> internal
+scripts/shuttle_model.sh --dry-run <model_id>  # show the move only
+```
+
+The script refuses to move a model that is loaded or has a benchmark running,
+and verifies oMLX still sees the model at its new path afterwards. Shuttle only
+after `final.json` and `NOTES.md` are written and committed.
+
+### Disk is not memory
+
+The external volume relieves **disk** pressure only. A model over the ~89.6 GB
+resident ceiling stays over it after a move — the constraint is unified memory at
+load time. For those models the only lever is **MoE expert offload**, which
+trades decode speed for residency. Do not propose "move it to the NVMe" as a fix
+for a resident-memory-bound model.
+
+### External engine: Splash
+
+oMLX can serve a model through an external [Splash](https://github.com/incoai/splash)
+process instead of loading weights in-process. Splash runs its own Metal engine
+with DFlash2 speculative decoding and covers Qwen3.8-27B, Qwen3.6-35B-A3B,
+Qwen3.5-122B-A10B (Ornith-1.5-122B), Qwen3.8-Flash-Next and Flint.
+
+Splash 1.4.0 is installed at `/opt/homebrew/bin/splash` and configured in
+`integrations.splash_path`. Check status with:
+
+```sh
+curl -s $OMLX/admin/api/global-settings | jq .external_engines.splash
+```
+
+Relevant settings: `splash_kv_format` (`int8`), `splash_max_memory_gb`,
+`splash_ssd_cache_gb`, `splash_ane_prefill`. Because Splash is a separate
+process, its peak memory is measured as the Splash process footprint, and its
+benchmarks run through its own OpenAI-compatible API rather than oMLX's
+token-id path — so Splash runs are kept out of in-process comparison tables.
+
 ## What this repo contains
 
 ```
@@ -54,6 +98,7 @@ docs/
 scripts/
   measure.py                  TTFT + decode tok/s harness for a coding prompt
   disk_guard.sh               free-space check before a download
+  shuttle_model.sh            move a finished model internal <-> external NVMe
 results/
   <model>/                    per-model benchmark + tuning results
 ```

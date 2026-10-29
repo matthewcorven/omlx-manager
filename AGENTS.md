@@ -33,10 +33,65 @@ OMLX=http://127.0.0.1:8001
 ```
 
 - Server: `omlx start` / `omlx stop` / `omlx restart`. Health: `GET /api/status`.
-- Model dir: `~/.omlx/models/mlx-community`
+- Model dirs: `~/.omlx/models/mlx-community` (internal SSD) and
+  `/Volumes/NVMe/omlx-models` (1 TB external). Both are registered in
+  `model.model_dirs`; see **Storage** below.
 - Per-model settings: `~/.omlx/model_settings.json` (read-only for agents; write
   via the API).
 - OpenAPI: `GET /openapi.json`
+- External engine: Splash 1.4.0 at `/opt/homebrew/bin/splash`, configured in
+  `integrations.splash_path`. Status:
+  `curl -s $OMLX/admin/api/global-settings | jq .external_engines.splash`
+
+## Storage
+
+Two model directories are registered in `model.model_dirs`, so the model set is
+not limited to the internal SSD:
+
+| Volume | Size | Role |
+|---|---|---|
+| `/System/Volumes/Data` (internal) | ~1.8 TB, ~430 GB free | Active download + tuning target |
+| `/Volumes/NVMe` (external, `/dev/disk4`) | 1 TB, ~931 GB free | Overflow / cold storage for tested models |
+
+Because `/Volumes/NVMe/omlx-models` is a registered model dir, oMLX discovers and
+loads models from it directly — **moving a model there does not make it
+unusable**, and no copy back to internal is needed to run it. The external volume
+is slower than internal SSD, so keep the model currently being tuned internal and
+shuttle finished models out.
+
+### Shuttle strategy
+
+The internal SSD is the bottleneck for breadth: each 20–40 GB model eats a large
+share of ~430 GB free. Shuttle finished models to the external volume to keep
+several candidates resident on disk at once.
+
+```sh
+# after a model's final.json + NOTES.md are written and committed
+scripts/shuttle_model.sh <model_id>          # internal -> external
+scripts/shuttle_model.sh --back <model_id>   # external -> internal
+```
+
+Rules for shuttling:
+
+- **Only shuttle a model whose tuning is finished** and whose results are
+  committed. A model mid-sweep must stay where it is.
+- **Never shuttle while a benchmark is running.** Moving files under a loaded
+  model corrupts the run; unload first (`POST /admin/api/models/<id>/unload`).
+- **Never change `model_dirs` while a benchmark is running.** That call unloads
+  every loaded model and re-discovers.
+- Shuttle with the server's own move endpoint when available; otherwise stop the
+  server, move the directory, and restart so oMLX re-indexes cleanly.
+- After a shuttle, confirm the model still appears in `GET /admin/api/models` and
+  loads from its new path before recording it as available.
+
+### Resident-memory ceiling is separate from disk
+
+External disk buys **disk**, not **RAM**. A model that exceeds the ~89.6 GB
+resident ceiling still will not fit after being moved to the external volume —
+the constraint is unified memory at load time, not free space. For those models
+the only lever is **MoE expert offload** (see tuning priority 4), which trades
+decode speed for residency. Do not propose "move it to the NVMe" as a fix for a
+resident-memory-bound model.
 
 ## Skills
 
@@ -48,6 +103,26 @@ Load the relevant skill before acting:
 | Read or change per-model settings | `.github/skills/omlx-model-settings` |
 | Run benchmarks or measure TTFT | `.github/skills/omlx-benchmark` |
 | Something is broken | `.github/skills/omlx-troubleshooting` |
+
+## External engine: Splash
+
+oMLX can serve a model through an external Splash process instead of loading
+weights in-process. Splash runs its own Metal engine with DFlash2 speculative
+decoding and covers Qwen3.8-27B, Qwen3.6-35B-A3B, Qwen3.5-122B-A10B
+(Ornith-1.5-122B), Qwen3.8-Flash-Next and Flint.
+
+- Splash 1.4.0 is installed at `/opt/homebrew/bin/splash` and already set in
+  `integrations.splash_path`; no setup is needed to use it.
+- Settings: `splash_kv_format` (`int8`), `splash_max_memory_gb`,
+  `splash_ssd_cache_gb`, `splash_ane_prefill`.
+- Splash is a **separate process**, so its peak memory is the Splash process
+  footprint, not oMLX's. Do not compare it against in-process resident sizes.
+- Splash benchmarks run through its own OpenAI-compatible API, not oMLX's
+  token-id path. oMLX deliberately keeps Splash runs out of in-process
+  comparison tables — record them separately and label the engine.
+- Use Splash when a model is one of the five it supports and you want DFlash2
+  speculative decoding, or when you want the model out of oMLX's own memory
+  accounting. Otherwise stay in-process so numbers stay comparable.
 
 ## Standard model workflow
 
@@ -120,3 +195,17 @@ Each model agent returns:
   are registered in `model.model_dirs`, so a model on the external volume can be
   loaded directly — moving a model there does not make it unusable.
 - Never change `model_dirs` while any benchmark is running.
+- **Shuttle finished models to the external volume.** When a model's
+  `final.json` and `NOTES.md` are written and committed, move it to
+  `/Volumes/NVMe/omlx-models` to free internal space for the next candidate.
+  Unload it first; never move a model mid-sweep or during a benchmark. See
+  **Storage → Shuttle strategy**.
+- **Do not confuse disk with memory.** The external volume relieves disk
+  pressure only. A model over the ~89.6 GB resident ceiling stays over it after
+  a move; the fix is MoE expert offload, not relocation. Check resident size
+  against the ceiling before approving a download, not just free disk.
+- **Serialize tuning agents.** Only one benchmark runs at a time (409), so spawn
+  a model's tuning agent only when the previous one has finished its sweep, or
+  when the two are explicitly scheduled to alternate.
+- **Collect and compare.** Each tuning agent returns `final.json` + `NOTES.md`;
+  keep a cross-model comparison table in `results/COMPARISON.md`.
