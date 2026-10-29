@@ -1,0 +1,8 @@
+{
+  "arm": "turboquant_kv_enabled true, turboquant_kv_bits 4.0, turboquant_skip_last false, MTP on (mtp_fixed_depth 4)",
+  "put_result": {"success": true, "requires_reload": true, "auto_unloaded": true, "auto_reloaded": false},
+  "load_result": "loaded: true (the model loads fine; the failure is at first decode)",
+  "first_request": "HTTP 200 stream; role chunk, then a data: {\"error\": ...} event, then data: [DONE]; no content and no usage object",
+  "error": "scaled_dot_product_attention(): incompatible function arguments. The following argument types are supported:\n    1. scaled_dot_product_attention(q: array, k: array, v: array, *, scale: float,  mask: None | str | array = None, sinks: array | None = None, force_fused: bool = False, stream: StreamOrDevice = None) -> array\n\nInvoked with types: mlx.core.array, mlx_vlm.turboquant._QuantizedStateProxy, mlx_vlm.turboquant._QuantizedStateProxy, kwargs = { scale: float, mask: NoneType, sinks: NoneType }",
+  "verdict": "rejected - hard failure, identical to gemma-4-31B-it-oQ4e-mtp. turboquant_skip_last must stay true whenever KV quant is on."
+}
