@@ -1,0 +1,88 @@
+{
+  "A": {
+    "label": "mtp-off",
+    "patch": {
+      "mtp_enabled": false
+    },
+    "n": 6,
+    "ttft_ms": 83.6,
+    "decode_tps": 76.71,
+    "total_ms": 3986.0,
+    "samples": [
+      {
+        "ttft_ms": 85.8,
+        "decode_tps": 78.65,
+        "total_ms": 3887.6
+      },
+      {
+        "ttft_ms": 78.4,
+        "decode_tps": 79.84,
+        "total_ms": 3823.4
+      },
+      {
+        "ttft_ms": 72.5,
+        "decode_tps": 79.91,
+        "total_ms": 3814.7
+      },
+      {
+        "ttft_ms": 85.3,
+        "decode_tps": 73.84,
+        "total_ms": 4134.9
+      },
+      {
+        "ttft_ms": 84.9,
+        "decode_tps": 74.76,
+        "total_ms": 4085.0
+      },
+      {
+        "ttft_ms": 82.2,
+        "decode_tps": 72.11,
+        "total_ms": 4229.4
+      }
+    ]
+  },
+  "B": {
+    "label": "mtp-on-adaptive",
+    "patch": {
+      "mtp_enabled": true,
+      "mtp_adaptive_max_depth": null,
+      "mtp_fixed_depth": null
+    },
+    "n": 6,
+    "ttft_ms": 118.4,
+    "decode_tps": 113.0,
+    "total_ms": 2763.0,
+    "samples": [
+      {
+        "ttft_ms": 121.3,
+        "decode_tps": 112.35,
+        "total_ms": 2783.1
+      },
+      {
+        "ttft_ms": 104.3,
+        "decode_tps": 114.01,
+        "total_ms": 2727.2
+      },
+      {
+        "ttft_ms": 117.6,
+        "decode_tps": 114.06,
+        "total_ms": 2739.4
+      },
+      {
+        "ttft_ms": 119.3,
+        "decode_tps": 113.66,
+        "total_ms": 2750.2
+      },
+      {
+        "ttft_ms": 105.2,
+        "decode_tps": 111.98,
+        "total_ms": 2775.7
+      },
+      {
+        "ttft_ms": 121.7,
+        "decode_tps": 97.31,
+        "total_ms": 3194.7
+      }
+    ]
+  }
+}
