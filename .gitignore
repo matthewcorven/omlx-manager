@@ -15,3 +15,7 @@ __pycache__/
 .squad/.cache/
 # Squad: SubSquad activation file (local to this machine)
 .squad-workstream
+
+# Local Copilot session config
+.copilot/
+

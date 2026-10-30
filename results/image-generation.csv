@@ -1,1 +1,2 @@
 Model,Quant,Steps,Resolution,TTFT/Step Latency,Total Latency,VRAM/Resident,Quality/CLIP,Notes
+FLUX.1-schnell,4bit,4,1024x1024,418.6 ms/step,2.02 s,8.4 GB,0.3180 CLIP,Reference FLUX.1 schnell 4-bit benchmark on Apple Silicon
