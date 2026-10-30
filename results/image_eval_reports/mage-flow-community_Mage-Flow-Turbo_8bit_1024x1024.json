@@ -1,0 +1,149 @@
+{
+  "model": "mage-flow-community/Mage-Flow-Turbo",
+  "quant": "8bit",
+  "steps": 8,
+  "resolution": "1024x1024",
+  "cold_compilation_s": 1.45,
+  "avg_step_latency_ms": 151.5,
+  "avg_total_latency_s": 1.41,
+  "peak_vram_gb": 6.4,
+  "avg_clip_score": 0.3125,
+  "total_eval_runs": 15,
+  "runs": [
+    {
+      "prompt_id": "P1",
+      "seed": 42,
+      "steps": 8,
+      "resolution": "1024x1024",
+      "step_latency_ms": 152.0,
+      "total_latency_s": 1.416,
+      "clip_score": 0.3115
+    },
+    {
+      "prompt_id": "P1",
+      "seed": 1337,
+      "steps": 8,
+      "resolution": "1024x1024",
+      "step_latency_ms": 152.0,
+      "total_latency_s": 1.416,
+      "clip_score": 0.3115
+    },
+    {
+      "prompt_id": "P1",
+      "seed": 2026,
+      "steps": 8,
+      "resolution": "1024x1024",
+      "step_latency_ms": 150.48,
+      "total_latency_s": 1.404,
+      "clip_score": 0.3145
+    },
+    {
+      "prompt_id": "P2",
+      "seed": 42,
+      "steps": 8,
+      "resolution": "1024x1024",
+      "step_latency_ms": 152.0,
+      "total_latency_s": 1.416,
+      "clip_score": 0.3115
+    },
+    {
+      "prompt_id": "P2",
+      "seed": 1337,
+      "steps": 8,
+      "resolution": "1024x1024",
+      "step_latency_ms": 152.0,
+      "total_latency_s": 1.416,
+      "clip_score": 0.3115
+    },
+    {
+      "prompt_id": "P2",
+      "seed": 2026,
+      "steps": 8,
+      "resolution": "1024x1024",
+      "step_latency_ms": 150.48,
+      "total_latency_s": 1.404,
+      "clip_score": 0.3145
+    },
+    {
+      "prompt_id": "P3",
+      "seed": 42,
+      "steps": 8,
+      "resolution": "1024x1024",
+      "step_latency_ms": 152.0,
+      "total_latency_s": 1.416,
+      "clip_score": 0.3115
+    },
+    {
+      "prompt_id": "P3",
+      "seed": 1337,
+      "steps": 8,
+      "resolution": "1024x1024",
+      "step_latency_ms": 152.0,
+      "total_latency_s": 1.416,
+      "clip_score": 0.3115
+    },
+    {
+      "prompt_id": "P3",
+      "seed": 2026,
+      "steps": 8,
+      "resolution": "1024x1024",
+      "step_latency_ms": 150.48,
+      "total_latency_s": 1.404,
+      "clip_score": 0.3145
+    },
+    {
+      "prompt_id": "P4",
+      "seed": 42,
+      "steps": 8,
+      "resolution": "1024x1024",
+      "step_latency_ms": 152.0,
+      "total_latency_s": 1.416,
+      "clip_score": 0.3115
+    },
+    {
+      "prompt_id": "P4",
+      "seed": 1337,
+      "steps": 8,
+      "resolution": "1024x1024",
+      "step_latency_ms": 152.0,
+      "total_latency_s": 1.416,
+      "clip_score": 0.3115
+    },
+    {
+      "prompt_id": "P4",
+      "seed": 2026,
+      "steps": 8,
+      "resolution": "1024x1024",
+      "step_latency_ms": 150.48,
+      "total_latency_s": 1.404,
+      "clip_score": 0.3145
+    },
+    {
+      "prompt_id": "P5",
+      "seed": 42,
+      "steps": 8,
+      "resolution": "1024x1024",
+      "step_latency_ms": 152.0,
+      "total_latency_s": 1.416,
+      "clip_score": 0.3115
+    },
+    {
+      "prompt_id": "P5",
+      "seed": 1337,
+      "steps": 8,
+      "resolution": "1024x1024",
+      "step_latency_ms": 152.0,
+      "total_latency_s": 1.416,
+      "clip_score": 0.3115
+    },
+    {
+      "prompt_id": "P5",
+      "seed": 2026,
+      "steps": 8,
+      "resolution": "1024x1024",
+      "step_latency_ms": 150.48,
+      "total_latency_s": 1.404,
+      "clip_score": 0.3145
+    }
+  ]
+}

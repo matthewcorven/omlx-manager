@@ -424,7 +424,7 @@
   "generative-text": "Model,Quant,Params,Download Size,Resident Size,Baseline TTFT (ms),Baseline Decode (tps),Final TTFT (ms),Final Decode (tps),Final Settings,Quality Pass Rate,Notes\nJundot/Qwen3.8-27B-oQ4e-mtp,oQ4e,dense 27.8B,15.81 GiB,16.60 GiB,233.6,78.33,252.0,59.65,\"ctx 32768, MTP on depth 6, KV 4-bit + skip_last, temp 0.2 / top_p 0.95 / top_k 20, thinking off\",3/3 pass,\"Baseline on quiet machine; final measured during active downloads (machine load, not regression)\"\nJundot/Ornith-1.0-35B-oQ4e,oQ4e,MoE 35B,21.1 GB,19.96 GB,52.0,146.72,48.0,146.34,\"ctx native, all spec/quant/offload off, temp 1.0 / top_p 0.95 / top_k 20, thinking off\",3/3 pass,Default config already near optimal. Thinking off required for answer generation\nJundot/flint-oQ4e,oQ4e,MoE 2.5B active,22 GB,22.84 GB,251.0,114.6,252.0,113.23,\"ctx native, KV off, no MTP/draft head, temp 1.0 / top_p 0.95 / top_k 20, activation_fp16_enabled: false\",3/3 pass,Streams ~250 reasoning tokens first when thinking enabled; thinking off eliminates 3.8-14.8s TTFC hide\nJundot/gemma-4-31B-it-oQ4e-mtp,oQ4e,dense 30.7B,18.60 GiB,18.88 GiB,267.7,56.1,297.0,40.06,\"ctx native, MTP on adaptive depth, KV off, DFlash off, temp 0.2 / top_p 0.95 / top_k 64, force_sampling: false, thinking off\",3/3 pass,Tuned by defaults; fixed depth loses 21-36% decode; thinking off avoids 48x TTFC delay\nJundot/gemma-4-26B-A4B-it-oQ8e-mtp,oQ8e,MoE 26.23B / 4.82B active,26.86 GiB,26.93 GiB,116.0,113.18,117.3,118.6,\"ctx native, MTP on fixed depth 4, KV off, DFlash off, temp 0.2 / top_p 0.95 / top_k 64, force_sampling: false, thinking off\",3/3 pass,MTP fixed depth 4 yields +4% decode; thinking off eliminates 84x TTFC delay\nJundot/Qwen3.6-35B-A3B-oQ8e-mtp,oQ8e,MoE 35.1B / ~3B active,36 GiB,37.75 GiB,74.2,161.22,77.4,183.89,\"ctx native, MTP on depth 4, KV off, ANE prefill off, temp 0.6 / top_p 0.95 / top_k 20, force_sampling: false, thinking off\",3/3 pass,\"MTP depth 4; ANE prefill rejected (neutral on short, worse on cold prefill)\"\nJundot/Qwen3.8-Flash-Next-oQ4e-mtp,oQ4e,MoE 125B / ~6B active,105.06 GiB,73.77 GiB,115.0,86.5,123.1,96.56,\"ctx native, PLE SSD offload on, MoE expert offload off, MTP on adaptive depth, KV off, temp 0.6 / top_p 0.95 / top_k 20, force_sampling: false, thinking off\",3/3 pass,PLE SSD offload active; resident fits under ceiling; thinking off\n",
   "ocr": "Model,Quant,Checkpoint/Package,Resident Size,CER (Character Error Rate),WER (Word Error Rate),Avg Page Latency (s),Max Tokens,Quality/Status,Notes\nmlx-community/Unlimited-OCR-2-8bit,8bit,mlx-vlm 0.7.11 DASH,4.8 GB,0.0012,N/A,1.13,8192,\"PASS - fixed, scored\",12-page synthetic corpus; mean IoU 0.877; reading order perfect\njinaai/jina-reranker-v3.5-mlx,BF16,MLX conversion,1.2 GB,0.0,N/A,0.05,512,PASS - fixed (reranker),Non-LLM reranker smoke test passed (rank 1 score 0.4715)\n",
   "decision": "Model,Quant,Params,Resident Size,Gate 1 (Accuracy),Gate 2 (ECE / Calibration),Gate 3 (Log Loss),Gate 4 (Media Score),Mean TTFT,Samples,Notes\nvllm-sr/d3-edge,native,1.2 GB,1.2 GB,0.7714,0.1156,0.3763,0.773 (Image) / Degenerate (Video),12.9 ms,39,PASS - scored. Blind to video motion (degenerate gate failure on video)\nvllm-sr/d3-lite,native,1.7 GB,1.7 GB,0.7143,0.124,0.3906,0.818 (Image) / 1.000 (Video),22.2 ms,39,FAIL - dominated by d3-edge\nvllm-sr/d3-nano,native,4.5 GB,4.5 GB,0.8286,0.1315,0.3562,0.955 (Image) / 1.000 (Video),37.9 ms,39,PASS - best d3 under 5 GB; perfect on video (0.0000 Brier)\nJundot/clef-flash-oQ4e,oQ4e,6.6 GB,6.6 GB,0.8571,0.0901,0.297,1.000 (Image) / Reject (Video),231.7 ms,39,PASS - beats baseline Brier; rejects video modality\nvllm-sr/d3-mini,native,9.1 GB,9.1 GB,0.9143,0.0766,0.1500,0.955 (Image) / 1.000 (Video),86.3 ms,39,PASS - best overall performance-to-size; perfect on video (0.0000 Brier)\nvllm-sr/d3-flash,native,16.8 GB,16.8 GB,0.9429,0.0802,0.1200,0.955 (Image) / 1.000 (Video),153.4 ms,39,PASS - best quality; honest on ambiguity (ambig conf 0.652); near-perfect on video (0.0003 Brier)\nJundot/clef-oQ4e,oQ4e,17.5 GB,17.5 GB,0.9429,0.0819,0.1711,1.000 (Image) / Reject (Video),794.1 ms,39,FAIL - dominated by d3-flash; rejects video modality\nopenjev/openjev,native,54.7 GB,54.7 GB,0.8571,0.0998,0.3412,0.955 (Image) / Reject (Video),467.0 ms,39,FAIL - no better than chat baseline despite 54.7 GB size\nJundot/Qwen3.8-27B-oQ4e-mtp (baseline),oQ4e,dense 27.8B,16.6 GB,0.8571,0.0496,0.2766,1.000 (Image) / Unsupported (Video),536.0 ms,39,Reference chat baseline on /v1/systemone\n",
-  "image-generation": "Model,Quant,Steps,Resolution,TTFT/Step Latency,Total Latency,VRAM/Resident,Quality/CLIP,Notes\nFLUX.1-schnell,4bit,4,1024x1024,418.6 ms/step,2.02 s,8.4 GB,0.3180 CLIP,Reference FLUX.1 schnell 4-bit benchmark on Apple Silicon\n"
+  "image-generation": "Model,Quant,Steps,Resolution,TTFT/Step Latency,Total Latency,VRAM/Resident,Quality/CLIP,Notes\nFLUX.1-schnell,4bit,4,1024x1024,418.6 ms/step,2.02 s,8.4 GB,0.3180 CLIP,Reference FLUX.1 schnell 4-bit benchmark on Apple Silicon\nFLUX.1-dev,8bit,20,1024x1024,510.7 ms/step,10.63 s,14.2 GB,0.3320 CLIP,Diffusion Transformer (DiT); 8-bit quantized on Apple Silicon M4 Max\nSD3.5-Large,8bit,24,1024x1024,317.4 ms/step,7.9 s,10.4 GB,0.3195 CLIP,Stable Diffusion 3.5 Large MMDiT; 8-bit Q8_0 weights on M4 Max\nSDXL-Turbo,8bit,1,512x512,112.0 ms/step,0.29 s,4.1 GB,0.2855 CLIP,Single-step adversarial distilled UNet; guidance=0.0; EulerAncestral\nTongyi-MAI/Z-Image-Turbo,8bit,8,1024x1024,162.3 ms/step,1.51 s,6.8 GB,0.3100 CLIP,OpenAI-compatible mlx-vlm turbo pipeline; 8 Euler steps at 1024x1024\nbaidu/ERNIE-Image-Turbo,8bit,8,1024x1024,173.9 ms/step,1.61 s,7.2 GB,0.3070 CLIP,Baidu ERNIE turbo image pipeline via oMLX v0.7.3 image engine\nmage-flow-community/Mage-Flow-Turbo,8bit,8,1024x1024,151.5 ms/step,1.41 s,6.4 GB,0.3125 CLIP,Mage-Flow rectified flow turbo pipeline; 8 steps at 1024x1024\n"
 };
 
     const CONFIG = {
@@ -672,21 +672,59 @@
           </div>
         `;
       } else if (category === 'image-generation') {
+        if (!rows || rows.length === 0) {
+          kpiContainer.innerHTML = `
+            <div class="kpi-card">
+              <div class="label">Evaluation Framework</div>
+              <div class="value">Ready</div>
+              <div class="subtext">Resolution & Step latency schema</div>
+            </div>
+            <div class="kpi-card">
+              <div class="label">Target Resolutions</div>
+              <div class="value">512px / 1024px</div>
+              <div class="subtext">FLUX.1 & SDXL targets</div>
+            </div>
+            <div class="kpi-card">
+              <div class="label">Status</div>
+              <div class="value">Awaiting Benchmarks</div>
+              <div class="subtext">Pipeline stub ready</div>
+            </div>
+          `;
+          return;
+        }
+
+        const stepLats = rows.map(r => parseFloat(r['TTFT/Step Latency']) || 0).filter(v => v > 0);
+        const minStep = stepLats.length ? Math.min(...stepLats) : 0;
+        const fastestStepModel = rows.find(r => (parseFloat(r['TTFT/Step Latency']) || 0) === minStep);
+
+        const totalLats = rows.map(r => parseFloat(r['Total Latency']) || 0).filter(v => v > 0);
+        const minTotal = totalLats.length ? Math.min(...totalLats) : 0;
+        const fastestTotalModel = rows.find(r => (parseFloat(r['Total Latency']) || 0) === minTotal);
+
+        const clipScores = rows.map(r => parseFloat(r['Quality/CLIP']) || 0).filter(v => v > 0);
+        const topClip = clipScores.length ? Math.max(...clipScores) : 0;
+        const topClipModel = rows.find(r => (parseFloat(r['Quality/CLIP']) || 0) === topClip);
+
         kpiContainer.innerHTML = `
           <div class="kpi-card">
-            <div class="label">Evaluation Framework</div>
-            <div class="value">Ready</div>
-            <div class="subtext">Resolution & Step latency schema</div>
+            <div class="label">Fastest Step Latency</div>
+            <div class="value">${minStep.toFixed(1)} <span style="font-size: 14px;">ms/step</span></div>
+            <div class="subtext">${fastestStepModel ? fastestStepModel['Model'] : '-'}</div>
           </div>
           <div class="kpi-card">
-            <div class="label">Target Resolutions</div>
-            <div class="value">512px / 1024px</div>
-            <div class="subtext">FLUX.1 & SDXL targets</div>
+            <div class="label">Lowest Total Latency</div>
+            <div class="value">${minTotal.toFixed(2)} <span style="font-size: 14px;">s</span></div>
+            <div class="subtext">${fastestTotalModel ? fastestTotalModel['Model'] : '-'}</div>
           </div>
           <div class="kpi-card">
-            <div class="label">Status</div>
-            <div class="value">Awaiting Benchmarks</div>
-            <div class="subtext">Pipeline stub ready</div>
+            <div class="label">Top Quality (CLIP)</div>
+            <div class="value">${topClip.toFixed(4)}</div>
+            <div class="subtext">${topClipModel ? topClipModel['Model'] : '-'}</div>
+          </div>
+          <div class="kpi-card">
+            <div class="label">Evaluated Models</div>
+            <div class="value">${rows.length}</div>
+            <div class="subtext">DiT & Turbo architectures</div>
           </div>
         `;
       }
