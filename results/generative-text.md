@@ -1,0 +1,4 @@
+# Generative Text Model Benchmark Results
+
+| Model | Quant | Params | Download Size | Resident Size | Baseline TTFT (ms) | Baseline Decode (tps) | Final TTFT (ms) | Final Decode (tps) | Final Settings | Quality Pass Rate | Notes |
+|---|---|---|---|---|---|---|---|---|---|---|---|
