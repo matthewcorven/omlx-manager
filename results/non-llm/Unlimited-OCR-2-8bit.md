@@ -183,8 +183,11 @@ it is 1.8× faster (1.93 s → 1.06 s) with identical scores. On the model's own
 ```
 
 `max_crops: 16` on the same image produces 13 correct blocks in 2.3 s. The
-synthetic corpus is too clean to see this because a 1024×1024 page fits one tile
-either way. **Left at 16.**
+mechanism is the tile grid: `max_crops` caps the tiles `dynamic_preprocess` may
+use, and a 1024×1024 page lands on 2×2 either way, so the corpus cannot see the
+difference. At 6682×5011 the 4-tile grid downscales 5.2× and the text is gone;
+at 2048×2048 it downscales only 1.6×, which is why those pages still score
+identically. **Left at 16.**
 
 This is why the harness has a degeneracy gate: the failure has no error, no
 truncation, and a clean `stop`. Only reading the text catches it.

@@ -108,8 +108,24 @@ pages it is 1.36× faster (2.03 s → 1.49 s) with identical corpus scores.
 
 It is not a free win. On the model's own `assets/leaderboard.png` (6682×5011, dense
 small type) `max_crops: 4` produces `11. 11. 11. ...` for 8192 tokens and stops;
-`max_crops: 16` produces 13 correct blocks in 2.3 s. The synthetic corpus is too
-clean to see this, because a 1024×1024 page fits one tile either way.
+`max_crops: 16` produces 13 correct blocks in 2.3 s.
+
+The reason is the tile grid, and it is worth understanding rather than memorising.
+`max_crops` is the **cap** on tiles in `dynamic_preprocess`, which picks the grid
+whose aspect ratio is closest to the page and then resizes the page to fit it:
+
+| Page | `max_crops: 4` | `max_crops: 16` |
+|---|---|---|
+| 1024×1024 (corpus) | 2×2 = 4 tiles, 1280×1280 | 2×2 = 4 tiles, 1280×1280 |
+| 2048×2048 | 2×2 = 4 tiles, 1280×1280 | 4×4 = 16 tiles, 2560×2560 |
+| 6682×5011 (`leaderboard.png`) | 2×2 = 4 tiles, 1280×1280 | 4×3 = 12 tiles, 2560×1920 |
+
+A 1024×1024 page lands on 2×2 either way, so the corpus **cannot** distinguish the
+two settings — it is not that the corpus is too clean, it is that the cap never
+binds. The 2048×2048 pages do differ (4 vs 16 tiles) and still score identically,
+which is the more interesting result: at 2048×2048 the 4-tile grid downscales only
+1.6×, so the text survives. At 6682×5011 the same 4-tile grid downscales **5.2×**
+and the text is gone.
 
 **Rule: never lower `max_crops` on the strength of the synthetic corpus alone.**
 Score a real dense asset before and after, and read the output text.
