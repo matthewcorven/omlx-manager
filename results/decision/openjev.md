@@ -75,10 +75,47 @@ short inputs and the probabilities are consumed, openjev's 0.0000 Brier on that
 family is genuinely the best measured. That is a narrow enough case that it should
 be verified on a larger corpus before any deployment decision.
 
+## Modality
+
+OpenJev accepts **at most one image per request** (`split_state` raises
+`"OpenJev takes at most one image per request"`) and **rejects video** — the
+harness records all 16 video items as HTTP 400. Images were scored — see
+[`media/README.md`](media/README.md).
+
+| Corpus | Acc | Brier | ECE | Median ms | p95 ms |
+|---|---|---|---|---|---|
+| image (25 items) | 0.955 | 0.0785 | 0.0418 | 5226 | 5335 |
+| video (16 items) | — | — | — | — | — |
+
+| Image family | Acc | Brier | Conf |
+|---|---|---|---|
+| `img-colour` | 1.000 | 0.0000 | 1.000 |
+| `img-spatial` | 1.000 | 0.0001 | 0.994 |
+| `img-shape` | 1.000 | 0.0000 | 1.000 |
+| `img-text` | 1.000 | 0.0001 | 0.992 |
+| `img-count` | 0.833 | 0.2877 | 0.941 |
+
+**It is a competent image model and a bad one for the price.** 0.955 accuracy
+matches `d3-nano`, `d3-mini` and `d3-flash`, and its `img-text` Brier (0.0001) is
+the best in the sweep. But it costs 5226 ms and 54.7 GB to reach a Brier
+(0.0785) that `d3-flash` beats by 2.3× at 1743 ms and 16.8 GB.
+
+**The text-sweep "no better than baseline" verdict softens slightly.** On images
+it is better than the baseline on nothing and worse on Brier (0.0785 vs 0.0031)
+at comparable latency (5226 ms vs 5842 ms). The 54.7 GB still buys no win.
+
+**The one-image limit is a real constraint, not a footnote.** Any workload that
+needs to compare two images — before/after, two pages, two frames — cannot use
+this model at all, and the corpus never exercises multi-image reasoning for any
+family because of it.
+
+**Video is a hard capability boundary.** No score, no partial credit.
+
 ## Caveats
 
-Text-only corpus. OpenJev accepts at most one image per request and none of that
-is scored here. Single-request latency only — `DecisionEngine` serialises behind
-an `asyncio.Lock`, so this says nothing about throughput under concurrency. The
-p95 figure is measured with no download active; the 7.5 s tail is dominated by
-the longstate items. See "What this corpus cannot measure" in the methodology.
+The text corpus is 39 items and the image corpus is 25; treat every per-family
+cell as directional. Single-request latency only — `DecisionEngine` serialises
+behind an `asyncio.Lock`, so this says nothing about throughput under
+concurrency. The p95 figure is measured with no download active; the 7.5 s text
+tail is dominated by the longstate items. See "What this corpus cannot measure"
+in the methodology.

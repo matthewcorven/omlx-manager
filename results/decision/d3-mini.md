@@ -94,10 +94,50 @@ is still the right answer and d3-mini's quality advantage is wasted. The decisio
 rule is: **short and lexical → d3-edge; long, arithmetic, or probability-consuming
 → d3-mini.**
 
+## Modality
+
+d3 accepts images and video. Both were scored — see
+[`media/README.md`](media/README.md).
+
+| Corpus | Acc | Brier | ECE | Median ms | p95 ms |
+|---|---|---|---|---|---|
+| image (25 items) | 0.955 | 0.0701 | 0.0606 | 1038 | 1066 |
+| video (16 items) | **1.000** | **0.0000** | 0.0018 | 859 | 906 |
+
+| Image family | Acc | Brier | Conf |
+|---|---|---|---|
+| `img-colour` | 1.000 | 0.0000 | 0.999 |
+| `img-spatial` | 1.000 | 0.0000 | 0.999 |
+| `img-shape` | 1.000 | 0.0000 | 1.000 |
+| `img-text` | 1.000 | 0.0342 | 0.917 |
+| `img-count` | 0.833 | 0.2344 | 0.945 |
+
+| Video family | Acc | Brier | Conf |
+|---|---|---|---|
+| `vid-appear` | 1.000 | 0.0000 | 0.999 |
+| `vid-colourchange` | 1.000 | 0.0000 | 0.998 |
+| `vid-direction` | 1.000 | 0.0000 | 0.999 |
+| `vid-motion` | 1.000 | 0.0000 | 0.997 |
+
+**d3-mini is the best image model per GB in the sweep.** 0.955 accuracy and
+0.0701 Brier at 9.1 GB and 1038 ms — `d3-flash` needs 16.8 GB and 1743 ms for the
+same accuracy and a better Brier (0.0343), and `clef-oQ4e` needs 17.5 GB and
+5650 ms for a much better one (0.0006). If the constraint is disk, this is the
+image model.
+
+**Video is perfect and cheap.** Brier 0.0000 across all 16 items at 859 ms, which
+is 1.7× `d3-flash`'s speed for the same result. `d3-nano` is faster still (446 ms)
+at the same Brier, so on video alone `d3-nano` wins; `d3-mini` wins when the same
+checkpoint must also handle text, where it is 0.914 against `d3-nano`'s 0.829.
+
+**Its one image miss is the counting distractor**, same as every model above
+`d3-lite`. Its confidence on that family (0.945) is the highest of the four that
+miss it, so it is the most overconfident about the one thing it gets wrong.
+
 ## Caveats
 
-Text-only corpus. d3 accepts images and video (≤ 300 s, 4–32 frames) and none of
-that is scored here. Single-request latency only — `DecisionEngine` serialises
-behind an `asyncio.Lock`, so this says nothing about throughput under concurrency.
-The `graded` family has only 5 items; treat that cell as directional. See "What
-this corpus cannot measure" in the methodology.
+The text corpus is 39 items and the media corpora are 25 images and 16 clips;
+treat every per-family cell as directional. The `graded` family has only 5 items.
+Single-request latency only — `DecisionEngine` serialises behind an
+`asyncio.Lock`, so this says nothing about throughput under concurrency. See
+"What this corpus cannot measure" in the methodology.

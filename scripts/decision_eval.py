@@ -41,23 +41,44 @@ must return bit-identical probabilities. `--determinism` re-runs a sample of
 items three times and fails if any probability moves. Any variance is a bug in
 the engine, not noise, and it invalidates every other number.
 
+Modality
+--------
+The same harness scores the text corpus and the media corpus. An item carries a
+`media` list of file names; when it is present the files are inlined as base64
+data URIs and attached to the request. Nothing else changes, so the metrics and
+gates stay comparable across modalities.
+
+Two asymmetries are real and are recorded rather than papered over:
+
+- **Video has no baseline.** `/v1/decisions` rejects `videos` outright
+  (`decisions_request` raises "this model does not take videos"), so a chat model
+  cannot be scored on the video corpus. Video results are d3-only and the
+  baseline block is written as `{"supported": false}`.
+- **OpenJev takes at most one image.** The corpus never attaches more than one,
+  so the same items are legal for every family.
+
 Usage
 -----
     python3 scripts/decision_eval.py --model vllm-sr/d3-edge
     python3 scripts/decision_eval.py --model Jundot/clef-flash-oQ4e --out results/decision/clef-flash.json
     python3 scripts/decision_eval.py --model <id> --determinism
     python3 scripts/decision_eval.py --model <id> --baseline Qwen3.8-27B-oQ4e-mtp
+    python3 scripts/decision_eval.py --model <id> --corpus results/decision/media/manifest.json --modality image
+    python3 scripts/decision_eval.py --model <id> --corpus results/decision/media/manifest.json --modality video
 """
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 import math
+import mimetypes
 import statistics
 import sys
 import time
 import urllib.error
 import urllib.request
+from pathlib import Path
 
 BASE = "http://127.0.0.1:8001"
 ECE_BINS = 10
@@ -84,7 +105,21 @@ def post(path: str, payload: dict, timeout: float) -> tuple[int, dict | str]:
         return 0, f"{type(e).__name__}: {e}"
 
 
-def ask(model: str, item: dict, timeout: float) -> tuple[int, dict | str, float]:
+def data_uri(path: Path) -> str:
+    """Inline a media file as a data URI.
+
+    The server accepts only `data:<type>;base64,...` for both images and video;
+    remote URLs and local paths are rejected in `utils/video.py` and
+    `utils/image.py`. Inlining is therefore the only option, not a shortcut.
+    """
+    mime, _ = mimetypes.guess_type(path.name)
+    if mime is None:
+        mime = "video/mp4" if path.suffix == ".mp4" else "image/png"
+    return f"data:{mime};base64,{base64.b64encode(path.read_bytes()).decode()}"
+
+
+def ask(model: str, item: dict, timeout: float,
+        media_dir: Path | None = None) -> tuple[int, dict | str, float]:
     """Send one corpus item as a System One request."""
     question = {"type": item["type"], "instructions": item["instructions"]}
     if item["criteria"] is not None:
@@ -94,6 +129,12 @@ def ask(model: str, item: dict, timeout: float) -> tuple[int, dict | str, float]
         "state": item["state"],
         "questions": {item["id"]: question},
     }
+    if media_dir is not None and item.get("media"):
+        uris = [data_uri(media_dir / name) for name in item["media"]]
+        if item.get("modality") == "video":
+            payload["videos"] = uris
+        else:
+            payload["images"] = uris
     t0 = time.perf_counter()
     status, body = post("/v1/systemone", payload, timeout)
     return status, body, (time.perf_counter() - t0) * 1000.0
@@ -190,13 +231,14 @@ def pct(values: list[float], q: float) -> float:
 # --------------------------------------------------------------------------
 # evaluation
 # --------------------------------------------------------------------------
-def evaluate(model: str, corpus: dict, timeout: float, verbose: bool) -> dict:
+def evaluate(model: str, corpus: dict, timeout: float, verbose: bool,
+             media_dir: Path | None = None) -> dict:
     rows: list[dict] = []
     gates = {"error": [], "schema": [], "degenerate": [], "truncation": []}
     latencies: list[float] = []
 
     for item in corpus["items"]:
-        status, body, ms = ask(model, item, timeout)
+        status, body, ms = ask(model, item, timeout, media_dir)
         latencies.append(ms)
         row = {"id": item["id"], "family": item["family"], "type": item["type"],
                "status": status, "latency_ms": round(ms, 1)}
@@ -305,14 +347,15 @@ def evaluate(model: str, corpus: dict, timeout: float, verbose: bool) -> dict:
     return summary
 
 
-def check_determinism(model: str, corpus: dict, timeout: float, sample: int = 5) -> dict:
+def check_determinism(model: str, corpus: dict, timeout: float, sample: int = 5,
+                      media_dir: Path | None = None) -> dict:
     """Re-run a sample of items three times; probabilities must not move."""
     items = corpus["items"][:sample]
     unstable = []
     for item in items:
         seen = []
         for _ in range(3):
-            status, body, _ms = ask(model, item, timeout)
+            status, body, _ms = ask(model, item, timeout, media_dir)
             if status != 200:
                 seen.append(f"HTTP {status}")
                 continue
@@ -334,6 +377,8 @@ def main() -> int:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--model", required=True, help="model id as served by oMLX")
     ap.add_argument("--corpus", default="results/decision/corpus.json")
+    ap.add_argument("--modality", choices=["text", "image", "video"], default="text",
+                    help="which items to score; media items need --corpus pointing at a manifest")
     ap.add_argument("--out", help="write the full result JSON here")
     ap.add_argument("--timeout", type=float, default=300.0)
     ap.add_argument("--determinism", action="store_true",
@@ -342,29 +387,54 @@ def main() -> int:
     ap.add_argument("--quiet", action="store_true")
     args = ap.parse_args()
 
+    corpus_path = Path(args.corpus)
     try:
-        with open(args.corpus, encoding="utf-8") as fh:
+        with open(corpus_path, encoding="utf-8") as fh:
             corpus = json.load(fh)
     except FileNotFoundError:
         print(f"corpus not found: {args.corpus}\n"
               f"run: python3 scripts/decision_corpus.py --out {args.corpus}", file=sys.stderr)
         return 2
 
+    # Media items live next to their manifest, so the directory is derivable and
+    # does not need a second flag that could disagree with --corpus.
+    media_dir: Path | None = None
+    if args.modality != "text":
+        corpus["items"] = [i for i in corpus["items"] if i.get("modality") == args.modality]
+        if not corpus["items"]:
+            print(f"no {args.modality} items in {args.corpus}", file=sys.stderr)
+            return 2
+        media_dir = corpus_path.parent
+
     verbose = not args.quiet
     if verbose:
-        print(f"scoring {args.model} on {len(corpus['items'])} items\n")
+        print(f"scoring {args.model} on {len(corpus['items'])} {args.modality} items\n")
 
-    result = evaluate(args.model, corpus, args.timeout, verbose)
+    result = evaluate(args.model, corpus, args.timeout, verbose, media_dir)
+    result["modality"] = args.modality
 
     if args.determinism:
         if verbose:
             print("\nchecking determinism (3 runs x 5 items)...")
-        result["determinism"] = check_determinism(args.model, corpus, args.timeout)
+        result["determinism"] = check_determinism(args.model, corpus, args.timeout,
+                                                  media_dir=media_dir)
 
     if args.baseline:
-        if verbose:
-            print(f"\nscoring chat-model baseline {args.baseline}...")
-        result["baseline"] = evaluate(args.baseline, corpus, args.timeout, False)
+        if args.modality == "video":
+            # Not a skipped check: the chat path rejects videos outright, so
+            # there is nothing to compare against. Recorded so the absence is
+            # visible in the result file rather than looking like an oversight.
+            result["baseline"] = {
+                "supported": False,
+                "reason": "the chat-model path rejects videos "
+                          "(decisions_request: 'this model does not take videos')",
+            }
+            if verbose:
+                print("\nbaseline         unsupported for video; skipping")
+        else:
+            if verbose:
+                print(f"\nscoring chat-model baseline {args.baseline}...")
+            result["baseline"] = evaluate(args.baseline, corpus, args.timeout, False, media_dir)
 
     if verbose:
         print(f"\n{'=' * 62}")
@@ -392,9 +462,12 @@ def main() -> int:
                 print(f"  {u['id']}: {u['runs']}")
         if "baseline" in result:
             b = result["baseline"]
-            print(f"\nbaseline {b['model']}")
-            print(f"  accuracy {b['accuracy']}  brier {b['brier']}  ece {b['ece']}  "
-                  f"latency {b['latency_ms_median']} ms")
+            if b.get("supported") is False:
+                print(f"\nbaseline         unsupported: {b['reason']}")
+            else:
+                print(f"\nbaseline {b['model']}")
+                print(f"  accuracy {b['accuracy']}  brier {b['brier']}  ece {b['ece']}  "
+                      f"latency {b['latency_ms_median']} ms")
 
     if args.out:
         with open(args.out, "w", encoding="utf-8") as fh:

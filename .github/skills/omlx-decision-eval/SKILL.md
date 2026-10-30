@@ -105,6 +105,46 @@ that knows the answer from one that always says yes on a balanced corpus.
 Regenerate with `python3 scripts/decision_corpus.py --out results/decision/corpus.json`.
 Never hand-edit the corpus — regenerate so ground truth stays reproducible.
 
+### The media corpora
+
+Text is one of three. Every checkpoint in the sweep carries a vision tower, so a
+text-only score says nothing about the modality the model shipped with.
+
+`scripts/decision_media_corpus.py` generates 25 images and 16 clips from the same
+seed:
+
+| Family | n | Isolates |
+|---|---|---|
+| `img-count` | 6 | counting objects — the only image family that separates the d3 ladder |
+| `img-colour` | 4 | colour identification |
+| `img-spatial` | 4 | left/right/above/below |
+| `img-text` | 4 | reading a rendered word |
+| `img-shape` | 4 | shape identification |
+| `img-ambiguous` | 3 | **defective** — see below |
+| `vid-motion` | 4 | static vs moving; **the clips share their first frame** |
+| `vid-direction` | 4 | direction of travel |
+| `vid-appear` | 4 | object appears mid-clip; first half identical |
+| `vid-colourchange` | 4 | colour changes mid-clip; first frame identical |
+
+The video families are built so a single frame cannot answer them. d3 samples at
+2 fps and caps at 32 frames, so "does it use the temporal axis" is a real
+question with a real failure mode.
+
+**`img-ambiguous` does not work and its numbers must not be cited.** Coarse noise
+with no object in it is answerable, and every model answers it at 0.98–1.00
+confidence. A working version needs genuinely undecidable images — occluded, or
+ambiguous between two readings.
+
+Regenerate with the app-bundle interpreter, not the stock `python3`:
+
+```sh
+/Applications/oMLX.app/Contents/MacOS/omlx-cluster-python \
+    scripts/decision_media_corpus.py --out results/decision/media
+```
+
+The stock interpreter has no Pillow and no OpenCV. The corpus is committed
+(1.3 MB) so a clone does not need the app bundle to read it.
+
 ## Knobs: what is real
 
 ### Correctness preconditions — not knobs
@@ -135,8 +175,8 @@ sweeping these produces identical numbers and wastes a benchmark slot.
 | `noul` criteria | object, defaults merged | object, optional | object, **only** `"true"`/`"false"` | — |
 | `choice` criteria | non-empty object | non-empty object | 1–255 options | — |
 | `score` criteria | non-empty array | array, **≥ 2** | array, **2–10**, distinct | — |
-| Images | yes, multiple | **at most one** | yes | yes |
-| Video | rejected | rejected | **yes** (≤ 300 s, 4–32 frames) | rejected |
+| Images | yes, multiple | **at most one** | yes, multiple | yes |
+| Video | rejected (400) | rejected (400) | **yes** (≤ 300 s, 4–32 frames) | rejected |
 | `truncate` | **honoured** | ignored (413) | ignored | ignored |
 
 **d1 is not servable on 0.7.3rc1.** `omlx/engine/decision.py` maps only
@@ -151,19 +191,49 @@ from a build that cannot load them.
 3. Download **one** checkpoint — an active download skews latency up to 4×.
 4. Confirm `engine_type == "decision"` via `/admin/api/models`. If not, stop.
 5. `--determinism` first. Gate failure or instability ends the evaluation.
-6. Score it, then score the baseline in the same session.
-7. Write `results/decision/<name>.md` and add a row to `results/decision/README.md`.
+6. Score text, then images, then video, then the baseline — same session.
+7. Write `results/decision/<name>.md` with a **Modality** section, and add rows
+   to `results/decision/README.md` and `results/decision/media/README.md`.
 8. Shuttle the checkpoint to `/Volumes/NVMe/omlx-models` once written up.
 
-## What this corpus cannot measure
+```sh
+python3 scripts/decision_eval.py --model <id> --out results/decision/<name>.json
+python3 scripts/decision_eval.py --model <id> --modality image \
+    --corpus results/decision/media/manifest.json --out /tmp/img-<name>.json
+python3 scripts/decision_eval.py --model <id> --modality video \
+    --corpus results/decision/media/manifest.json --out /tmp/vid-<name>.json
+```
+
+Clef and OpenJev reject video with HTTP 400 `"this model does not take videos"`.
+Record that as a capability boundary, not a failure. There is no video baseline —
+the chat path has no video route, and the harness writes
+`{"supported": false}` rather than skipping silently.
+
+## Read the family table, not the aggregate
+
+**A well-formed distribution can still be a blind answer.** `d3-edge` answers
+`true` to all six `img-count` items and `false` to all four `img-text` items, at
+0.68–0.99 confidence. The `degenerate` gate does not fire, because each answer is
+a valid distribution. Only the per-family breakdown shows it.
+
+Before blaming a model for a family result, **validate the family against a model
+known to be capable.** The `img-text` family was first drawn at 96 px and made
+`d3-flash` look broken (0.59 on a present word); at 200 px it separates 0.89 from
+0.01. The same check cleared `vid-motion`: `d3-flash` scores 0.966/0.002 on the
+same clips, so `d3-edge`'s 0.500 is real.
+
+## What these corpora cannot measure
 
 State this in every write-up:
 
 - **Open-domain judgement.** Every item is decidable by inspection.
 - **Long-context reasoning.** `longstate` tests that a long state does not
   *break* the answer, not that a fact can be found in 100K tokens.
-- **Multimodal quality.** The corpus is text-only; Clef/OpenJev/d3 accept images
-  and d3 accepts video, and none of that is scored.
+- **Real photographs and real video.** The media corpora are drawn and rendered.
+  Synthetic geometry and synthetic text are a floor, not a ceiling.
+- **Video beyond 4 s and 4 families.** d3 samples at 2 fps, capped at 32 frames.
+- **Cross-image reasoning.** OpenJev takes at most one image, so the corpus never
+  sends more than one.
 - **Throughput under concurrency.** `DecisionEngine` serialises behind an
   `asyncio.Lock`; this is single-request latency.
 - **Instruction-following.** Instructions are short and direct.

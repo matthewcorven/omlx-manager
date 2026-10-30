@@ -74,9 +74,52 @@ If calibrated probabilities are required, the 27B baseline is better on quality
 and 40× worse on latency; the honest middle is to use d3-edge for the argmax and
 reserve the baseline for the cases that need a real probability.
 
+## Modality
+
+d3 accepts images and video. Both were scored — see
+[`media/README.md`](media/README.md).
+
+| Corpus | Acc | Brier | ECE | Median ms | p95 ms |
+|---|---|---|---|---|---|
+| image (25 items) | 0.773 | 0.3260 | 0.1309 | 211 | 228 |
+| video (16 items) | 0.812 | 0.3642 | 0.2655 | 159 | 162 |
+
+| Image family | Acc | Brier | Conf |
+|---|---|---|---|
+| `img-colour` | 1.000 | 0.0043 | 0.949 |
+| `img-spatial` | 1.000 | 0.0004 | 0.988 |
+| `img-shape` | 1.000 | 0.0392 | 0.890 |
+| `img-count` | **0.500** | 0.5897 | 0.801 |
+| `img-text` | **0.500** | 0.8644 | 0.942 |
+
+| Video family | Acc | Brier | Conf |
+|---|---|---|---|
+| `vid-appear` | 1.000 | 0.0781 | 0.822 |
+| `vid-colourchange` | 1.000 | 0.0002 | 0.990 |
+| `vid-direction` | 0.750 | 0.4707 | 0.452 |
+| `vid-motion` | **0.500** | 0.9079 | 0.968 |
+
+**d3-edge is not a vision model, and the failure is degenerate rather than
+degraded.** It answers `true` to all six counting questions and `false` to all
+four text questions — a constant answer per family, at 0.68–0.99 confidence. It
+is not uncertain about the images; it is not looking at them. The `degenerate`
+gate does not fire because each individual answer is a well-formed distribution,
+which is exactly why the per-family breakdown has to be read and not just the
+aggregate.
+
+The one place it is honest is `vid-direction`, where mean confidence drops to
+0.452 and it gets three of four. That is the only family in either corpus where
+its probabilities carry information about its own competence.
+
+**The text-sweep recommendation does not survive this.** "Short, lexical, argmax
+only, tight p95" was written against a text corpus. 211 ms per image is 8× faster
+than `d3-flash` and wrong on a third of them, confidently. Any workload whose
+input can contain an image must not route to `d3-edge`.
+
 ## Caveats
 
-Text-only corpus. d3 accepts images and video (≤ 300 s, 4–32 frames) and none of
-that is scored here. Single-request latency only — `DecisionEngine` serialises
-behind an `asyncio.Lock`, so this says nothing about throughput under concurrency.
-See "What this corpus cannot measure" in the methodology.
+The text corpus is 39 items and the media corpora are 25 images and 16 clips;
+treat every per-family cell as directional. Single-request latency only —
+`DecisionEngine` serialises behind an `asyncio.Lock`, so this says nothing about
+throughput under concurrency. See "What this corpus cannot measure" in the
+methodology.

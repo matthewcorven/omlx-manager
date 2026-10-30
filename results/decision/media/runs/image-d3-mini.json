@@ -1,0 +1,650 @@
+{
+ "model": "vllm-sr/d3-mini",
+ "items": 25,
+ "scored_items": 22,
+ "gates": {
+  "error": [],
+  "schema": [],
+  "degenerate": [],
+  "truncation": []
+ },
+ "gate_failures": 0,
+ "accuracy": 0.9545,
+ "brier": 0.0701,
+ "logloss": 0.1061,
+ "ece": 0.0606,
+ "mean_confidence": 0.9696,
+ "ambiguous_confidence": 0.9995,
+ "latency_ms_median": 1037.5,
+ "latency_ms_p95": 1066.0,
+ "by_family": {
+  "img-colour": {
+   "n": 4,
+   "accuracy": 1.0,
+   "brier": 0.0,
+   "mean_confidence": 0.9993
+  },
+  "img-count": {
+   "n": 6,
+   "accuracy": 0.8333,
+   "brier": 0.2344,
+   "mean_confidence": 0.9454
+  },
+  "img-shape": {
+   "n": 4,
+   "accuracy": 1.0,
+   "brier": 0.0,
+   "mean_confidence": 0.9995
+  },
+  "img-spatial": {
+   "n": 4,
+   "accuracy": 1.0,
+   "brier": 0.0,
+   "mean_confidence": 0.9989
+  },
+  "img-text": {
+   "n": 4,
+   "accuracy": 1.0,
+   "brier": 0.0342,
+   "mean_confidence": 0.9168
+  }
+ },
+ "rows": [
+  {
+   "id": "img-count-00",
+   "family": "img-count",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 4852.9,
+   "probabilities": [
+    0.0044,
+    0.9956
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.9956,
+   "scored": true,
+   "expected": "true",
+   "correct": true,
+   "brier": 3.9e-05,
+   "logloss": 0.00441,
+   "p_truth": 0.9956
+  },
+  {
+   "id": "img-count-01",
+   "family": "img-count",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 1028.4,
+   "probabilities": [
+    0.9863,
+    0.0137
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.9863,
+   "scored": true,
+   "expected": "false",
+   "correct": true,
+   "brier": 0.000375,
+   "logloss": 0.013795,
+   "p_truth": 0.9863
+  },
+  {
+   "id": "img-count-02",
+   "family": "img-count",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 1029.6,
+   "probabilities": [
+    0.0495,
+    0.9505
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.9505,
+   "scored": true,
+   "expected": "true",
+   "correct": true,
+   "brier": 0.0049,
+   "logloss": 0.050767,
+   "p_truth": 0.9505
+  },
+  {
+   "id": "img-count-03",
+   "family": "img-count",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 1029.6,
+   "probabilities": [
+    0.9924,
+    0.0076
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.9924,
+   "scored": true,
+   "expected": "false",
+   "correct": true,
+   "brier": 0.000116,
+   "logloss": 0.007629,
+   "p_truth": 0.9924
+  },
+  {
+   "id": "img-count-04",
+   "family": "img-count",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 1028.6,
+   "probabilities": [
+    0.0848,
+    0.9152
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.9152,
+   "scored": true,
+   "expected": "true",
+   "correct": true,
+   "brier": 0.014382,
+   "logloss": 0.088613,
+   "p_truth": 0.9152
+  },
+  {
+   "id": "img-count-05",
+   "family": "img-count",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 1030.7,
+   "probabilities": [
+    0.1674,
+    0.8326
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.8326,
+   "scored": true,
+   "expected": "false",
+   "correct": false,
+   "brier": 1.386446,
+   "logloss": 1.787369,
+   "p_truth": 0.1674
+  },
+  {
+   "id": "img-colour-00",
+   "family": "img-colour",
+   "type": "choice",
+   "status": 200,
+   "latency_ms": 1066.0,
+   "probabilities": [
+    0.9994,
+    0.0003,
+    0.0002,
+    0.0002
+   ],
+   "keys": [
+    "red",
+    "green",
+    "blue",
+    "yellow"
+   ],
+   "predicted": "red",
+   "confidence": 0.9994,
+   "scored": true,
+   "expected": "red",
+   "correct": true,
+   "brier": 1e-06,
+   "logloss": 0.0006,
+   "p_truth": 0.9994
+  },
+  {
+   "id": "img-colour-01",
+   "family": "img-colour",
+   "type": "choice",
+   "status": 200,
+   "latency_ms": 1060.8,
+   "probabilities": [
+    0.0002,
+    0.9993,
+    0.0002,
+    0.0002
+   ],
+   "keys": [
+    "red",
+    "green",
+    "blue",
+    "yellow"
+   ],
+   "predicted": "green",
+   "confidence": 0.9993,
+   "scored": true,
+   "expected": "green",
+   "correct": true,
+   "brier": 1e-06,
+   "logloss": 0.0007,
+   "p_truth": 0.9993
+  },
+  {
+   "id": "img-colour-02",
+   "family": "img-colour",
+   "type": "choice",
+   "status": 200,
+   "latency_ms": 1060.9,
+   "probabilities": [
+    0.0002,
+    0.0001,
+    0.9996,
+    0.0001
+   ],
+   "keys": [
+    "red",
+    "green",
+    "blue",
+    "yellow"
+   ],
+   "predicted": "blue",
+   "confidence": 0.9996,
+   "scored": true,
+   "expected": "blue",
+   "correct": true,
+   "brier": 0.0,
+   "logloss": 0.0004,
+   "p_truth": 0.9996
+  },
+  {
+   "id": "img-colour-03",
+   "family": "img-colour",
+   "type": "choice",
+   "status": 200,
+   "latency_ms": 1058.7,
+   "probabilities": [
+    0.0004,
+    0.0003,
+    0.0003,
+    0.9989
+   ],
+   "keys": [
+    "red",
+    "green",
+    "blue",
+    "yellow"
+   ],
+   "predicted": "yellow",
+   "confidence": 0.9989,
+   "scored": true,
+   "expected": "yellow",
+   "correct": true,
+   "brier": 2e-06,
+   "logloss": 0.001101,
+   "p_truth": 0.9989
+  },
+  {
+   "id": "img-spatial-00",
+   "family": "img-spatial",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 1028.7,
+   "probabilities": [
+    0.0015,
+    0.9985
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.9985,
+   "scored": true,
+   "expected": "true",
+   "correct": true,
+   "brier": 4e-06,
+   "logloss": 0.001501,
+   "p_truth": 0.9985
+  },
+  {
+   "id": "img-spatial-01",
+   "family": "img-spatial",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 1027.8,
+   "probabilities": [
+    0.9993,
+    0.0007
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.9993,
+   "scored": true,
+   "expected": "false",
+   "correct": true,
+   "brier": 1e-06,
+   "logloss": 0.0007,
+   "p_truth": 0.9993
+  },
+  {
+   "id": "img-spatial-02",
+   "family": "img-spatial",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 1029.0,
+   "probabilities": [
+    0.0014,
+    0.9986
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.9986,
+   "scored": true,
+   "expected": "true",
+   "correct": true,
+   "brier": 4e-06,
+   "logloss": 0.001401,
+   "p_truth": 0.9986
+  },
+  {
+   "id": "img-spatial-03",
+   "family": "img-spatial",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 1044.9,
+   "probabilities": [
+    0.9993,
+    0.0007
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.9993,
+   "scored": true,
+   "expected": "false",
+   "correct": true,
+   "brier": 1e-06,
+   "logloss": 0.0007,
+   "p_truth": 0.9993
+  },
+  {
+   "id": "img-text-00",
+   "family": "img-text",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 1045.7,
+   "probabilities": [
+    0.2495,
+    0.7505
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.7505,
+   "scored": true,
+   "expected": "true",
+   "correct": true,
+   "brier": 0.124501,
+   "logloss": 0.287016,
+   "p_truth": 0.7505
+  },
+  {
+   "id": "img-text-01",
+   "family": "img-text",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 1028.0,
+   "probabilities": [
+    0.9979,
+    0.0021
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.9979,
+   "scored": true,
+   "expected": "false",
+   "correct": true,
+   "brier": 9e-06,
+   "logloss": 0.002102,
+   "p_truth": 0.9979
+  },
+  {
+   "id": "img-text-02",
+   "family": "img-text",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 1029.7,
+   "probabilities": [
+    0.0784,
+    0.9216
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.9216,
+   "scored": true,
+   "expected": "true",
+   "correct": true,
+   "brier": 0.012293,
+   "logloss": 0.081644,
+   "p_truth": 0.9216
+  },
+  {
+   "id": "img-text-03",
+   "family": "img-text",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 1038.2,
+   "probabilities": [
+    0.9974,
+    0.0026
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.9974,
+   "scored": true,
+   "expected": "false",
+   "correct": true,
+   "brier": 1.4e-05,
+   "logloss": 0.002603,
+   "p_truth": 0.9974
+  },
+  {
+   "id": "img-shape-00",
+   "family": "img-shape",
+   "type": "choice",
+   "status": 200,
+   "latency_ms": 1029.7,
+   "probabilities": [
+    0.9998,
+    0.0001,
+    0.0,
+    0.0
+   ],
+   "keys": [
+    "circle",
+    "square",
+    "triangle",
+    "star"
+   ],
+   "predicted": "circle",
+   "confidence": 0.9998,
+   "scored": true,
+   "expected": "circle",
+   "correct": true,
+   "brier": 0.0,
+   "logloss": 0.0002,
+   "p_truth": 0.9998
+  },
+  {
+   "id": "img-shape-01",
+   "family": "img-shape",
+   "type": "choice",
+   "status": 200,
+   "latency_ms": 1047.8,
+   "probabilities": [
+    0.0002,
+    0.9994,
+    0.0003,
+    0.0001
+   ],
+   "keys": [
+    "circle",
+    "square",
+    "triangle",
+    "star"
+   ],
+   "predicted": "square",
+   "confidence": 0.9994,
+   "scored": true,
+   "expected": "square",
+   "correct": true,
+   "brier": 1e-06,
+   "logloss": 0.0006,
+   "p_truth": 0.9994
+  },
+  {
+   "id": "img-shape-02",
+   "family": "img-shape",
+   "type": "choice",
+   "status": 200,
+   "latency_ms": 1045.8,
+   "probabilities": [
+    0.0,
+    0.0001,
+    0.9998,
+    0.0
+   ],
+   "keys": [
+    "circle",
+    "square",
+    "triangle",
+    "star"
+   ],
+   "predicted": "triangle",
+   "confidence": 0.9998,
+   "scored": true,
+   "expected": "triangle",
+   "correct": true,
+   "brier": 0.0,
+   "logloss": 0.0002,
+   "p_truth": 0.9998
+  },
+  {
+   "id": "img-shape-03",
+   "family": "img-shape",
+   "type": "choice",
+   "status": 200,
+   "latency_ms": 1031.2,
+   "probabilities": [
+    0.0,
+    0.0001,
+    0.0007,
+    0.9992
+   ],
+   "keys": [
+    "circle",
+    "square",
+    "triangle",
+    "star"
+   ],
+   "predicted": "star",
+   "confidence": 0.9992,
+   "scored": true,
+   "expected": "star",
+   "correct": true,
+   "brier": 1e-06,
+   "logloss": 0.0008,
+   "p_truth": 0.9992
+  },
+  {
+   "id": "img-ambiguous-00",
+   "family": "img-ambiguous",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 1043.9,
+   "probabilities": [
+    0.9995,
+    0.0005
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.9995,
+   "scored": false,
+   "confidence_on_ambiguous": 0.9995
+  },
+  {
+   "id": "img-ambiguous-01",
+   "family": "img-ambiguous",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 1037.5,
+   "probabilities": [
+    0.9995,
+    0.0005
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.9995,
+   "scored": false,
+   "confidence_on_ambiguous": 0.9995
+  },
+  {
+   "id": "img-ambiguous-02",
+   "family": "img-ambiguous",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 1037.8,
+   "probabilities": [
+    0.9996,
+    0.0004
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.9996,
+   "scored": false,
+   "confidence_on_ambiguous": 0.9996
+  }
+ ],
+ "modality": "image"
+}

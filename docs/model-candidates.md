@@ -107,26 +107,38 @@ no sampling. They are scored against a labelled corpus instead; see
 [`decision-model-methodology.md`](decision-model-methodology.md) and
 [`results/decision/`](../results/decision/).
 
-| Model | Family | Size | Servable on 0.7.3rc1 | Scored |
-|---|---|---|---|---|
-| `Jundot/clef-oQ4e` | clef | 17.5 GB | yes | yes — acc 0.943, brier 0.1003, 794 ms |
-| `Jundot/clef-flash-oQ4e` | clef | 6.6 GB | yes | yes — acc 0.857, brier 0.1742, 232 ms |
-| `openjev/openjev` | openjev | 54.7 GB | yes | yes — acc 0.857, brier 0.1987, 467 ms |
-| `vllm-sr/d3-flash` | d3 | 16.8 GB | yes | yes — acc 0.943, brier 0.0764, 153 ms |
-| `vllm-sr/d3-mini` | d3 | 9.1 GB | yes | yes — acc 0.914, brier 0.1034, 86 ms |
-| `vllm-sr/d3-nano` | d3 | 4.5 GB | yes | yes — acc 0.829, brier 0.2346, 38 ms |
-| `vllm-sr/d3-lite` | d3 | 1.7 GB | yes | yes — acc 0.714, brier 0.2546, 22 ms |
-| `vllm-sr/d3-edge` | d3 | 1.2 GB | yes | yes — acc 0.771, brier 0.2514, 12.9 ms |
-| `LiquidAI/d1-2B` | d1 | 3.9 GB | **no** | blocked |
-| `LiquidAI/d1-Omni-2B` | d1 | 4.4 GB | **no** | blocked |
-| `LiquidAI/d1-2B-MLX-8bit` | d1 | 2.2 GB | **no** | blocked |
+| Model | Family | Size | Servable on 0.7.3rc1 | Text | Image | Video |
+|---|---|---|---|---|---|---|
+| `Jundot/clef-oQ4e` | clef | 17.5 GB | yes | acc 0.943, brier 0.1003, 794 ms | **brier 0.0006, 5.6 s** | **rejected** |
+| `Jundot/clef-flash-oQ4e` | clef | 6.6 GB | yes | acc 0.857, brier 0.1742, 232 ms | brier 0.0452, 2.0 s | **rejected** |
+| `openjev/openjev` | openjev | 54.7 GB | yes | acc 0.857, brier 0.1987, 467 ms | brier 0.0785, 5.2 s | **rejected** |
+| `vllm-sr/d3-flash` | d3 | 16.8 GB | yes | acc 0.943, brier 0.0764, 153 ms | brier 0.0343, 1.7 s | brier 0.0003 |
+| `vllm-sr/d3-mini` | d3 | 9.1 GB | yes | acc 0.914, brier 0.1034, 86 ms | brier 0.0701, 1.0 s | **brier 0.0000** |
+| `vllm-sr/d3-nano` | d3 | 4.5 GB | yes | acc 0.829, brier 0.2346, 38 ms | brier 0.0876, 0.6 s | **brier 0.0000** |
+| `vllm-sr/d3-lite` | d3 | 1.7 GB | yes | acc 0.714, brier 0.2546, 22 ms | brier 0.2771, 0.3 s | brier 0.0539 |
+| `vllm-sr/d3-edge` | d3 | 1.2 GB | yes | acc 0.771, brier 0.2514, 12.9 ms | **brier 0.3260 — blind** | **brier 0.3642 — blind** |
+| `LiquidAI/d1-2B` | d1 | 3.9 GB | **no** | blocked | blocked | blocked |
+| `LiquidAI/d1-Omni-2B` | d1 | 4.4 GB | **no** | blocked | blocked | blocked |
+| `LiquidAI/d1-2B-MLX-8bit` | d1 | 2.2 GB | **no** | blocked | blocked | blocked |
 
-All eight servable checkpoints were scored against the same 39-item corpus and
-the same `Qwen3.8-27B-oQ4e-mtp` chat baseline (acc 0.857, brier 0.1838, 536 ms).
-**`d3-flash` is the best-quality decision model; `d3-edge` is the fastest;
-`d3-lite`, `clef-oQ4e` and `openjev` are dominated and should not be deployed.**
-Full results and the decision rule are in
-[`results/decision/README.md`](../results/decision/README.md).
+All eight servable checkpoints were scored against the same 39-item text corpus,
+a 25-item image corpus and a 16-item video corpus, plus the same
+`Qwen3.8-27B-oQ4e-mtp` chat baseline (text acc 0.857 / brier 0.1838 / 536 ms;
+image brier 0.0031 / 5.8 s; no video route).
+
+**The ranking is per-modality and does not transfer.** On text `d3-flash` is the
+best-quality model and `d3-edge` the fastest. On images `clef-oQ4e` wins outright
+(brier 0.0006) and `d3-edge` is blind — it answers `true` to every counting
+question and `false` to every text question, at 0.68–0.99 confidence. On video
+only the d3 family competes at all: Clef and OpenJev reject the modality with
+HTTP 400, and `d3-edge` cannot see motion. `d3-nano` and `d3-mini` are perfect
+(brier 0.0000).
+
+`d3-lite` is dominated on every modality. `clef-oQ4e` is dominated on text and
+best-in-sweep on images. `openjev` wins nothing at 54.7 GB and accepts at most one
+image per request. Full results and the decision rules are in
+[`results/decision/README.md`](../results/decision/README.md) and
+[`results/decision/media/README.md`](../results/decision/media/README.md).
 
 The three d1 checkpoints are not servable on 0.7.3rc1: `omlx/engine/decision.py`
 maps only `{"clef", "openjev", "d3"}` and `omlx/models/d1.py` is absent from the

@@ -82,11 +82,51 @@ If calibrated probabilities are required, the 27B baseline remains the correct
 choice. The honest middle is d3-nano for the argmax plus a recalibration layer
 (Platt or isotonic on a held-out split) if the number itself is consumed.
 
+## Modality
+
+d3 accepts images and video. Both were scored — see
+[`media/README.md`](media/README.md).
+
+| Corpus | Acc | Brier | ECE | Median ms | p95 ms |
+|---|---|---|---|---|---|
+| image (25 items) | 0.955 | 0.0876 | 0.0540 | 637 | 664 |
+| video (16 items) | **1.000** | **0.0000** | 0.0035 | 446 | 461 |
+
+| Image family | Acc | Brier | Conf |
+|---|---|---|---|
+| `img-colour` | 1.000 | 0.0001 | 0.991 |
+| `img-spatial` | 1.000 | 0.0000 | 0.999 |
+| `img-shape` | 1.000 | 0.0000 | 0.998 |
+| `img-text` | 1.000 | 0.0617 | 0.875 |
+| `img-count` | 0.833 | 0.2801 | 0.930 |
+
+| Video family | Acc | Brier | Conf |
+|---|---|---|---|
+| `vid-appear` | 1.000 | 0.0000 | 0.997 |
+| `vid-colourchange` | 1.000 | 0.0000 | 0.997 |
+| `vid-direction` | 1.000 | 0.0000 | 0.997 |
+| `vid-motion` | 1.000 | 0.0001 | 0.995 |
+
+**d3-nano is the best video model in the sweep and the best value on images.**
+Brier 0.0000 on video is not a rounding artefact — it is 16 items, all correct,
+all at 0.995+ confidence. On images it is 0.955 accuracy at 637 ms and 4.5 GB,
+which is the best accuracy-per-GB in the sweep: `d3-flash` needs 16.8 GB and
+1743 ms to reach the same 0.955.
+
+**Counting is its only image weakness**, and it is the same one-item miss as
+`d3-mini`, `d3-flash` and `openjev` — the off-by-one distractor. Its Brier on
+that family (0.2801) is the worst of the four because it is confident (0.930)
+while wrong, where `d3-flash` is less so.
+
+**This is the model the text sweep under-rated.** In text it was "best d3 so
+far" at 0.829 accuracy, mid-ladder. On media it is the only checkpoint that is
+both perfect on video and near-perfect on images, at 4.5 GB.
+
 ## Caveats
 
-Text-only corpus. d3 accepts images and video (≤ 300 s, 4–32 frames) and none of
-that is scored here. Single-request latency only — `DecisionEngine` serialises
-behind an `asyncio.Lock`, so this says nothing about throughput under concurrency.
-The p95 figure is measured while no download was active; an active download
-inflates latency up to 4×. See "What this corpus cannot measure" in the
-methodology.
+The text corpus is 39 items and the media corpora are 25 images and 16 clips;
+treat every per-family cell as directional. Single-request latency only —
+`DecisionEngine` serialises behind an `asyncio.Lock`, so this says nothing about
+throughput under concurrency. The p95 figures are measured while no download was
+active; an active download inflates latency up to 4×. See "What this corpus
+cannot measure" in the methodology.

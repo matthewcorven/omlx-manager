@@ -12,6 +12,10 @@ compared against a **chat-model baseline** answering the same questions through
 the same `/v1/systemone` endpoint. A decision model that loses to the baseline on
 `brier` is not earning its residency.
 
+The text corpus is one of three. Images and video are scored separately in
+[`media/`](media/README.md), because a model that wins on words can lose badly on
+pixels and the text table cannot see it.
+
 ## Results
 
 | Model | Family | Size | Acc | Brier | ECE | Ambig conf | Latency (med) | Gates | Status |
@@ -79,6 +83,52 @@ checkpoint to clear the floor.
 Do not deploy `d3-lite` (dominated by `d3-edge`), `clef-oQ4e` (dominated by
 `d3-flash` on quality, latency and disk), or `openjev` (no quality win at 54.7 GB).
 
+**This rule is a text rule.** It does not transfer to images or video, and two of
+its rows invert there — see [Modality](#modality) below.
+
+## Modality
+
+Full results and per-family breakdowns are in [`media/README.md`](media/README.md).
+The short version:
+
+| Model | Text | Image | Video |
+|---|---|---|---|
+| `vllm-sr/d3-edge` | best latency | **fails** — 0.773 acc, cannot count or read | **fails** — cannot see motion |
+| `vllm-sr/d3-lite` | dominated | 0.818 acc, fails count and text | 1.000 acc, 0.0539 Brier |
+| `vllm-sr/d3-nano` | 0.829 acc | 0.955 acc, 0.0876 Brier | **1.000 acc, 0.0000 Brier** |
+| `vllm-sr/d3-mini` | 0.914 acc | 0.955 acc, 0.0701 Brier | **1.000 acc, 0.0000 Brier** |
+| `vllm-sr/d3-flash` | **best quality** | 0.955 acc, 0.0343 Brier | 1.000 acc, 0.0003 Brier |
+| `Jundot/clef-flash-oQ4e` | 0.857 acc | 1.000 acc, 0.0452 Brier | **rejected** (400) |
+| `Jundot/clef-oQ4e` | dominated | **best image model** — 0.0006 Brier | **rejected** (400) |
+| `openjev/openjev` | no win | 0.955 acc, 0.0785 Brier | **rejected** (400) |
+| `Qwen3.8-27B-oQ4e-mtp` | reference | 1.000 acc, 0.0031 Brier | **unsupported** |
+
+Three findings that the text table could not produce:
+
+1. **`d3-edge` is not a vision model.** It answers "true" to all six counting
+   questions and "false" to all four motion questions, at 0.80–0.97 confidence.
+   It is blind and confident, not uncertain. Its text-sweep fast-path
+   recommendation is unsafe for any input that can contain an image.
+2. **`clef-oQ4e` is the best image model in the sweep** (Brier 0.0006, ECE
+   0.0122) and the only model that beats the chat baseline on image quality. The
+   text sweep called it dominated by `d3-flash`; that domination does not extend
+   to pixels.
+3. **Video is a capability cliff, not a gradient.** Clef and OpenJev reject the
+   modality with HTTP 400, the chat baseline has no video path at all, and of the
+   four d3 checkpoints that accept it, `d3-edge` cannot see motion. `d3-nano` and
+   `d3-mini` are perfect (Brier 0.0000).
+
+### Modality decision rule
+
+| Workload | Model | Why |
+|---|---|---|
+| text, tight p95, no images | `d3-edge` | 12.9 ms, and the corpus is text |
+| any image, best quality | `clef-oQ4e` | 0.0006 Brier, 5.6 s per image |
+| any image, balanced | `d3-flash` | 0.0343 Brier at 1.7 s |
+| any image, best per GB | `d3-mini` | 0.0701 Brier at 9.1 GB |
+| video | `d3-nano` or `d3-mini` | 0.0000 Brier; `d3-edge` cannot see motion |
+| video, Clef or OpenJev | — | not possible; both reject the modality |
+
 **`graded` (0–4 ordinal) is unsolved by every model in the sweep** — 0.400–0.600
 accuracy across all eight checkpoints and the baseline. Five items cannot separate
 models on a five-way ordinal scale; that family needs a larger corpus before any
@@ -97,6 +147,9 @@ blocked rather than scored — a score from a build that cannot load the checkpo
 would be fabricated.
 
 ## Per-model write-ups
+
+Each write-up has a **Modality** section with that model's image and video
+numbers.
 
 - [`d3-edge.md`](d3-edge.md)
 - [`d3-lite.md`](d3-lite.md)

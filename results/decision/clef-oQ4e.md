@@ -82,10 +82,49 @@ The clef family's useful checkpoint is `clef-flash-oQ4e` (6.6 GB, 232 ms median,
 Brier 0.1742) if a clef-family model is wanted for architectural reasons. For
 quality, `d3-flash` is the answer.
 
+## Modality
+
+Clef accepts images and **rejects video** — `clef.py` raises
+`"this model does not take videos"` in `encode()`, and the harness records all 16
+video items as HTTP 400. Images were scored — see
+[`media/README.md`](media/README.md).
+
+| Corpus | Acc | Brier | ECE | Median ms | p95 ms |
+|---|---|---|---|---|---|
+| image (25 items) | **1.000** | **0.0006** | **0.0122** | 5650 | 6162 |
+| video (16 items) | — | — | — | — | — |
+
+| Image family | Acc | Brier | Conf |
+|---|---|---|---|
+| `img-colour` | 1.000 | 0.0001 | 0.991 |
+| `img-spatial` | 1.000 | 0.0001 | 0.994 |
+| `img-shape` | 1.000 | 0.0002 | 0.989 |
+| `img-text` | 1.000 | 0.0001 | 0.994 |
+| `img-count` | **1.000** | 0.0020 | 0.977 |
+
+**This is the best image model in the sweep, and it is the only model that beats
+the chat baseline on image quality.** Brier 0.0006 against the baseline's 0.0031
+and `d3-flash`'s 0.0343; ECE 0.0122 against the baseline's 0.0207. Every family
+is at or below 0.0020 Brier, including `img-count`, where every d3 checkpoint
+except `clef-flash-oQ4e` misses at least one item.
+
+**The text-sweep verdict inverts here.** In text it was dominated by `d3-flash`
+on quality, latency and disk — 0.1003 Brier against 0.0764, 794 ms against
+153 ms, 17.5 GB against 16.8 GB. On images it is 57× better on Brier and 3.2×
+slower. That is a trade, not a domination, and the text table could not see it.
+
+**The cost is real.** 5650 ms per image is 3.2× `d3-flash` and 3.4× the chat
+baseline, and it is the slowest model in the image sweep. A workload that needs
+one image classified per request cannot use it; a batch or offline workload
+should.
+
+**Video is a hard capability boundary, not a quality gap.** There is no score to
+report and no partial credit; the request is refused before inference.
+
 ## Caveats
 
-Text-only corpus. Clef accepts images and none of that is scored here. Single
-request latency only — `DecisionEngine` serialises behind an `asyncio.Lock`, so
-this says nothing about throughput under concurrency. The p95 figure is measured
-with no download active. See "What this corpus cannot measure" in the
-methodology.
+The text corpus is 39 items and the image corpus is 25; treat every per-family
+cell as directional. Single-request latency only — `DecisionEngine` serialises
+behind an `asyncio.Lock`, so this says nothing about throughput under
+concurrency. The p95 figure is measured with no download active. See "What this
+corpus cannot measure" in the methodology.

@@ -101,10 +101,54 @@ Do not use it for:
 `d3-lite` is dominated by `d3-edge` and should not be deployed. `d3-nano` is a
 reasonable middle but is beaten by `d3-mini` on every axis except size.
 
+## Modality
+
+d3 accepts images and video. Both were scored — see
+[`media/README.md`](media/README.md).
+
+| Corpus | Acc | Brier | ECE | Median ms | p95 ms |
+|---|---|---|---|---|---|
+| image (25 items) | 0.955 | 0.0343 | 0.0414 | 1743 | 1810 |
+| video (16 items) | 1.000 | 0.0003 | 0.0063 | 1444 | 1519 |
+
+| Image family | Acc | Brier | Conf |
+|---|---|---|---|
+| `img-colour` | 1.000 | 0.0000 | 1.000 |
+| `img-spatial` | 1.000 | 0.0000 | 1.000 |
+| `img-shape` | 1.000 | 0.0000 | 0.999 |
+| `img-text` | 1.000 | 0.0074 | 0.959 |
+| `img-count` | 0.833 | 0.1208 | 0.908 |
+
+| Video family | Acc | Brier | Conf |
+|---|---|---|---|
+| `vid-appear` | 1.000 | 0.0000 | 0.998 |
+| `vid-colourchange` | 1.000 | 0.0000 | 0.997 |
+| `vid-direction` | 1.000 | 0.0000 | 0.998 |
+| `vid-motion` | 1.000 | 0.0012 | 0.982 |
+
+**d3-flash is the best image model in the d3 family and near-perfect on video.**
+Its image Brier (0.0343) is 2× better than `d3-mini`'s and 2.5× better than
+`d3-nano`'s, and it is the only d3 checkpoint whose `img-count` Brier (0.1208) is
+under 0.2 — it misses one item but is less confident about the family than
+`d3-mini` (0.908 vs 0.945).
+
+**It is not the best image model overall.** `clef-oQ4e` scores 0.0006 Brier
+against its 0.0343, and the chat baseline scores 0.0031. `d3-flash` is 3.2×
+faster than `clef-oQ4e` and 3.4× faster than the baseline, which is the trade.
+
+**Video is a clean sweep** — 16 of 16 at 0.0003 Brier. `d3-nano` and `d3-mini`
+both score 0.0000, so on video alone `d3-flash` is third by a margin that is
+inside the corpus's resolution. Its advantage is that it is the only checkpoint
+that is simultaneously best-in-family on text and near-best on both media.
+
+**The text-sweep "best quality" verdict holds, with a modality qualifier.** It is
+the best *d3* model on images and the best model on text. It is not the best
+model on images.
+
 ## Caveats
 
-Text-only corpus. d3 accepts images and video (≤ 300 s, 4–32 frames) and none of
-that is scored here. Single-request latency only — `DecisionEngine` serialises
-behind an `asyncio.Lock`, so this says nothing about throughput under concurrency.
-The `graded` family has only 5 items; treat that cell as directional. See "What
-this corpus cannot measure" in the methodology.
+The text corpus is 39 items and the media corpora are 25 images and 16 clips;
+treat every per-family cell as directional. The `graded` family has only 5 items.
+Single-request latency only — `DecisionEngine` serialises behind an
+`asyncio.Lock`, so this says nothing about throughput under concurrency. See
+"What this corpus cannot measure" in the methodology.

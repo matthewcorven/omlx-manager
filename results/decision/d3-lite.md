@@ -73,9 +73,54 @@ The general recommendation from `d3-edge` still holds: use the d3 family for
 argmax-only routing and intent buckets, never for consumed probabilities, and
 never for long-context state tracking.
 
+## Modality
+
+d3 accepts images and video. Both were scored — see
+[`media/README.md`](media/README.md).
+
+| Corpus | Acc | Brier | ECE | Median ms | p95 ms |
+|---|---|---|---|---|---|
+| image (25 items) | 0.818 | 0.2771 | 0.0853 | 267 | 272 |
+| video (16 items) | 1.000 | 0.0539 | 0.1148 | 207 | 224 |
+
+| Image family | Acc | Brier | Conf |
+|---|---|---|---|
+| `img-colour` | 1.000 | 0.0168 | 0.895 |
+| `img-spatial` | 1.000 | 0.0001 | 0.995 |
+| `img-shape` | 1.000 | 0.0003 | 0.988 |
+| `img-count` | 0.667 | 0.4318 | 0.773 |
+| `img-text` | **0.500** | 0.8594 | 0.932 |
+
+| Video family | Acc | Brier | Conf |
+|---|---|---|---|
+| `vid-appear` | 1.000 | 0.0189 | 0.928 |
+| `vid-colourchange` | 1.000 | 0.0003 | 0.988 |
+| `vid-direction` | 1.000 | 0.0799 | 0.826 |
+| `vid-motion` | 1.000 | 0.1166 | 0.799 |
+
+**d3-lite is the only model that fails both `img-count` and `img-text`.** It
+answers `false` to all four text questions at 0.92–0.94 confidence — the same
+degenerate pattern as `d3-edge`, one rung up the ladder. It gets two of six
+counting items wrong, and its confidence on those is 0.51–0.89, so it is at least
+less certain than `d3-edge` while being wrong.
+
+**Video is where it recovers, and the recovery is real.** It scores 1.000 on all
+four video families, including `vid-motion` where `d3-edge` collapses. Its Brier
+(0.0539) is 20× worse than `d3-nano`'s because it is under-confident rather than
+wrong — mean confidence 0.799 on `vid-motion` against 0.995 for `d3-nano`. It
+sees motion; it just does not trust the answer.
+
+**The domination verdict is unchanged and now stronger.** In text it was
+dominated by `d3-edge` on every axis. On images it is slower than `d3-edge`
+(267 ms vs 211 ms) and more accurate (0.818 vs 0.773), which is a trade rather
+than a domination — but `d3-nano` is 0.955 at 637 ms and 4.5 GB, and `d3-lite`'s
+1.7 GB buys nothing that `d3-edge` does not already do faster. On video it is
+strictly worse than `d3-nano` on every metric.
+
 ## Caveats
 
-Text-only corpus. d3 accepts images and video (≤ 300 s, 4–32 frames) and none of
-that is scored here. Single-request latency only — `DecisionEngine` serialises
-behind an `asyncio.Lock`, so this says nothing about throughput under concurrency.
-See "What this corpus cannot measure" in the methodology.
+The text corpus is 39 items and the media corpora are 25 images and 16 clips;
+treat every per-family cell as directional. Single-request latency only —
+`DecisionEngine` serialises behind an `asyncio.Lock`, so this says nothing about
+throughput under concurrency. See "What this corpus cannot measure" in the
+methodology.

@@ -1,0 +1,433 @@
+{
+ "model": "vllm-sr/d3-mini",
+ "items": 16,
+ "scored_items": 16,
+ "gates": {
+  "error": [],
+  "schema": [],
+  "degenerate": [],
+  "truncation": []
+ },
+ "gate_failures": 0,
+ "accuracy": 1.0,
+ "brier": 0.0,
+ "logloss": 0.0018,
+ "ece": 0.0018,
+ "mean_confidence": 0.9982,
+ "ambiguous_confidence": null,
+ "latency_ms_median": 859.2,
+ "latency_ms_p95": 906.3,
+ "by_family": {
+  "vid-appear": {
+   "n": 4,
+   "accuracy": 1.0,
+   "brier": 0.0,
+   "mean_confidence": 0.9988
+  },
+  "vid-colourchange": {
+   "n": 4,
+   "accuracy": 1.0,
+   "brier": 0.0,
+   "mean_confidence": 0.998
+  },
+  "vid-direction": {
+   "n": 4,
+   "accuracy": 1.0,
+   "brier": 0.0,
+   "mean_confidence": 0.9987
+  },
+  "vid-motion": {
+   "n": 4,
+   "accuracy": 1.0,
+   "brier": 0.0,
+   "mean_confidence": 0.9973
+  }
+ },
+ "rows": [
+  {
+   "id": "vid-motion-00",
+   "family": "vid-motion",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 5358.7,
+   "probabilities": [
+    0.0044,
+    0.9956
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.9956,
+   "scored": true,
+   "expected": "true",
+   "correct": true,
+   "brier": 3.9e-05,
+   "logloss": 0.00441,
+   "p_truth": 0.9956
+  },
+  {
+   "id": "vid-motion-01",
+   "family": "vid-motion",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 838.7,
+   "probabilities": [
+    0.9991,
+    0.0009
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.9991,
+   "scored": true,
+   "expected": "false",
+   "correct": true,
+   "brier": 2e-06,
+   "logloss": 0.0009,
+   "p_truth": 0.9991
+  },
+  {
+   "id": "vid-motion-02",
+   "family": "vid-motion",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 906.3,
+   "probabilities": [
+    0.0044,
+    0.9956
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.9956,
+   "scored": true,
+   "expected": "true",
+   "correct": true,
+   "brier": 3.9e-05,
+   "logloss": 0.00441,
+   "p_truth": 0.9956
+  },
+  {
+   "id": "vid-motion-03",
+   "family": "vid-motion",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 876.6,
+   "probabilities": [
+    0.9991,
+    0.0009
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.9991,
+   "scored": true,
+   "expected": "false",
+   "correct": true,
+   "brier": 2e-06,
+   "logloss": 0.0009,
+   "p_truth": 0.9991
+  },
+  {
+   "id": "vid-direction-00",
+   "family": "vid-direction",
+   "type": "choice",
+   "status": 200,
+   "latency_ms": 857.0,
+   "probabilities": [
+    0.9998,
+    0.0001,
+    0.0001,
+    0.0
+   ],
+   "keys": [
+    "left_to_right",
+    "right_to_left",
+    "upward",
+    "downward"
+   ],
+   "predicted": "left_to_right",
+   "confidence": 0.9998,
+   "scored": true,
+   "expected": "left_to_right",
+   "correct": true,
+   "brier": 0.0,
+   "logloss": 0.0002,
+   "p_truth": 0.9998
+  },
+  {
+   "id": "vid-direction-01",
+   "family": "vid-direction",
+   "type": "choice",
+   "status": 200,
+   "latency_ms": 874.5,
+   "probabilities": [
+    0.0017,
+    0.998,
+    0.0002,
+    0.0001
+   ],
+   "keys": [
+    "left_to_right",
+    "right_to_left",
+    "upward",
+    "downward"
+   ],
+   "predicted": "right_to_left",
+   "confidence": 0.998,
+   "scored": true,
+   "expected": "right_to_left",
+   "correct": true,
+   "brier": 7e-06,
+   "logloss": 0.002002,
+   "p_truth": 0.998
+  },
+  {
+   "id": "vid-direction-02",
+   "family": "vid-direction",
+   "type": "choice",
+   "status": 200,
+   "latency_ms": 884.8,
+   "probabilities": [
+    0.0015,
+    0.0002,
+    0.998,
+    0.0003
+   ],
+   "keys": [
+    "left_to_right",
+    "right_to_left",
+    "upward",
+    "downward"
+   ],
+   "predicted": "upward",
+   "confidence": 0.998,
+   "scored": true,
+   "expected": "upward",
+   "correct": true,
+   "brier": 6e-06,
+   "logloss": 0.002002,
+   "p_truth": 0.998
+  },
+  {
+   "id": "vid-direction-03",
+   "family": "vid-direction",
+   "type": "choice",
+   "status": 200,
+   "latency_ms": 847.4,
+   "probabilities": [
+    0.0001,
+    0.0002,
+    0.0006,
+    0.9991
+   ],
+   "keys": [
+    "left_to_right",
+    "right_to_left",
+    "upward",
+    "downward"
+   ],
+   "predicted": "downward",
+   "confidence": 0.9991,
+   "scored": true,
+   "expected": "downward",
+   "correct": true,
+   "brier": 1e-06,
+   "logloss": 0.0009,
+   "p_truth": 0.9991
+  },
+  {
+   "id": "vid-appear-00",
+   "family": "vid-appear",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 859.0,
+   "probabilities": [
+    0.0019,
+    0.9981
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.9981,
+   "scored": true,
+   "expected": "true",
+   "correct": true,
+   "brier": 7e-06,
+   "logloss": 0.001902,
+   "p_truth": 0.9981
+  },
+  {
+   "id": "vid-appear-01",
+   "family": "vid-appear",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 859.5,
+   "probabilities": [
+    0.9995,
+    0.0005
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.9995,
+   "scored": true,
+   "expected": "false",
+   "correct": true,
+   "brier": 0.0,
+   "logloss": 0.0005,
+   "p_truth": 0.9995
+  },
+  {
+   "id": "vid-appear-02",
+   "family": "vid-appear",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 853.7,
+   "probabilities": [
+    0.0019,
+    0.9981
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.9981,
+   "scored": true,
+   "expected": "true",
+   "correct": true,
+   "brier": 7e-06,
+   "logloss": 0.001902,
+   "p_truth": 0.9981
+  },
+  {
+   "id": "vid-appear-03",
+   "family": "vid-appear",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 851.1,
+   "probabilities": [
+    0.9995,
+    0.0005
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.9995,
+   "scored": true,
+   "expected": "false",
+   "correct": true,
+   "brier": 0.0,
+   "logloss": 0.0005,
+   "p_truth": 0.9995
+  },
+  {
+   "id": "vid-colourchange-00",
+   "family": "vid-colourchange",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 865.0,
+   "probabilities": [
+    0.0027,
+    0.9973
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.9973,
+   "scored": true,
+   "expected": "true",
+   "correct": true,
+   "brier": 1.5e-05,
+   "logloss": 0.002704,
+   "p_truth": 0.9973
+  },
+  {
+   "id": "vid-colourchange-01",
+   "family": "vid-colourchange",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 840.2,
+   "probabilities": [
+    0.9986,
+    0.0014
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.9986,
+   "scored": true,
+   "expected": "false",
+   "correct": true,
+   "brier": 4e-06,
+   "logloss": 0.001401,
+   "p_truth": 0.9986
+  },
+  {
+   "id": "vid-colourchange-02",
+   "family": "vid-colourchange",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 855.0,
+   "probabilities": [
+    0.0027,
+    0.9973
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.9973,
+   "scored": true,
+   "expected": "true",
+   "correct": true,
+   "brier": 1.5e-05,
+   "logloss": 0.002704,
+   "p_truth": 0.9973
+  },
+  {
+   "id": "vid-colourchange-03",
+   "family": "vid-colourchange",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 887.0,
+   "probabilities": [
+    0.9986,
+    0.0014
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.9986,
+   "scored": true,
+   "expected": "false",
+   "correct": true,
+   "brier": 4e-06,
+   "logloss": 0.001401,
+   "p_truth": 0.9986
+  }
+ ],
+ "modality": "video"
+}

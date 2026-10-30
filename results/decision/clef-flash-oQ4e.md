@@ -86,10 +86,44 @@ The honest summary: **clef-flash buys calibration with latency, d3-edge buys
 latency with calibration.** Neither dominates, and the choice is a workload
 question, not a model question.
 
+## Modality
+
+Clef accepts images and **rejects video** — `clef.py` raises
+`"this model does not take videos"` in `encode()`, and the harness records all 16
+video items as HTTP 400. Images were scored — see
+[`media/README.md`](media/README.md).
+
+| Corpus | Acc | Brier | ECE | Median ms | p95 ms |
+|---|---|---|---|---|---|
+| image (25 items) | **1.000** | 0.0452 | 0.0831 | 2005 | 2080 |
+| video (16 items) | — | — | — | — | — |
+
+| Image family | Acc | Brier | Conf |
+|---|---|---|---|
+| `img-colour` | 1.000 | 0.0015 | 0.967 |
+| `img-spatial` | 1.000 | 0.0010 | 0.982 |
+| `img-shape` | 1.000 | 0.0004 | 0.982 |
+| `img-text` | 1.000 | 0.0378 | 0.913 |
+| `img-count` | **1.000** | 0.1384 | 0.798 |
+
+**It is the only model that gets every counting item right without being
+confident about it.** Mean confidence on `img-count` is 0.798 — the lowest of any
+model on that family, and the reason its Brier there (0.1384) is worse than
+`d3-flash`'s (0.1208) despite perfect accuracy. It is right and unsure, which is
+the correct shape for a hard family.
+
+**Its image Brier (0.0452) is worse than `d3-flash`'s (0.0343) despite perfect
+accuracy**, because it is over-confident on the easy families (0.967–0.982 where
+`d3-flash` is 0.999–1.000 and also right). Accuracy and calibration disagree
+here, and the calibration is what a probability consumer feels.
+
+**Video is a hard capability boundary, not a quality gap.** There is no score to
+report and no partial credit; the request is refused before inference.
+
 ## Caveats
 
-Text-only corpus. Clef accepts images and none of that is scored here. Single
-request latency only — `DecisionEngine` serialises behind an `asyncio.Lock`, so
-this says nothing about throughput under concurrency. The p95 figure is measured
-with no download active. See "What this corpus cannot measure" in the
-methodology.
+The text corpus is 39 items and the image corpus is 25; treat every per-family
+cell as directional. Single-request latency only — `DecisionEngine` serialises
+behind an `asyncio.Lock`, so this says nothing about throughput under
+concurrency. The p95 figure is measured with no download active. See "What this
+corpus cannot measure" in the methodology.

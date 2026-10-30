@@ -1,0 +1,169 @@
+{
+ "model": "openjev/openjev",
+ "items": 16,
+ "scored_items": 0,
+ "gates": {
+  "error": [
+   "vid-motion-00",
+   "vid-motion-01",
+   "vid-motion-02",
+   "vid-motion-03",
+   "vid-direction-00",
+   "vid-direction-01",
+   "vid-direction-02",
+   "vid-direction-03",
+   "vid-appear-00",
+   "vid-appear-01",
+   "vid-appear-02",
+   "vid-appear-03",
+   "vid-colourchange-00",
+   "vid-colourchange-01",
+   "vid-colourchange-02",
+   "vid-colourchange-03"
+  ],
+  "schema": [],
+  "degenerate": [],
+  "truncation": []
+ },
+ "gate_failures": 16,
+ "accuracy": null,
+ "brier": null,
+ "logloss": null,
+ "ece": null,
+ "mean_confidence": null,
+ "ambiguous_confidence": null,
+ "latency_ms_median": 3.0,
+ "latency_ms_p95": 4.0,
+ "by_family": {},
+ "rows": [
+  {
+   "id": "vid-motion-00",
+   "family": "vid-motion",
+   "type": "noul",
+   "status": 400,
+   "latency_ms": 26299.1,
+   "error": "{\"error\":{\"message\":\"this model does not take videos\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":null}}"
+  },
+  {
+   "id": "vid-motion-01",
+   "family": "vid-motion",
+   "type": "noul",
+   "status": 400,
+   "latency_ms": 4.0,
+   "error": "{\"error\":{\"message\":\"this model does not take videos\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":null}}"
+  },
+  {
+   "id": "vid-motion-02",
+   "family": "vid-motion",
+   "type": "noul",
+   "status": 400,
+   "latency_ms": 3.5,
+   "error": "{\"error\":{\"message\":\"this model does not take videos\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":null}}"
+  },
+  {
+   "id": "vid-motion-03",
+   "family": "vid-motion",
+   "type": "noul",
+   "status": 400,
+   "latency_ms": 3.2,
+   "error": "{\"error\":{\"message\":\"this model does not take videos\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":null}}"
+  },
+  {
+   "id": "vid-direction-00",
+   "family": "vid-direction",
+   "type": "choice",
+   "status": 400,
+   "latency_ms": 3.0,
+   "error": "{\"error\":{\"message\":\"this model does not take videos\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":null}}"
+  },
+  {
+   "id": "vid-direction-01",
+   "family": "vid-direction",
+   "type": "choice",
+   "status": 400,
+   "latency_ms": 3.1,
+   "error": "{\"error\":{\"message\":\"this model does not take videos\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":null}}"
+  },
+  {
+   "id": "vid-direction-02",
+   "family": "vid-direction",
+   "type": "choice",
+   "status": 400,
+   "latency_ms": 2.9,
+   "error": "{\"error\":{\"message\":\"this model does not take videos\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":null}}"
+  },
+  {
+   "id": "vid-direction-03",
+   "family": "vid-direction",
+   "type": "choice",
+   "status": 400,
+   "latency_ms": 3.1,
+   "error": "{\"error\":{\"message\":\"this model does not take videos\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":null}}"
+  },
+  {
+   "id": "vid-appear-00",
+   "family": "vid-appear",
+   "type": "noul",
+   "status": 400,
+   "latency_ms": 3.0,
+   "error": "{\"error\":{\"message\":\"this model does not take videos\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":null}}"
+  },
+  {
+   "id": "vid-appear-01",
+   "family": "vid-appear",
+   "type": "noul",
+   "status": 400,
+   "latency_ms": 2.9,
+   "error": "{\"error\":{\"message\":\"this model does not take videos\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":null}}"
+  },
+  {
+   "id": "vid-appear-02",
+   "family": "vid-appear",
+   "type": "noul",
+   "status": 400,
+   "latency_ms": 2.9,
+   "error": "{\"error\":{\"message\":\"this model does not take videos\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":null}}"
+  },
+  {
+   "id": "vid-appear-03",
+   "family": "vid-appear",
+   "type": "noul",
+   "status": 400,
+   "latency_ms": 3.0,
+   "error": "{\"error\":{\"message\":\"this model does not take videos\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":null}}"
+  },
+  {
+   "id": "vid-colourchange-00",
+   "family": "vid-colourchange",
+   "type": "noul",
+   "status": 400,
+   "latency_ms": 3.2,
+   "error": "{\"error\":{\"message\":\"this model does not take videos\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":null}}"
+  },
+  {
+   "id": "vid-colourchange-01",
+   "family": "vid-colourchange",
+   "type": "noul",
+   "status": 400,
+   "latency_ms": 2.9,
+   "error": "{\"error\":{\"message\":\"this model does not take videos\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":null}}"
+  },
+  {
+   "id": "vid-colourchange-02",
+   "family": "vid-colourchange",
+   "type": "noul",
+   "status": 400,
+   "latency_ms": 3.0,
+   "error": "{\"error\":{\"message\":\"this model does not take videos\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":null}}"
+  },
+  {
+   "id": "vid-colourchange-03",
+   "family": "vid-colourchange",
+   "type": "noul",
+   "status": 400,
+   "latency_ms": 2.9,
+   "error": "{\"error\":{\"message\":\"this model does not take videos\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":null}}"
+  }
+ ],
+ "modality": "video"
+}
