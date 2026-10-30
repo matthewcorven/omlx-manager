@@ -1,4 +1,4 @@
 # Decision Model Benchmark Results
 
 | Model | Quant | Params | Resident Size | Gate 1 (Accuracy) | Gate 2 (ECE / Calibration) | Gate 3 (Log Loss) | Gate 4 (Media Score) | Mean TTFT | Samples | Notes |
-|---|---|---|---|---|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
