@@ -102,6 +102,7 @@ Load the relevant skill before acting:
 | Find, download, verify, or delete a model | `.github/skills/omlx-model-download` |
 | Read or change per-model settings | `.github/skills/omlx-model-settings` |
 | Run benchmarks or measure TTFT | `.github/skills/omlx-benchmark` |
+| Evaluate or tune an OCR / document-parsing model | `.github/skills/omlx-ocr-eval` |
 | Something is broken | `.github/skills/omlx-troubleshooting` |
 
 ## External engine: Splash

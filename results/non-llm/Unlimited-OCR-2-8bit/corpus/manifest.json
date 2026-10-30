@@ -1,0 +1,886 @@
+{
+  "page_size": 1024,
+  "coord_space": "0-1000",
+  "pages": [
+    {
+      "name": "clean",
+      "image": "clean.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "blocks": [
+        {
+          "label": "title",
+          "bbox": [
+            59,
+            59,
+            549,
+            98
+          ],
+          "text": "Annual Operations Review"
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            146,
+            922,
+            236
+          ],
+          "text": "The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery."
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            293,
+            926,
+            383
+          ],
+          "text": "A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast."
+        },
+        {
+          "label": "footer",
+          "bbox": [
+            59,
+            938,
+            148,
+            955
+          ],
+          "text": "Page 1 of 1"
+        }
+      ]
+    },
+    {
+      "name": "dense",
+      "image": "dense.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "blocks": [
+        {
+          "label": "title",
+          "bbox": [
+            49,
+            39,
+            474,
+            66
+          ],
+          "text": "Appendix B \u2014 Detailed Findings"
+        },
+        {
+          "label": "text",
+          "bbox": [
+            49,
+            98,
+            910,
+            130
+          ],
+          "text": "The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery."
+        },
+        {
+          "label": "text",
+          "bbox": [
+            49,
+            244,
+            914,
+            276
+          ],
+          "text": "A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast."
+        },
+        {
+          "label": "text",
+          "bbox": [
+            49,
+            391,
+            861,
+            405
+          ],
+          "text": "Nothing in the data suggested a regression. Two outliers were traced to a misconfigured sensor and excluded from the final tally."
+        },
+        {
+          "label": "text",
+          "bbox": [
+            49,
+            537,
+            910,
+            569
+          ],
+          "text": "The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery."
+        },
+        {
+          "label": "text",
+          "bbox": [
+            49,
+            684,
+            914,
+            716
+          ],
+          "text": "A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast."
+        }
+      ]
+    },
+    {
+      "name": "table",
+      "image": "table.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "blocks": [
+        {
+          "label": "title",
+          "bbox": [
+            59,
+            49,
+            343,
+            80
+          ],
+          "text": "Regional Summary"
+        },
+        {
+          "label": "table",
+          "bbox": [
+            59,
+            137,
+            273,
+            205
+          ],
+          "text": "Region"
+        },
+        {
+          "label": "table",
+          "bbox": [
+            273,
+            137,
+            488,
+            205
+          ],
+          "text": "Units"
+        },
+        {
+          "label": "table",
+          "bbox": [
+            488,
+            137,
+            703,
+            205
+          ],
+          "text": "Revenue"
+        },
+        {
+          "label": "table",
+          "bbox": [
+            703,
+            137,
+            918,
+            205
+          ],
+          "text": "Delta"
+        },
+        {
+          "label": "table",
+          "bbox": [
+            59,
+            205,
+            273,
+            273
+          ],
+          "text": "North"
+        },
+        {
+          "label": "table",
+          "bbox": [
+            273,
+            205,
+            488,
+            273
+          ],
+          "text": "1,204"
+        },
+        {
+          "label": "table",
+          "bbox": [
+            488,
+            205,
+            703,
+            273
+          ],
+          "text": "48,120"
+        },
+        {
+          "label": "table",
+          "bbox": [
+            703,
+            205,
+            918,
+            273
+          ],
+          "text": "+3.1%"
+        },
+        {
+          "label": "table",
+          "bbox": [
+            59,
+            273,
+            273,
+            342
+          ],
+          "text": "South"
+        },
+        {
+          "label": "table",
+          "bbox": [
+            273,
+            273,
+            488,
+            342
+          ],
+          "text": "988"
+        },
+        {
+          "label": "table",
+          "bbox": [
+            488,
+            273,
+            703,
+            342
+          ],
+          "text": "39,004"
+        },
+        {
+          "label": "table",
+          "bbox": [
+            703,
+            273,
+            918,
+            342
+          ],
+          "text": "-0.4%"
+        },
+        {
+          "label": "table",
+          "bbox": [
+            59,
+            342,
+            273,
+            410
+          ],
+          "text": "East"
+        },
+        {
+          "label": "table",
+          "bbox": [
+            273,
+            342,
+            488,
+            410
+          ],
+          "text": "1,551"
+        },
+        {
+          "label": "table",
+          "bbox": [
+            488,
+            342,
+            703,
+            410
+          ],
+          "text": "61,772"
+        },
+        {
+          "label": "table",
+          "bbox": [
+            703,
+            342,
+            918,
+            410
+          ],
+          "text": "+7.8%"
+        },
+        {
+          "label": "table",
+          "bbox": [
+            59,
+            410,
+            273,
+            479
+          ],
+          "text": "West"
+        },
+        {
+          "label": "table",
+          "bbox": [
+            273,
+            410,
+            488,
+            479
+          ],
+          "text": "742"
+        },
+        {
+          "label": "table",
+          "bbox": [
+            488,
+            410,
+            703,
+            479
+          ],
+          "text": "29,318"
+        },
+        {
+          "label": "table",
+          "bbox": [
+            703,
+            410,
+            918,
+            479
+          ],
+          "text": "+1.2%"
+        },
+        {
+          "label": "footer",
+          "bbox": [
+            59,
+            938,
+            269,
+            955
+          ],
+          "text": "Source: internal ledger, Q3"
+        }
+      ]
+    },
+    {
+      "name": "twocol",
+      "image": "twocol.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "blocks": [
+        {
+          "label": "title",
+          "bbox": [
+            59,
+            49,
+            376,
+            82
+          ],
+          "text": "Two Column Layout"
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            146,
+            467,
+            275
+          ],
+          "text": "The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery."
+        },
+        {
+          "label": "text",
+          "bbox": [
+            529,
+            146,
+            941,
+            248
+          ],
+          "text": "A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast."
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            488,
+            438,
+            562
+          ],
+          "text": "Nothing in the data suggested a regression. Two outliers were traced to a misconfigured sensor and excluded from the final tally."
+        },
+        {
+          "label": "text",
+          "bbox": [
+            529,
+            488,
+            938,
+            617
+          ],
+          "text": "The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery."
+        }
+      ]
+    },
+    {
+      "name": "small",
+      "image": "small.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "blocks": [
+        {
+          "label": "title",
+          "bbox": [
+            59,
+            49,
+            175,
+            74
+          ],
+          "text": "Fine Print"
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            117,
+            896,
+            141
+          ],
+          "text": "The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery."
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            234,
+            925,
+            245
+          ],
+          "text": "A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast."
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            352,
+            665,
+            362
+          ],
+          "text": "Nothing in the data suggested a regression. Two outliers were traced to a misconfigured sensor and excluded from the final tally."
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            469,
+            896,
+            492
+          ],
+          "text": "The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery."
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            586,
+            925,
+            597
+          ],
+          "text": "A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast."
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            703,
+            665,
+            714
+          ],
+          "text": "Nothing in the data suggested a regression. Two outliers were traced to a misconfigured sensor and excluded from the final tally."
+        }
+      ]
+    },
+    {
+      "name": "lowcontrast",
+      "image": "lowcontrast.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "blocks": [
+        {
+          "label": "title",
+          "bbox": [
+            59,
+            59,
+            256,
+            94
+          ],
+          "text": "Faded Scan"
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            156,
+            933,
+            208
+          ],
+          "text": "The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery."
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            312,
+            913,
+            364
+          ],
+          "text": "A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast."
+        }
+      ]
+    },
+    {
+      "name": "rotated",
+      "image": "rotated.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "blocks": [
+        {
+          "label": "title",
+          "bbox": [
+            37,
+            68,
+            311,
+            118
+          ],
+          "text": "Skewed Capture"
+        },
+        {
+          "label": "text",
+          "bbox": [
+            42,
+            136,
+            874,
+            261
+          ],
+          "text": "The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery."
+        },
+        {
+          "label": "text",
+          "bbox": [
+            50,
+            292,
+            872,
+            418
+          ],
+          "text": "A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast."
+        }
+      ]
+    },
+    {
+      "name": "mixed",
+      "image": "mixed.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "blocks": [
+        {
+          "label": "title",
+          "bbox": [
+            59,
+            49,
+            252,
+            82
+          ],
+          "text": "Field Report"
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            117,
+            925,
+            164
+          ],
+          "text": "Nothing in the data suggested a regression. Two outliers were traced to a misconfigured sensor and excluded from the final tally."
+        },
+        {
+          "label": "table",
+          "bbox": [
+            59,
+            254,
+            352,
+            312
+          ],
+          "text": "Item"
+        },
+        {
+          "label": "table",
+          "bbox": [
+            352,
+            254,
+            645,
+            312
+          ],
+          "text": "Count"
+        },
+        {
+          "label": "table",
+          "bbox": [
+            59,
+            312,
+            352,
+            371
+          ],
+          "text": "Sensors"
+        },
+        {
+          "label": "table",
+          "bbox": [
+            352,
+            312,
+            645,
+            371
+          ],
+          "text": "42"
+        },
+        {
+          "label": "table",
+          "bbox": [
+            59,
+            371,
+            352,
+            430
+          ],
+          "text": "Relays"
+        },
+        {
+          "label": "table",
+          "bbox": [
+            352,
+            371,
+            645,
+            430
+          ],
+          "text": "17"
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            508,
+            898,
+            555
+          ],
+          "text": "A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast."
+        },
+        {
+          "label": "footer",
+          "bbox": [
+            59,
+            938,
+            181,
+            955
+          ],
+          "text": "Report 2024-11"
+        }
+      ]
+    },
+    {
+      "name": "mixedcase",
+      "image": "mixedcase.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "blocks": [
+        {
+          "label": "title",
+          "bbox": [
+            59,
+            49,
+            288,
+            80
+          ],
+          "text": "Serial Numbers"
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            127,
+            917,
+            174
+          ],
+          "text": "Unit A7X-0042 shipped on 2024-11-03. Reference O0Il1|S5B8 must be transcribed exactly: 0O 1l I| 5S 8B. Cost was 1,204.50 not 1204.5."
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            293,
+            796,
+            340
+          ],
+          "text": "Hash 9f2c4e7a1b, port 8443, ratio 0.00042, code ZQ-77/xx. Do not normalise: e-mail ops@example.org, tel +1 (555) 010-4477."
+        }
+      ]
+    },
+    {
+      "name": "handwriting",
+      "image": "handwriting.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "blocks": [
+        {
+          "label": "title",
+          "bbox": [
+            59,
+            49,
+            212,
+            82
+          ],
+          "text": "Field Notes"
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            137,
+            897,
+            181
+          ],
+          "text": "The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery."
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            293,
+            904,
+            337
+          ],
+          "text": "A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast."
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            449,
+            919,
+            493
+          ],
+          "text": "Nothing in the data suggested a regression. Two outliers were traced to a misconfigured sensor and excluded from the final tally."
+        }
+      ]
+    },
+    {
+      "name": "noise",
+      "image": "noise.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "blocks": [
+        {
+          "label": "title",
+          "bbox": [
+            59,
+            49,
+            306,
+            82
+          ],
+          "text": "Degraded Copy"
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            137,
+            933,
+            184
+          ],
+          "text": "The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery."
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            293,
+            898,
+            340
+          ],
+          "text": "A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast."
+        }
+      ]
+    },
+    {
+      "name": "multipage",
+      "image": "multipage.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "blocks": [
+        {
+          "label": "title",
+          "bbox": [
+            59,
+            49,
+            326,
+            80
+          ],
+          "text": "Continued Report"
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            127,
+            918,
+            168
+          ],
+          "text": "The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery."
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            273,
+            923,
+            314
+          ],
+          "text": "A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast."
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            420,
+            910,
+            461
+          ],
+          "text": "Nothing in the data suggested a regression. Two outliers were traced to a misconfigured sensor and excluded from the final tally."
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            566,
+            918,
+            607
+          ],
+          "text": "The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery."
+        },
+        {
+          "label": "text",
+          "bbox": [
+            59,
+            713,
+            923,
+            754
+          ],
+          "text": "A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast."
+        }
+      ]
+    }
+  ]
+}

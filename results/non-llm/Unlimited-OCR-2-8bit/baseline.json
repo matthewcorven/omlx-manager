@@ -1,0 +1,463 @@
+{
+  "model": "Unlimited-OCR-2-8bit",
+  "max_tokens": 8192,
+  "prompt": "Multi page parsing.",
+  "pages": 12,
+  "pages_complete": 12,
+  "errored": [],
+  "degenerate": [],
+  "truncated": [],
+  "nondeterministic": [],
+  "mean_cer": 0.0012,
+  "mean_block_recall": 1.0,
+  "mean_block_precision": 1.0,
+  "mean_iou": 0.8765,
+  "mean_order_tau": 1.0,
+  "mean_wall_ms": 1133.5,
+  "results": [
+    {
+      "page": "clean",
+      "error": null,
+      "finish_reason": "stop",
+      "wall_ms": 1018.6,
+      "usage": {
+        "prompt_tokens": 700,
+        "completion_tokens": 135,
+        "total_tokens": 835,
+        "input_tokens": 700,
+        "output_tokens": 135,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "time_to_first_token": 0.42,
+        "time_to_first_visible_token": 0.42,
+        "total_time": 1.0,
+        "prompt_eval_duration": 0.42,
+        "generation_duration": 0.58,
+        "prompt_tokens_per_second": 1672.53,
+        "generation_tokens_per_second": 231.02
+      },
+      "raw": "<PAGE><BLOCK>title<LEVEL1>[58, 60, 550, 103]<FORK>Annual Operations Review\n<BLOCK>text[58, 146, 923, 239]<FORK>The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery.\n<BLOCK>text[58, 293, 927, 384]<FORK>A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast.\n<BLOCK>page_number[58, 938, 147, 957]<FORK>Page 1 of 1",
+      "cer": 0.0,
+      "block_recall": 1.0,
+      "block_precision": 1.0,
+      "iou": 0.9221,
+      "order_tau": 1.0,
+      "truth_blocks": 4,
+      "pred_blocks": 4,
+      "degenerate": null,
+      "status": "ok",
+      "deterministic": true
+    },
+    {
+      "page": "dense",
+      "error": null,
+      "finish_reason": "stop",
+      "wall_ms": 1411.1,
+      "usage": {
+        "prompt_tokens": 700,
+        "completion_tokens": 242,
+        "total_tokens": 942,
+        "input_tokens": 700,
+        "output_tokens": 242,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "time_to_first_token": 0.38,
+        "time_to_first_visible_token": 0.38,
+        "total_time": 1.41,
+        "prompt_eval_duration": 0.38,
+        "generation_duration": 1.03,
+        "prompt_tokens_per_second": 1865.69,
+        "generation_tokens_per_second": 234.11
+      },
+      "raw": "<PAGE><BLOCK>title[45, 40, 476, 71]<FORK>Appendix B \u2014 Detailed Findings\n<BLOCK>text[45, 97, 914, 135]<FORK>The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery.\n<BLOCK>text[45, 243, 916, 281]<FORK>A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast.\n<BLOCK>text[45, 390, 864, 410]<FORK>Nothing in the data suggested a regression. Two outliers were traced to a misconfigured sensor and excluded from the final tally.\n<BLOCK>text[45, 538, 914, 575]<FORK>The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery.\n<BLOCK>text[45, 683, 916, 720]<FORK>A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast.",
+      "cer": 0.0,
+      "block_recall": 1.0,
+      "block_precision": 1.0,
+      "iou": 0.8056,
+      "order_tau": 1.0,
+      "truth_blocks": 6,
+      "pred_blocks": 6,
+      "degenerate": null,
+      "status": "ok",
+      "deterministic": true
+    },
+    {
+      "page": "table",
+      "error": null,
+      "finish_reason": "stop",
+      "wall_ms": 1101.2,
+      "usage": {
+        "prompt_tokens": 700,
+        "completion_tokens": 162,
+        "total_tokens": 862,
+        "input_tokens": 700,
+        "output_tokens": 162,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "time_to_first_token": 0.38,
+        "time_to_first_visible_token": 0.38,
+        "total_time": 1.1,
+        "prompt_eval_duration": 0.38,
+        "generation_duration": 0.72,
+        "prompt_tokens_per_second": 1857.06,
+        "generation_tokens_per_second": 224.29
+      },
+      "raw": "<PAGE><BLOCK>title<LEVEL1>[56, 50, 344, 85]<FORK>Regional Summary\n<BLOCK>table[56, 134, 921, 484]<FORK><table><tr><td>Region</td><td>Units</td><td>Revenue</td><td>Delta</td></tr><tr><td>North</td><td>1,204</td><td>48,120</td><td>+3.1%</td></tr><tr><td>South</td><td>988</td><td>39,004</td><td>-0.4%</td></tr><tr><td>East</td><td>1,551</td><td>61,772</td><td>+7.8%</td></tr><tr><td>West</td><td>742</td><td>29,318</td><td>+1.2%</td></tr></table>\n<BLOCK>footer[56, 938, 270, 959]<FORK>Source: internal ledger, Q3",
+      "cer": 0.0,
+      "block_recall": 1.0,
+      "block_precision": 1.0,
+      "iou": 0.8623,
+      "order_tau": 1.0,
+      "truth_blocks": 3,
+      "pred_blocks": 3,
+      "degenerate": null,
+      "status": "ok",
+      "deterministic": true
+    },
+    {
+      "page": "twocol",
+      "error": null,
+      "finish_reason": "stop",
+      "wall_ms": 1219.7,
+      "usage": {
+        "prompt_tokens": 700,
+        "completion_tokens": 197,
+        "total_tokens": 897,
+        "input_tokens": 700,
+        "output_tokens": 197,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "time_to_first_token": 0.38,
+        "time_to_first_visible_token": 0.38,
+        "total_time": 1.22,
+        "prompt_eval_duration": 0.38,
+        "generation_duration": 0.84,
+        "prompt_tokens_per_second": 1844.71,
+        "generation_tokens_per_second": 235.16
+      },
+      "raw": "<PAGE><BLOCK>title<LEVEL1>[55, 50, 380, 88]<FORK>Two Column Layout\n<BLOCK>text[53, 146, 470, 280]<FORK>The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery.\n<BLOCK>text[524, 146, 944, 253]<FORK>A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast.\n<BLOCK>text[53, 488, 440, 568]<FORK>Nothing in the data suggested a regression. Two outliers were traced to a misconfigured sensor and excluded from the final tally.\n<BLOCK>text[524, 488, 940, 622]<FORK>The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery.",
+      "cer": 0.0,
+      "block_recall": 1.0,
+      "block_precision": 1.0,
+      "iou": 0.906,
+      "order_tau": 1.0,
+      "truth_blocks": 5,
+      "pred_blocks": 5,
+      "degenerate": null,
+      "status": "ok",
+      "deterministic": true
+    },
+    {
+      "page": "small",
+      "error": null,
+      "finish_reason": "stop",
+      "wall_ms": 1571.8,
+      "usage": {
+        "prompt_tokens": 700,
+        "completion_tokens": 282,
+        "total_tokens": 982,
+        "input_tokens": 700,
+        "output_tokens": 282,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "time_to_first_token": 0.38,
+        "time_to_first_visible_token": 0.38,
+        "total_time": 1.57,
+        "prompt_eval_duration": 0.38,
+        "generation_duration": 1.19,
+        "prompt_tokens_per_second": 1855.58,
+        "generation_tokens_per_second": 236.47
+      },
+      "raw": "<PAGE><BLOCK>title<LEVEL1>[56, 50, 177, 76]<FORK>Fine Print\n<BLOCK>text[55, 116, 899, 144]<FORK>The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery.\n<BLOCK>text[55, 233, 926, 248]<FORK>A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast.\n<BLOCK>text[55, 350, 668, 365]<FORK>Nothing in the data suggested a regression. Two outliers were traced to a misconfigured sensor and excluded from the final tally.\n<BLOCK>text[55, 468, 899, 496]<FORK>The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery.\n<BLOCK>text[55, 585, 926, 600]<FORK>A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast.\n<BLOCK>text[55, 702, 668, 717]<FORK>Nothing in the data suggested a regression. Two outliers were traced to a misconfigured sensor and excluded from the final tally.",
+      "cer": 0.0,
+      "block_recall": 1.0,
+      "block_precision": 1.0,
+      "iou": 0.7658,
+      "order_tau": 1.0,
+      "truth_blocks": 7,
+      "pred_blocks": 7,
+      "degenerate": null,
+      "status": "ok",
+      "deterministic": true
+    },
+    {
+      "page": "lowcontrast",
+      "error": null,
+      "finish_reason": "stop",
+      "wall_ms": 864.5,
+      "usage": {
+        "prompt_tokens": 700,
+        "completion_tokens": 113,
+        "total_tokens": 813,
+        "input_tokens": 700,
+        "output_tokens": 113,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "time_to_first_token": 0.38,
+        "time_to_first_visible_token": 0.38,
+        "total_time": 0.86,
+        "prompt_eval_duration": 0.38,
+        "generation_duration": 0.48,
+        "prompt_tokens_per_second": 1846.87,
+        "generation_tokens_per_second": 233.76
+      },
+      "raw": "<PAGE><BLOCK>title<LEVEL1>[58, 62, 255, 93]<FORK>Faded Scan\n<BLOCK>text[58, 156, 934, 210]<FORK>The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery.\n<BLOCK>text[58, 313, 913, 367]<FORK>A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast.",
+      "cer": 0.0,
+      "block_recall": 1.0,
+      "block_precision": 1.0,
+      "iou": 0.9214,
+      "order_tau": 1.0,
+      "truth_blocks": 3,
+      "pred_blocks": 3,
+      "degenerate": null,
+      "status": "ok",
+      "deterministic": true
+    },
+    {
+      "page": "rotated",
+      "error": null,
+      "finish_reason": "stop",
+      "wall_ms": 863.9,
+      "usage": {
+        "prompt_tokens": 700,
+        "completion_tokens": 114,
+        "total_tokens": 814,
+        "input_tokens": 700,
+        "output_tokens": 114,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "time_to_first_token": 0.38,
+        "time_to_first_visible_token": 0.38,
+        "total_time": 0.86,
+        "prompt_eval_duration": 0.38,
+        "generation_duration": 0.48,
+        "prompt_tokens_per_second": 1861.28,
+        "generation_tokens_per_second": 235.38
+      },
+      "raw": "<PAGE><BLOCK>title<LEVEL1>[36, 75, 310, 115]<FORK>Skewed Capture\n<BLOCK>text[40, 137, 871, 264]<FORK>The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery.\n<BLOCK>text[48, 293, 869, 418]<FORK>A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast.",
+      "cer": 0.0,
+      "block_recall": 1.0,
+      "block_precision": 1.0,
+      "iou": 0.9146,
+      "order_tau": 1.0,
+      "truth_blocks": 3,
+      "pred_blocks": 3,
+      "degenerate": null,
+      "status": "ok",
+      "deterministic": true
+    },
+    {
+      "page": "mixed",
+      "error": null,
+      "finish_reason": "stop",
+      "wall_ms": 1136.3,
+      "usage": {
+        "prompt_tokens": 700,
+        "completion_tokens": 175,
+        "total_tokens": 875,
+        "input_tokens": 700,
+        "output_tokens": 175,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "time_to_first_token": 0.38,
+        "time_to_first_visible_token": 0.38,
+        "total_time": 1.13,
+        "prompt_eval_duration": 0.38,
+        "generation_duration": 0.76,
+        "prompt_tokens_per_second": 1861.44,
+        "generation_tokens_per_second": 230.86
+      },
+      "raw": "<PAGE><BLOCK>title<LEVEL1>[58, 51, 253, 87]<FORK>Field Report\n<BLOCK>text[58, 117, 926, 168]<FORK>Nothing in the data suggested a regression. Two outliers were traced to a misconfigured sensor and excluded from the final tally.\n<BLOCK>table[58, 254, 645, 428]<FORK><table><tr><td>Item</td><td>Count</td></tr><tr><td>Sensors</td><td>42</td></tr><tr><td>Relays</td><td>17</td></tr></table>\n<BLOCK>text[58, 508, 900, 559]<FORK>A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast.\n<BLOCK>footer[58, 938, 179, 957]<FORK>Report 2024-11",
+      "cer": 0.0,
+      "block_recall": 1.0,
+      "block_precision": 1.0,
+      "iou": 0.9014,
+      "order_tau": 1.0,
+      "truth_blocks": 5,
+      "pred_blocks": 5,
+      "degenerate": null,
+      "status": "ok",
+      "deterministic": true
+    },
+    {
+      "page": "mixedcase",
+      "error": null,
+      "finish_reason": "stop",
+      "wall_ms": 1118.7,
+      "usage": {
+        "prompt_tokens": 700,
+        "completion_tokens": 165,
+        "total_tokens": 865,
+        "input_tokens": 700,
+        "output_tokens": 165,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "time_to_first_token": 0.38,
+        "time_to_first_visible_token": 0.38,
+        "total_time": 1.12,
+        "prompt_eval_duration": 0.38,
+        "generation_duration": 0.74,
+        "prompt_tokens_per_second": 1854.43,
+        "generation_tokens_per_second": 223.24
+      },
+      "raw": "<PAGE><BLOCK>title[55, 50, 290, 81]<FORK>Serial Numbers\n<BLOCK>text[55, 125, 920, 178]<FORK>Unit A7X-0042 shipped on 2024-11-03. Reference O0II1|S5B8 must be transcribed exactly: 00 11 II 5S 8B. Cost was 1,204.50 not 1204.5.\n<BLOCK>text[55, 292, 799, 345]<FORK>Hash 9f2c4e7a1b, port 8443, ratio 0.00042, code ZQ-77/xx. Do not normalise: e-mail ops@example.org, tel +1 (555) 010-4477.",
+      "cer": 0.0148,
+      "block_recall": 1.0,
+      "block_precision": 1.0,
+      "iou": 0.8908,
+      "order_tau": 1.0,
+      "truth_blocks": 3,
+      "pred_blocks": 3,
+      "degenerate": null,
+      "status": "ok",
+      "deterministic": true
+    },
+    {
+      "page": "handwriting",
+      "error": null,
+      "finish_reason": "stop",
+      "wall_ms": 1024.3,
+      "usage": {
+        "prompt_tokens": 700,
+        "completion_tokens": 152,
+        "total_tokens": 852,
+        "input_tokens": 700,
+        "output_tokens": 152,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "time_to_first_token": 0.38,
+        "time_to_first_visible_token": 0.38,
+        "total_time": 1.02,
+        "prompt_eval_duration": 0.38,
+        "generation_duration": 0.64,
+        "prompt_tokens_per_second": 1853.33,
+        "generation_tokens_per_second": 235.82
+      },
+      "raw": "<PAGE><BLOCK>title<LEVEL1>[58, 53, 211, 82]<FORK>Field Notes\n<BLOCK>text[58, 136, 900, 183]<FORK>The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery.\n<BLOCK>text[58, 293, 906, 340]<FORK>A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast.\n<BLOCK>text[58, 449, 920, 496]<FORK>Nothing in the data suggested a regression. Two outliers were traced to a misconfigured sensor and excluded from the final tally.",
+      "cer": 0.0,
+      "block_recall": 1.0,
+      "block_precision": 1.0,
+      "iou": 0.9167,
+      "order_tau": 1.0,
+      "truth_blocks": 4,
+      "pred_blocks": 4,
+      "degenerate": null,
+      "status": "ok",
+      "deterministic": true
+    },
+    {
+      "page": "noise",
+      "error": null,
+      "finish_reason": "stop",
+      "wall_ms": 865.5,
+      "usage": {
+        "prompt_tokens": 700,
+        "completion_tokens": 113,
+        "total_tokens": 813,
+        "input_tokens": 700,
+        "output_tokens": 113,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "time_to_first_token": 0.38,
+        "time_to_first_visible_token": 0.38,
+        "total_time": 0.86,
+        "prompt_eval_duration": 0.38,
+        "generation_duration": 0.48,
+        "prompt_tokens_per_second": 1845.02,
+        "generation_tokens_per_second": 233.96
+      },
+      "raw": "<PAGE><BLOCK>title<LEVEL1>[55, 52, 308, 88]<FORK>Degraded Copy\n<BLOCK>text[52, 136, 938, 190]<FORK>The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery.\n<BLOCK>text[52, 292, 903, 346]<FORK>A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast.",
+      "cer": 0.0,
+      "block_recall": 1.0,
+      "block_precision": 1.0,
+      "iou": 0.823,
+      "order_tau": 1.0,
+      "truth_blocks": 3,
+      "pred_blocks": 3,
+      "degenerate": null,
+      "status": "ok",
+      "deterministic": true
+    },
+    {
+      "page": "multipage",
+      "error": null,
+      "finish_reason": "stop",
+      "wall_ms": 1406.8,
+      "usage": {
+        "prompt_tokens": 700,
+        "completion_tokens": 242,
+        "total_tokens": 942,
+        "input_tokens": 700,
+        "output_tokens": 242,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "time_to_first_token": 0.38,
+        "time_to_first_visible_token": 0.38,
+        "total_time": 1.4,
+        "prompt_eval_duration": 0.38,
+        "generation_duration": 1.02,
+        "prompt_tokens_per_second": 1844.43,
+        "generation_tokens_per_second": 236.13
+      },
+      "raw": "<PAGE><BLOCK>title<LEVEL1>[58, 51, 326, 85]<FORK>Continued Report\n<BLOCK>text[58, 126, 918, 171]<FORK>The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery.\n<BLOCK>text[58, 274, 922, 318]<FORK>A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast.\n<BLOCK>text[58, 420, 910, 465]<FORK>Nothing in the data suggested a regression. Two outliers were traced to a misconfigured sensor and excluded from the final tally.\n<BLOCK>text[58, 566, 918, 611]<FORK>The quarterly review found that throughput improved across every region while operating cost stayed flat. Field engineers reported fewer interruptions and a shorter mean time to recovery.\n<BLOCK>text[58, 713, 922, 758]<FORK>A second pass confirmed the result. The committee asked for a written summary before the next planning cycle so that the assumptions could be checked against the original forecast.",
+      "cer": 0.0,
+      "block_recall": 1.0,
+      "block_precision": 1.0,
+      "iou": 0.8882,
+      "order_tau": 1.0,
+      "truth_blocks": 6,
+      "pred_blocks": 6,
+      "degenerate": null,
+      "status": "ok",
+      "deterministic": true
+    }
+  ]
+}

@@ -114,6 +114,87 @@ after the change — `Qwen3.8-27B-oQ4e-mtp`, `Ornith-1.0-35B-oQ4e`, `flint-oQ4e`
 `gemma-4-31B-it-oQ4e-mtp`, `gemma-4-26B-A4B-it-oQ8e-mtp`,
 `Qwen3.6-35B-A3B-oQ8e-mtp`, `Qwen3.8-Flash-Next-oQ4e-mtp`. All returned `OK`.
 
+## Evaluation
+
+The smoke test above proves the model loads and emits the right format. It does
+not prove the model is *accurate*, and accuracy is the only thing an OCR model
+can be tuned for. There is no OCR benchmark in oMLX's accuracy suite
+(`VALID_BENCHMARKS` in `admin/accuracy_benchmark.py` is text-only), so the
+evaluation is a custom harness against a synthetic ground-truth corpus. The
+process is documented in
+[`.github/skills/omlx-ocr-eval`](../../.github/skills/omlx-ocr-eval/SKILL.md).
+
+### Corpus
+
+`scripts/ocr_corpus.py` renders 12 pages at 1024×1024 with PIL, recording every
+block's text and box in the model's 0–1000 normalised space. Ground truth is
+exact and the corpus regenerates deterministically. 76 ground-truth blocks.
+
+### Baseline
+
+`scripts/ocr_eval.py`, `max_tokens: 8192`, `temperature: 0`, prompt
+`Multi page parsing.`, `max_crops: 16`. Full run in
+[`Unlimited-OCR-2-8bit/baseline.json`](Unlimited-OCR-2-8bit/baseline.json).
+
+| Page | CER | Recall | Precision | IoU | τ | ms |
+|---|---|---|---|---|---|---|
+| clean | 0.0000 | 1.00 | 1.00 | 0.922 | 1.0 | 1052 |
+| dense | 0.0000 | 1.00 | 1.00 | 0.806 | 1.0 | 1419 |
+| table | 0.0000 | 1.00 | 1.00 | 0.862 | 1.0 | 1064 |
+| twocol | 0.0000 | 1.00 | 1.00 | 0.906 | 1.0 | 1214 |
+| small | 0.0000 | 1.00 | 1.00 | 0.766 | 1.0 | 1587 |
+| lowcontrast | 0.0000 | 1.00 | 1.00 | 0.921 | 1.0 | 885 |
+| rotated | 0.0000 | 1.00 | 1.00 | 0.915 | 1.0 | 870 |
+| mixed | 0.0000 | 1.00 | 1.00 | 0.901 | 1.0 | 1135 |
+| mixedcase | 0.0148 | 1.00 | 1.00 | 0.891 | 1.0 | 1091 |
+| handwriting | 0.0000 | 1.00 | 1.00 | 0.917 | 1.0 | 1031 |
+| noise | 0.0000 | 1.00 | 1.00 | 0.823 | 1.0 | 867 |
+| multipage | 0.0000 | 1.00 | 1.00 | 0.888 | 1.0 | 1417 |
+
+**Mean CER 0.0012, block recall 1.00, precision 1.00, IoU 0.877, τ 1.0,
+1.13 s/page.** All 12 pages `finish_reason: stop`, all deterministic across two
+runs at temperature 0.
+
+The only page above zero is `mixedcase`, and the errors are the expected ones —
+`O0Il1|S5B8` came back as `O0II1|S5B8` / `00 11 II 5S 8B`. That is a genuine
+glyph-confusion limit, not a fault.
+
+### Sweeps
+
+Two knobs were tried. Both were rejected.
+
+**`turboquant_kv_enabled: true`** — every request fails:
+
+```
+Cache corruption not recoverable after retries:
+'TurboQuantKVCache' object has no attribute 'dash_state'
+```
+
+The model uses DASH sparse attention; the TurboQuant cache does not implement
+the `dash_state` the attention path needs. Hard incompatibility. Left off.
+
+**`max_crops: 4`** (from `processor_config.json`, not a model setting) — this is
+the trap. On the corpus it is indistinguishable from 16, and on a 2048×2048 page
+it is 1.8× faster (1.93 s → 1.06 s) with identical scores. On the model's own
+`assets/leaderboard.png` (6682×5011, dense small type) it produces:
+
+```
+11. 11. 11. 11. 11. 11. ... (8192 tokens, finish_reason: stop)
+```
+
+`max_crops: 16` on the same image produces 13 correct blocks in 2.3 s. The
+synthetic corpus is too clean to see this because a 1024×1024 page fits one tile
+either way. **Left at 16.**
+
+This is why the harness has a degeneracy gate: the failure has no error, no
+truncation, and a clean `stop`. Only reading the text catches it.
+
+### Final config
+
+Nothing tuned. The model ships correct: `temperature: 0`, `max_crops: 16`,
+`page_layout: true`, `turboquant_kv_enabled: false`, `max_tokens: 8192` per page.
+The value of the evaluation is the regression gate, not a settings change.
+
 ## Caveats
 
 - The change lives in the app bundle, not this repo, so an oMLX upgrade will

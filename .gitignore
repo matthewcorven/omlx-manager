@@ -1,0 +1,7 @@
+# OCR corpus page images are derived from scripts/ocr_corpus.py; only the
+# manifest (ground truth) is committed.
+results/non-llm/*/corpus/*.png
+
+# Python bytecode
+__pycache__/
+*.pyc

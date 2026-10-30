@@ -1,12 +1,17 @@
 # Non-LLM models
 
 The LLM/VLM models in the campaign get a full tuning sweep. These two do not —
-there is no decode throughput to optimize. They need only a smoke test.
+there is no decode throughput to optimize.
+
+The reranker needs only a smoke test. The OCR model does not: it has an accuracy
+target, and accuracy cannot be eyeballed. It is scored against a synthetic
+ground-truth corpus by `scripts/ocr_eval.py`, per
+[`.github/skills/omlx-ocr-eval`](../../.github/skills/omlx-ocr-eval/SKILL.md).
 
 | Model | Type | Status | Cause |
 |---|---|---|---|
 | `jinaai/jina-reranker-v3.5-mlx` | reranker | **PASS** — fixed | Replaced the Transformers checkpoint with the MLX conversion |
-| `mlx-community/Unlimited-OCR-2-8bit` | VLM (OCR) | **PASS** — fixed | Updated oMLX's vendored `unlimited_ocr` package to the mlx-vlm 0.7.11 implementation |
+| `mlx-community/Unlimited-OCR-2-8bit` | VLM (OCR) | **PASS** — fixed, scored | Updated oMLX's vendored `unlimited_ocr` package to the mlx-vlm 0.7.11 implementation |
 
 Both first-pass failures shared a shape: the checkpoint defines a custom
 architecture (`JinaForRanking`'s projector head, `UnlimitedOCRForCausalLM`'s DASH
@@ -29,5 +34,11 @@ decode path and needs two dependencies the bundle lacks. Instead, oMLX's own
 `unlimited_ocr` package and is applied only for `model_type == "unlimited-ocr"` —
 was updated to the 0.7.11 implementation, preserving its three oMLX
 modifications. The model now loads and produces correct structured OCR. All
-seven tuned LLMs were regression-tested afterwards and are unaffected. See
+seven tuned LLMs were regression-tested afterwards and are unaffected.
+
+It has since been scored against a 12-page synthetic corpus: mean CER 0.0012,
+block recall 1.00, mean IoU 0.877, reading order perfect, 1.13 s per page. Two
+knobs were swept and both were rejected — `turboquant_kv_enabled` errors out on
+DASH attention, and `max_crops: 4` is faster on the corpus but degenerates to
+`11. 11. 11. ...` on a real dense page. See
 [`Unlimited-OCR-2-8bit.md`](Unlimited-OCR-2-8bit.md).
