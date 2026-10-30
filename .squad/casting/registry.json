@@ -1,8 +1,69 @@
 {
   "schema": "squad-agent-provenance/v1",
   "schema_version": 1,
-  "revision": 1,
-  "generated_at": "1970-01-01T00:00:00.000Z",
-  "agents": {},
+  "revision": 2,
+  "generated_at": "2026-10-30T08:07:07-04:00",
+  "agents": {
+    "lead": {
+      "persistent_name": "Lead",
+      "role": "Lead / Triage",
+      "universe": "descriptive",
+      "created_at": "2026-10-30",
+      "legacy_named": false,
+      "status": "active",
+      "display_name": "Lead",
+      "updated_at": "2026-10-30"
+    },
+    "scout": {
+      "persistent_name": "Scout",
+      "role": "Model Selection & Download",
+      "universe": "descriptive",
+      "created_at": "2026-10-30",
+      "legacy_named": false,
+      "status": "active",
+      "display_name": "Scout",
+      "updated_at": "2026-10-30"
+    },
+    "tuner": {
+      "persistent_name": "Tuner",
+      "role": "Benchmark & Tuning",
+      "universe": "descriptive",
+      "created_at": "2026-10-30",
+      "legacy_named": false,
+      "status": "active",
+      "display_name": "Tuner",
+      "updated_at": "2026-10-30"
+    },
+    "evaluator": {
+      "persistent_name": "Evaluator",
+      "role": "Decision & OCR Evals",
+      "universe": "descriptive",
+      "created_at": "2026-10-30",
+      "legacy_named": false,
+      "status": "active",
+      "display_name": "Evaluator",
+      "updated_at": "2026-10-30"
+    },
+    "ops": {
+      "persistent_name": "Ops",
+      "role": "Server Health & Scripts",
+      "universe": "descriptive",
+      "created_at": "2026-10-30",
+      "legacy_named": false,
+      "status": "active",
+      "display_name": "Ops",
+      "updated_at": "2026-10-30"
+    },
+    "docs": {
+      "persistent_name": "Docs",
+      "role": "Docs & Results Reporting",
+      "universe": "descriptive",
+      "created_at": "2026-10-30",
+      "legacy_named": false,
+      "status": "active",
+      "display_name": "Docs",
+      "updated_at": "2026-10-30"
+    }
+  },
   "transaction_id": "0bf040eb-5aac-45a4-9231-56814a9f301e"
 }
