@@ -1,6 +1,6 @@
 ---
 name: omlx-ocr-eval
-description: Evaluate and tune an oMLX OCR / document-parsing model (Unlimited-OCR, DeepSeek-OCR, and similar vision-to-markup models) against ground truth. Use when an OCR model needs a baseline, a settings sweep, a regression gate, or a final config — or when OCR output looks wrong and you need to tell a model fault from a processor misconfiguration. Covers the synthetic corpus, the scoring harness, the three gates, and the knobs that actually exist.
+description: Evaluate and tune an oMLX OCR / document-parsing model (Unlimited-OCR, DeepSeek-OCR, and similar vision-to-markup models) against ground truth. Use when an OCR model needs a baseline, a settings sweep, a regression gate, or a final config — or when OCR output looks wrong and you need to tell a model fault from a processor misconfiguration. Covers the synthetic corpus and what it cannot measure, the scoring harness, the three gates, and the knobs that actually exist.
 ---
 
 # Evaluating an OCR model
@@ -56,7 +56,7 @@ Twelve pages, chosen so each isolates one failure mode:
 | `rotated` | 3° skew; ground truth is rotated with the pixels |
 | `mixed` | text + table + footer on one page |
 | `mixedcase` | `O0Il1\|S5B8` — the only page that still scores above zero CER |
-| `handwriting` | italic serif, the closest synthetic stand-in for a scan |
+| `handwriting` | italic serif — a stand-in for a scan, **not** actual handwriting |
 | `noise` | 24 000 salt-and-pepper pixels |
 | `multipage` | text running past the bottom, to exercise `cross_*` labels |
 
@@ -65,6 +65,35 @@ Twelve pages, chosen so each isolates one failure mode:
 gate for the harness — a corpus that is already perfect cannot show a small
 degradation. When a knob needs to be *proven* harmless, score a real dense asset as
 well (see "When the corpus saturates" below).
+
+### What this corpus is not
+
+It is a **regression gate, not a benchmark.** Every page is drawn by PIL from
+hardcoded strings — three hand-written paragraphs about a fictional quarterly
+review, plus invented table figures. No page is a scan, a screenshot, or a
+downloaded sample. Nothing in the corpus originated outside `scripts/ocr_corpus.py`.
+
+That has consequences worth stating plainly, because a CER of 0.0012 invites the
+wrong reading:
+
+- **It says nothing about real-world accuracy.** 0.0012 means "near-perfect on
+  Arial rendered by PIL at 1024×1024". It does not mean 99.88% on documents. Do not
+  quote it as an accuracy figure; quote it as a baseline to regress against.
+- **One font family.** Arial, Arial Bold, Times New Roman Italic. No serif body
+  text, no condensed, no non-Latin script, no real scan artifacts — no JPEG
+  ringing, no bleed-through, no stamps, no signatures, no skew past 3°.
+- **`handwriting` is a misnomer.** It is italic serif, the closest cheap stand-in
+  for a scan. It is not handwriting and does not test handwriting. The name is
+  historical; the page key is load-bearing in `manifest.json` and `baseline.json`,
+  so it stays.
+- **1024×1024 cannot exercise resolution-dependent knobs.** This is the general
+  lesson from `max_crops`: a page that fits the same tile grid at both settings
+  cannot distinguish them. Any knob whose effect scales with page size needs a
+  real large asset, not a corpus page.
+
+If a model's real-world accuracy is the question, this harness cannot answer it.
+It answers "did this change break something that used to work", which is the
+question a tuning campaign actually needs.
 
 ## Metrics
 
@@ -82,14 +111,32 @@ but mis-boxed still counts as found.
 
 ## The knobs that actually exist
 
-Most of the text-model settings are inert here. What is left:
+Most of the text-model settings are inert here. What is left, split by what kind of
+thing they are — the distinction matters, because only one of them is a tuning
+choice:
+
+**Correctness preconditions.** Not tunable. Get these wrong and the score is
+meaningless, not merely lower.
+
+| Knob | Where | Requirement |
+|---|---|---|
+| `temperature` | model settings | **must be 0.** Anything else makes the run non-reproducible |
+| `max_tokens` | request | **≥ 8192** for one page, 16384 for several. The model README says so; 400–1200 truncates real pages |
+| prompt | request | **`Multi page parsing.`** The wrong prompt yields degenerate numbered output |
+
+**The one real tuning knob.** `max_crops` is the only setting that changes accuracy
+rather than merely breaking or preserving it. It is also the only one that looks
+like a free win and is not.
 
 | Knob | Where | Verdict |
 |---|---|---|
-| `temperature` | model settings | **must be 0.** Anything else makes the run non-reproducible and the score meaningless |
-| `max_tokens` | request | **≥ 8192** for one page, 16384 for several. The model README says so; 400–1200 truncates real pages |
 | `max_crops` | `processor_config.json` | **leave at 16.** See below — this is the trap |
 | `page_layout` | `processor_config.json` | leave `true` |
+
+**Inert or inapplicable.**
+
+| Knob | Where | Verdict |
+|---|---|---|
 | `turboquant_kv_enabled` | model settings | **broken on this model.** Errors out; see below |
 | `max_context_window` | model settings | no effect on a single page |
 | `enable_thinking` | model settings | not applicable |
@@ -175,6 +222,23 @@ knob is safe. Instead:
 
 ## Reading a result that looks wrong
 
+**Suspect the scorer before the model.** The first full run of this harness scored
+`clean` at CER 0.4074. The model was right; the scorer was wrong, twice. Both bugs
+were in the harness and both are easy to reintroduce:
+
+- **The regex dropped blocks.** The model emits an optional hierarchy tag between
+  the label and the box — `<BLOCK>title<LEVEL1>[58, 60, 550, 103]<FORK>...`. A regex
+  matching `<BLOCK>label[` silently skipped every such block. The pattern must
+  tolerate `(?:<[A-Z0-9_]+>)*` after the label. Missing this inflated CER to 0.41
+  while the output was perfect.
+- **CER was computed over the raw stream**, so the markup itself counted as errors.
+  Score recognised text only.
+
+A score that is bad on a page whose transcript reads correctly is a harness bug
+until proven otherwise. Read the transcript in `baseline.json` first.
+
+Other signatures:
+
 - **`11. 11. 11. ...`** — processor misconfiguration (`max_crops` too low for the
   page), or the wrong prompt. Not model corruption.
 - **Numbered list output** — wrong prompt. The correct prompt is
@@ -185,6 +249,11 @@ knob is safe. Instead:
   emits errors as SSE data frames, not HTTP status codes.
 - **CER high but blocks found** — usually a table. The model emits one HTML block
   per table; ground truth has one block per cell. The harness flattens both.
+- **A block that is found but scored as missing** — check the label. The model's
+  label vocabulary is only partly enumerated (`header`, `footer`, `title`, `text`,
+  `table`, `image`, `image_caption`, `page_number`, plus `cross_*` / `append_*`
+  forms). Do not validate labels against a whitelist; an unknown label is still a
+  real block.
 
 ## Deliverables
 
