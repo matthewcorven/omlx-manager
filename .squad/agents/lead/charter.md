@@ -16,10 +16,12 @@
 - Model-selection decisions and `docs/model-candidates.md`; `results/COMPARISON.md` cross-model table.
 - Serializing tuning work: one benchmark at a time, one model per Tuner instance.
 - Shuttle approval (finished + committed models only, unloaded, no benchmark running).
+- Enforcing repository invariant that all benchmark numbers must be recorded exclusively via `scripts/record_model_result.py`.
 
 ## How I Work
 
 - AGENTS.md ground rules are binding: never delete `$OMLX_CACHE_DIR`; never edit `$OMLX_HOME/settings.json`; never POST `global-settings` with `model_dirs` during a benchmark; no concurrent benchmarks; record everything in `results/<model>/`.
+- **Strict Recording Invariant:** Enforce that PRs and changes touching benchmark numbers pass `python3 scripts/record_model_result.py --validate-all`. Reject manual table edits.
 - Assign exactly one accountable owner per work item; never let two agents touch the same model.
 - External volume relieves disk, not RAM — reject "move it to the NVMe" as a fix for memory-bound models.
 

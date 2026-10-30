@@ -89,23 +89,63 @@ token-id path — so Splash runs are kept out of in-process comparison tables.
 ```
 README.md                     this file
 AGENTS.md                     operating instructions for agent sessions
+dashboard/
+  index.html                  interactive single-page results leaderboard dashboard
 docs/
+  results-schema.md           centralized schema specification across all modalities
+  generative-text-audit.md    audit of 7 generative coding models (Qwen, Ornith, etc.)
+  ocr-eval-methodology.md     audit and evaluation methodology for OCR models
+  decision-models-audit.md    audit of 8 decision models across 4 evaluation gates
+  image-generation-eval.md    evaluation architecture & prompt suite for image models
   model-candidates.md         every model named in the release notes + HF sizes
   omlx-api-reference.md       complete oMLX REST API + settings field reference
   tuning-methodology.md       how models are benchmarked and tuned
-.github/skills/
-  omlx-model-download/        search, download, verify, delete models
-  omlx-model-settings/        per-model settings, profiles, optimal lookup
-  omlx-benchmark/             throughput/context benches + TTFT measurement
-  omlx-troubleshooting/       failure modes and fixes
 scripts/
-  omlx_config.py              configurable base paths (see Development)
+  record_model_result.py      CANONICAL CLI to record/validate benchmark results
+  image_eval.py               benchmark harness stub for image generation models
   measure.py                  TTFT + decode tok/s harness for a coding prompt
   disk_guard.sh               free-space check before a download
   shuttle_model.sh            move a finished model internal <-> external NVMe
 results/
-  <model>/                    per-model benchmark + tuning results
+  generative-text.{csv,md}    validated generative coding model benchmarks
+  ocr.{csv,md}                validated OCR and document parsing benchmarks
+  decision.{csv,md}           validated decision model benchmarks (4 gates)
+  image-generation.{csv,md}   validated image generation model benchmarks
 ```
+
+## Centralized Benchmark Results & Interactive Dashboard
+
+### Strict Recording Invariant
+All benchmark results across all model modalities are centralized in `results/`:
+- **Generative Text:** `results/generative-text.csv` and `results/generative-text.md`
+- **OCR & Non-LLM:** `results/ocr.csv` and `results/ocr.md`
+- **Decision Models:** `results/decision.csv` and `results/decision.md`
+- **Image Generation:** `results/image-generation.csv` and `results/image-generation.md`
+
+> **CRITICAL INVARIANT:** All future benchmark numbers must be recorded **ONLY EVER** by running `scripts/record_model_result.py`. Ad-hoc, unvalidated markdown tables are strictly prohibited and deprecated.
+
+To record or update results:
+```sh
+# Record new model result:
+python3 scripts/record_model_result.py --type <generative-text|ocr|decision|image-generation> --add --data '<json_data>'
+
+# Validate full dataset integrity and CSV/MD synchronization:
+python3 scripts/record_model_result.py --validate-all
+```
+
+### Interactive Leaderboard Dashboard
+An interactive, static single-page leaderboard is available in `dashboard/index.html`:
+- Modern dark-theme UI with tabbed modality views.
+- Dynamic KPI metrics, full-text search, status filters, and multi-column sorting.
+- Expandable configuration drawers detailing thinking budgets, speculative decoding depth, and memory profiles.
+
+To run:
+```sh
+# Serve locally:
+python3 -m http.server 8000 --directory .
+# Open in browser: http://localhost:8000/dashboard/
+```
+The dashboard also runs standalone when opened directly via `file:///.../dashboard/index.html`.
 
 ## Workflow
 

@@ -13,6 +13,7 @@
 
 - Exactly **one model per Tuner instance**: baseline, sweep, `results/<model>/final.json` and `NOTES.md`.
 - Final settings profile balancing decode tok/s and TTFT for small coding tasks.
+- Recording final benchmark results into `results/generative-text.{csv,md}` exclusively via `scripts/record_model_result.py --type generative-text`.
 
 ## How I Work
 
@@ -22,8 +23,8 @@
 - Never run two benchmarks at once (409 = stop and wait). Same prompts, `--runs 3`, same `max_tokens` for any comparison.
 - Follow the priority order: context window, thinking budget, MTP/DFlash/specprefill, MoE offload, KV quant, sampling (model card values only).
 - Label Splash runs separately; do not mix with in-process tables.
-- Record everything under `results/<model>/`; an unrecorded run did not happen.
-- Report: repo_id, quant, sizes, baseline, sweep table, final JSON + rationale, failure modes.
+- **Strict Recording Invariant:** Record benchmark results ONLY EVER via `scripts/record_model_result.py --type generative-text`. Never manually edit markdown or CSV tables.
+- Report: repo_id, quant, sizes, baseline, sweep table, final JSON + rationale, failure modes, and recorded result.
 
 ## Boundaries
 

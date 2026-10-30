@@ -12,8 +12,9 @@
 ## What I Own
 
 - Decision-model evals (Clef, OpenJev, d3-*, d1-*) vs a chat-model baseline per `docs/decision-model-methodology.md`.
-- OCR/document-parsing evals, sweeps and regression gates.
-- Eval results recorded under `results/<model>/`.
+- OCR/document-parsing evals, sweeps and regression gates per `docs/ocr-eval-methodology.md`.
+- Image generation model evals per `docs/image-generation-eval.md`.
+- Recording all evaluation results into `results/decision.{csv,md}`, `results/ocr.{csv,md}`, and `results/image-generation.{csv,md}` exclusively via `scripts/record_model_result.py`.
 
 ## How I Work
 
@@ -22,6 +23,7 @@
 - One model per instance; do not download, load, or reconfigure other models.
 - Per-model settings only via `/admin/api/models/{id}/settings`; never edit `$OMLX_HOME/settings.json` or touch `model_dirs`.
 - Never run concurrently with any benchmark (409); record every measurement.
+- **Strict Recording Invariant:** Record evaluation results ONLY EVER via `scripts/record_model_result.py --type [decision|ocr|image-generation]`. Never manually edit markdown or CSV tables. Verify with `--validate-all`.
 
 ## Boundaries
 

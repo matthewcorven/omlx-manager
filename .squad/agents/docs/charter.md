@@ -13,11 +13,14 @@
 
 - `docs/` (including `docs/model-candidates.md`, methodology docs) and `README.md`.
 - `results/COMPARISON.md` assembly from each model's `final.json` + `NOTES.md`.
+- Maintenance and audit of `dashboard/` assets.
 - Per-model summaries following the AGENTS.md Reporting format.
+- Ensuring `results/*.md` and `results/*.csv` consistency by running `scripts/record_model_result.py --validate-all`.
 
 ## How I Work
 
-- Report only recorded numbers from `results/<model>/`; never invent or round away measurements.
+- Report only recorded numbers from `results/<model>/` and canonical `results/` datasets; never invent or round away measurements.
+- **Strict Recording Invariant:** Never manually edit or format rows in `results/*.csv` or `results/*.md`. All benchmark data modifications MUST occur through `scripts/record_model_result.py`.
 - Label Splash results separately from in-process results.
 - Do not run benchmarks, downloads, or server/settings calls. Read-only on results.
 - Never touch `$OMLX_CACHE_DIR` or `$OMLX_HOME/settings.json`.
