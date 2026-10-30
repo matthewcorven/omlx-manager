@@ -1,0 +1,277 @@
+# Decision-model methodology
+
+A decision model answers a typed question about a state with a **probability
+distribution over options**. It does not generate text. Clef, OpenJev, Decision
+3.0 (`d3-*`) and LiquidAI `d1-*` are the families oMLX serves through
+`POST /v1/systemone` and `POST /v1/decisions`.
+
+This document is the process for evaluating them. It is deliberately a
+**contrast** to [`tuning-methodology.md`](tuning-methodology.md), because almost
+every assumption in the text-model process is false here.
+
+## Why decision models are not tuned
+
+The text-model process optimises a Pareto front of TTFT against decode tok/s,
+and the knobs it sweeps are all decode-path knobs. A decision model has no
+decode path:
+
+| Text-model assumption | Reality for a decision model |
+|---|---|
+| There is a decode loop to speed up | One forward pass; the answer is read from a head or from option-letter logits at a single position |
+| Sampling parameters matter | No sampling. Output is deterministic |
+| MTP / DFlash / specprefill help | `engine_pool.py` explicitly skips speculative setup when `engine_type == "decision"` — "Decision models never decode" |
+| `enable_thinking` trades latency for quality | No reasoning tokens exist to budget |
+| KV quantization is a memory/quality trade | `turboquant_kv_enabled` is broken on DASH-attention models and inapplicable here |
+| Quality is judged by reading the output | There is no output to read. Quality is a number, and it needs ground truth |
+
+So there is nothing to *tune*. There is only something to **measure**, and the
+measurement has to be built before any model is trusted.
+
+## The four axes
+
+1. **Accuracy** — does the argmax match the truth?
+2. **Calibration** — is the probability honest? A model that is 90% accurate and
+   always says `0.99` is worse than one that is 88% accurate and says `0.88`,
+   because the second one can be thresholded and the first cannot.
+3. **Latency** — wall time for one forward pass. Scales with state tokens,
+   question count and option count. There is no TTFT/decode split to report.
+4. **Capability envelope** — max context, max options, image count, video
+   support, truncation behaviour. These are hard limits, not tunables.
+
+Memory matters only as a residency question: does the checkpoint fit under the
+ceiling, and does it evict something else.
+
+## The measurement contract
+
+`scripts/decision_corpus.py` generates a fixed, seeded, labelled corpus.
+`scripts/decision_eval.py` scores a model against it.
+
+Reported per model:
+
+| Metric | Meaning | Reference point |
+|---|---|---|
+| `accuracy` | argmax equals truth | 0.5 on balanced binary by chance |
+| `brier` | mean squared error of p(truth) | **0.25 = a constant 0.5 guess** |
+| `logloss` | mean −log p(truth) | punishes confident errors hardest |
+| `ece` | expected calibration error, 10 bins | 0 = perfectly calibrated |
+| `mean_confidence` | average p(chosen) | compare against accuracy |
+| `ambiguous_confidence` | p(chosen) on undecidable items | **0.5 = honest** |
+| `latency_ms` | median and p95 per request | — |
+
+`brier` and `ece` are the metrics that matter. Accuracy alone cannot distinguish
+a model that knows the answer from one that always says yes on a balanced
+corpus, and it says nothing at all about whether the probability is usable as a
+probability.
+
+### The corpus
+
+39 items in 8 families, each isolating one failure mode:
+
+| Family | n | Isolates |
+|---|---|---|
+| `sentiment` | 4 | the floor — anything below 1.0 here is a real fault |
+| `arithmetic` | 6 | a verifiable answer with no lexical shortcut |
+| `negation` | 4 | polarity flips that bag-of-words models miss |
+| `ordering` | 4 | comparison against a threshold |
+| `multilabel` | 6 | choice among 4 options, not just yes/no |
+| `graded` | 5 | score questions on an ordered 5-level scale |
+| `longstate` | 6 | the arithmetic items buried in padding — a drop here is a context fault, not a reasoning one |
+| `ambiguous` | 4 | genuinely undecidable; **confidence here is the signal** |
+
+The `ambiguous` family is the least obvious and the most valuable. A model that
+returns `0.99` on "Is the report well written?" given only "The report has twelve
+pages" is not reasoning — it is pattern-matching a prior. `ambiguous_confidence`
+near 0.5 is the honest answer.
+
+### Why synthetic
+
+Hand-labelling is not reproducible across sessions, and real labelled decision
+datasets carry licensing questions. The corpus is generated from a fixed seed so
+it regenerates byte-identically, and every expected answer is derivable by
+inspection. The cost is that it cannot measure open-domain judgement — see
+"What this corpus cannot measure" below.
+
+## The gates
+
+A score is only meaningful if the answers are real. Four gates run before any
+number is trusted:
+
+| Gate | Catches | Failure looks like |
+|---|---|---|
+| **error** | the request never produced an answer | HTTP 400 / 500 |
+| **schema** | the answer shape does not match the question type | a `noul` answer with no `noul` key; a `choice` answer whose keys do not match the criteria |
+| **degenerate** | the probabilities are not a distribution | sum ≠ 1, NaN, negative |
+| **truncation** | the state did not fit | HTTP **413** / `DecisionContextLengthError` |
+
+The harness exits non-zero if any gate fails, so a gate failure cannot be
+mistaken for a low score.
+
+### Determinism
+
+Decision models are deterministic. The same request must return bit-identical
+probabilities. `--determinism` re-runs a sample three times and fails on any
+movement. **Variance here is an engine bug, not noise**, and it invalidates every
+other number in the run — so it is checked before the results are believed.
+
+## The chat-model baseline
+
+`/v1/systemone` does not require a decision model. When the model is not a
+decision model, oMLX answers the same questions from **next-token letter
+probabilities** of a chat model (`_chat_model_decisions` in `server.py`).
+
+This is the baseline that matters. A decision model is only worth its residency
+if it beats a chat model already on disk answering the same questions through the
+same endpoint. Score the baseline on the identical corpus with `--baseline`:
+
+```sh
+python3 scripts/decision_eval.py --model vllm-sr/d3-edge \
+    --baseline Qwen3.8-27B-oQ4e-mtp --out results/decision/d3-edge.json
+```
+
+A decision model that loses to the baseline on `brier` is not earning its memory,
+regardless of how fast it is.
+
+## Knobs: what is real
+
+Split by what actually changes behaviour, not by what the settings API accepts.
+
+### Correctness preconditions — not knobs
+
+These are not tuning choices. Getting one wrong produces a wrong answer or a
+400, not a slower one.
+
+| Setting | Required value | Why |
+|---|---|---|
+| `model_type_override` | `"decision"` | Without it the checkpoint is loaded as a chat model and the head is never used |
+| context | within the model's own limit | Clef `MAX_LENGTH = 16384`; OpenJev and d3 use the backbone's `max_position_embeddings` |
+| `criteria` shape | per family, see below | Each family validates differently and rejects with 400 |
+
+### Real knobs
+
+| Knob | Effect | When to touch it |
+|---|---|---|
+| `max_context_window` | prompt-token count before rejection | Only to *lower* it below the model's own limit, to fail fast instead of OOM |
+| `gpu_power_limit_w` | power cap | Latency/thermals only; no quality effect |
+| `moe_expert_offload_*` | expert residency | Only if the checkpoint does not fit resident; costs latency |
+
+### Inert — do not sweep
+
+`enable_thinking`, `mtp_enabled`, `dflash_enabled`, `specprefill_enabled`,
+`temperature`, `top_p`, `top_k`, `turboquant_kv_enabled`. There is no decode and
+no sampling, so none of these can change an answer. Sweeping them produces
+identical numbers and wastes a benchmark slot.
+
+## Per-family capability matrix
+
+Verified against the installed 0.7.3rc1 source.
+
+| | Clef | OpenJev | d3 | d1 |
+|---|---|---|---|---|
+| In 0.7.3rc1 | yes | yes | yes | **no** |
+| Max context | 16384 | backbone `max_position_embeddings` | backbone | `text_config.max_position_embeddings` |
+| `noul` criteria | object, defaults merged | object, optional | object, **only** `"true"`/`"false"` keys | — |
+| `choice` criteria | non-empty object | non-empty object | 1–255 options | — |
+| `score` criteria | non-empty array | array, **≥ 2** | array, **2–10**, distinct | — |
+| Images | yes, multiple | **at most one** | yes | yes |
+| Video | rejected | rejected | **yes** (≤ 300 s, 4–32 frames) | rejected |
+| `truncate` | **honoured** | ignored (413 instead) | ignored | ignored |
+| Max options | — | 52 letters, two-stage beyond | 255 | — |
+
+**The d1 blocker.** `LiquidAI/d1-2B`, `d1-Omni-2B` and `d1-2B-MLX-8bit` are not
+servable on 0.7.3rc1: `omlx/engine/decision.py` maps only
+`{"clef", "openjev", "d3"}`, and `omlx/models/d1.py` does not exist in the
+installed tree. d1 support is in `main` (PR #4937) but not in this release.
+Those three checkpoints are recorded as **not exercisable on 0.7.3rc1** rather
+than scored, because a score from a build that cannot load them would be
+fabricated.
+
+## The process
+
+1. **Generate the corpus.** `python3 scripts/decision_corpus.py --out results/decision/corpus.json`
+2. **Check disk.** `./scripts/disk_guard.sh <GB>` before every download.
+3. **Download one checkpoint.** One at a time — an active download skews latency
+   by up to 4× on this machine.
+4. **Confirm it is discovered as a decision model.** If `engine_type` is not
+   `decision`, stop: the head is not being used and every number is meaningless.
+5. **Run the gates.** `--determinism` first. A gate failure or unstable output
+   ends the evaluation; do not report a score.
+6. **Score it.** `python3 scripts/decision_eval.py --model <id> --out results/decision/<name>.json`
+7. **Score the baseline** on the same corpus, in the same session.
+8. **Write it up** in `results/decision/<name>.md` and add a row to
+   `results/decision/README.md`.
+9. **Shuttle** the checkpoint to `/Volumes/NVMe/omlx-models` once written up.
+
+## What the first sweep changed about this process
+
+The process above was written before it was exercised. Running it against all
+eight servable checkpoints changed four things, and these are the recommendations
+that matter more than any single model's score.
+
+**1. The baseline is not optional, and it must be the model you would otherwise
+deploy.** Without it, `d3-edge`'s 0.771 accuracy reads as a result. Against
+`Qwen3.8-27B-oQ4e-mtp` it is a latency purchase. Two of the eight checkpoints
+(`clef-oQ4e`, `openjev`) are only identifiable as failures because the baseline
+exists — both look respectable in isolation and both are dominated once compared.
+Score the baseline in the same session, on the same corpus, with no download
+running.
+
+**2. Report Brier against the 0.25 floor, not against zero.** A decision model
+that emits 0.5 for every item scores exactly 0.25. `d3-edge` (0.2514) and
+`d3-lite` (0.2546) are *worse than that* while being 77% and 71% accurate. Any
+write-up that reports Brier without the floor invites the reader to think 0.25 is
+"half good". It is "no information".
+
+**3. `ambiguous_confidence` is the most decision-relevant number in the table.**
+Accuracy and Brier tell you whether the model is right. Ambiguous confidence tells
+you whether it will *tell you when it does not know* — which is the only property
+that matters if the output feeds an escalation threshold. Six of the eight
+checkpoints assert more confidence on undecidable items than the chat baseline
+does; `clef-flash-oQ4e` at 0.928 is the worst. Only `d3-flash` (0.652) and
+`clef-oQ4e` (0.676) hedge better than the baseline (0.720). A model that never
+hedges cannot be used for routing with a confidence gate, no matter its accuracy.
+
+**4. `longstate` is the family that separates checkpoints, and it separates them
+by size.** Every other family saturates at 1.000 for anything above 4.5 GB. The
+`longstate` ladder — 0.333 / 0.167 / 0.500 / 1.000 / 1.000 for d3-edge through
+d3-flash — is the only place where the size ordering is visible and monotone. If
+the corpus were cut to save time, `longstate` is the last family to cut, not the
+first. Conversely `graded` (0–4 ordinal, 5 items) separated nothing: every model
+and the baseline landed between 0.400 and 0.600. **A family that cannot
+distinguish any pair of models is a corpus defect, not a model result** — grow it
+or drop it, but do not report it as a finding.
+
+**5. Latency p95 is where decision models lose.** Every checkpoint above 6 GB has
+a p95 worse than the 27B chat baseline (clef-flash 2322 ms, d3-flash 2899 ms,
+clef-oQ4e 8667 ms, openjev 7469 ms, against the baseline's ~560 ms). The median is
+the number that gets quoted and the p95 is the number that breaks an SLO. Report
+both, and treat a p95 worse than the baseline as disqualifying for any
+latency-sensitive workload regardless of median.
+
+**6. Do not sweep knobs.** The sweep confirmed the pre-analysis: `temperature`,
+`top_p`, `top_k`, `enable_thinking`, `mtp_enabled`, `dflash_enabled`,
+`specprefill_enabled` and `turboquant_kv_enabled` are all inert for
+`engine_type == "decision"` — `engine_pool.py` skips speculative setup outright
+because decision models never decode. There is nothing to tune. The only real
+knobs are `max_context_window` (lower it to fail fast) and `gpu_power_limit_w`
+(latency only). A "tuning run" on a decision model is a category error; the
+correct action is to pick a different checkpoint.
+
+## What this corpus cannot measure
+
+State this in every write-up, because the numbers invite over-reading:
+
+- **Open-domain judgement.** Every item is decidable by inspection. A model that
+  scores 1.0 here has proven it can do arithmetic and read negation, not that it
+  can triage a real support ticket.
+- **Long-context reasoning.** `longstate` tests that a long state does not
+  *break* the answer. It does not test whether the model can find a fact buried
+  in 100K tokens.
+- **Multimodal quality.** The corpus is text-only. Clef, OpenJev and d3 accept
+  images (and d3 video), and nothing here scores that. A separate image corpus is
+  required before any vision claim.
+- **Throughput under concurrency.** `DecisionEngine` serialises requests behind
+  an `asyncio.Lock` because they share one GPU executor. Latency here is
+  single-request latency and says nothing about batch throughput.
+- **Instruction-following on `instructions`.** The corpus uses short, direct
+  instructions. It does not test whether a model honours a long or unusual
+  instruction.

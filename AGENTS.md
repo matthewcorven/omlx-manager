@@ -103,6 +103,7 @@ Load the relevant skill before acting:
 | Read or change per-model settings | `.github/skills/omlx-model-settings` |
 | Run benchmarks or measure TTFT | `.github/skills/omlx-benchmark` |
 | Evaluate or tune an OCR / document-parsing model | `.github/skills/omlx-ocr-eval` |
+| Evaluate a decision model (Clef, OpenJev, d3, d1) | `.github/skills/omlx-decision-eval` |
 | Something is broken | `.github/skills/omlx-troubleshooting` |
 
 ## External engine: Splash
@@ -147,6 +148,12 @@ python3 scripts/measure.py --model <model_id> --runs 3 --out results/<model>/bas
 # 5. sweep settings (see tuning-methodology.md)
 # 6. write results/<model>/final.json + NOTES.md
 ```
+
+**Decision models do not follow this workflow.** They have no decode loop and no
+sampling, so there is nothing to sweep. They are scored against a labelled corpus
+and compared to a chat-model baseline instead — see
+[`docs/decision-model-methodology.md`](docs/decision-model-methodology.md) and
+`.github/skills/omlx-decision-eval`.
 
 ## Measurement contract
 

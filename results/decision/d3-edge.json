@@ -1,0 +1,2002 @@
+{
+ "model": "d3-edge",
+ "items": 39,
+ "scored_items": 35,
+ "gates": {
+  "error": [],
+  "schema": [],
+  "degenerate": [],
+  "truncation": []
+ },
+ "gate_failures": 0,
+ "accuracy": 0.7714,
+ "brier": 0.2514,
+ "logloss": 0.3763,
+ "ece": 0.1156,
+ "mean_confidence": 0.7988,
+ "ambiguous_confidence": 0.7702,
+ "latency_ms_median": 12.9,
+ "latency_ms_p95": 108.7,
+ "by_family": {
+  "arithmetic": {
+   "n": 6,
+   "accuracy": 0.6667,
+   "brier": 0.5393,
+   "mean_confidence": 0.7265
+  },
+  "graded": {
+   "n": 5,
+   "accuracy": 0.8,
+   "brier": 0.3238,
+   "mean_confidence": 0.6702
+  },
+  "longstate": {
+   "n": 6,
+   "accuracy": 0.3333,
+   "brier": 0.5224,
+   "mean_confidence": 0.5937
+  },
+  "multilabel": {
+   "n": 6,
+   "accuracy": 1.0,
+   "brier": 0.0096,
+   "mean_confidence": 0.9519
+  },
+  "negation": {
+   "n": 4,
+   "accuracy": 0.75,
+   "brier": 0.1357,
+   "mean_confidence": 0.872
+  },
+  "ordering": {
+   "n": 4,
+   "accuracy": 1.0,
+   "brier": 0.0524,
+   "mean_confidence": 0.874
+  },
+  "sentiment": {
+   "n": 4,
+   "accuracy": 1.0,
+   "brier": 0.0,
+   "mean_confidence": 0.998
+  }
+ },
+ "rows": [
+  {
+   "id": "noul-sentiment-00",
+   "family": "sentiment",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 46.3,
+   "probabilities": [
+    0.0012,
+    0.9988
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.9988,
+   "scored": true,
+   "expected": "true",
+   "correct": true,
+   "brier": 3e-06,
+   "logloss": 0.001201,
+   "p_truth": 0.9988
+  },
+  {
+   "id": "noul-sentiment-01",
+   "family": "sentiment",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 15.0,
+   "probabilities": [
+    0.9978,
+    0.0022
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.9978,
+   "scored": true,
+   "expected": "false",
+   "correct": true,
+   "brier": 1e-05,
+   "logloss": 0.002202,
+   "p_truth": 0.9978
+  },
+  {
+   "id": "noul-sentiment-02",
+   "family": "sentiment",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 13.6,
+   "probabilities": [
+    0.0018,
+    0.9982
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.9982,
+   "scored": true,
+   "expected": "true",
+   "correct": true,
+   "brier": 6e-06,
+   "logloss": 0.001802,
+   "p_truth": 0.9982
+  },
+  {
+   "id": "noul-sentiment-03",
+   "family": "sentiment",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 13.3,
+   "probabilities": [
+    0.9973,
+    0.0027
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.9973,
+   "scored": true,
+   "expected": "false",
+   "correct": true,
+   "brier": 1.5e-05,
+   "logloss": 0.002704,
+   "p_truth": 0.9973
+  },
+  {
+   "id": "noul-arithmetic-04",
+   "family": "arithmetic",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 13.1,
+   "probabilities": [
+    0.1752,
+    0.8248
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.8248,
+   "scored": true,
+   "expected": "true",
+   "correct": true,
+   "brier": 0.06139,
+   "logloss": 0.192614,
+   "p_truth": 0.8248
+  },
+  {
+   "id": "noul-arithmetic-05",
+   "family": "arithmetic",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 12.9,
+   "probabilities": [
+    0.1351,
+    0.8649
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.8649,
+   "scored": true,
+   "expected": "false",
+   "correct": false,
+   "brier": 1.496104,
+   "logloss": 2.00174,
+   "p_truth": 0.1351
+  },
+  {
+   "id": "noul-arithmetic-06",
+   "family": "arithmetic",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 13.0,
+   "probabilities": [
+    0.0143,
+    0.9857
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.9857,
+   "scored": true,
+   "expected": "true",
+   "correct": true,
+   "brier": 0.000409,
+   "logloss": 0.014403,
+   "p_truth": 0.9857
+  },
+  {
+   "id": "noul-arithmetic-07",
+   "family": "arithmetic",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 12.6,
+   "probabilities": [
+    0.3728,
+    0.6272
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.6272,
+   "scored": true,
+   "expected": "false",
+   "correct": false,
+   "brier": 0.78676,
+   "logloss": 0.986713,
+   "p_truth": 0.3728
+  },
+  {
+   "id": "noul-arithmetic-08",
+   "family": "arithmetic",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 12.7,
+   "probabilities": [
+    0.4841,
+    0.5159
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.5159,
+   "scored": true,
+   "expected": "true",
+   "correct": true,
+   "brier": 0.468706,
+   "logloss": 0.661842,
+   "p_truth": 0.5159
+  },
+  {
+   "id": "noul-arithmetic-09",
+   "family": "arithmetic",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 13.3,
+   "probabilities": [
+    0.5403,
+    0.4597
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.5403,
+   "scored": true,
+   "expected": "false",
+   "correct": true,
+   "brier": 0.422648,
+   "logloss": 0.615631,
+   "p_truth": 0.5403
+  },
+  {
+   "id": "noul-negation-10",
+   "family": "negation",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 12.5,
+   "probabilities": [
+    0.98,
+    0.02
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.98,
+   "scored": true,
+   "expected": "false",
+   "correct": true,
+   "brier": 0.0008,
+   "logloss": 0.020203,
+   "p_truth": 0.98
+  },
+  {
+   "id": "noul-negation-11",
+   "family": "negation",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 11.7,
+   "probabilities": [
+    0.0031,
+    0.9969
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.9969,
+   "scored": true,
+   "expected": "true",
+   "correct": true,
+   "brier": 1.9e-05,
+   "logloss": 0.003105,
+   "p_truth": 0.9969
+  },
+  {
+   "id": "noul-negation-12",
+   "family": "negation",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 12.5,
+   "probabilities": [
+    0.9905,
+    0.0095
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.9905,
+   "scored": true,
+   "expected": "false",
+   "correct": true,
+   "brier": 0.00018,
+   "logloss": 0.009545,
+   "p_truth": 0.9905
+  },
+  {
+   "id": "noul-negation-13",
+   "family": "negation",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 12.1,
+   "probabilities": [
+    0.5204,
+    0.4796
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.5204,
+   "scored": true,
+   "expected": "true",
+   "correct": false,
+   "brier": 0.541632,
+   "logloss": 0.734803,
+   "p_truth": 0.4796
+  },
+  {
+   "id": "noul-ordering-14",
+   "family": "ordering",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 12.3,
+   "probabilities": [
+    0.0091,
+    0.9909
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.9909,
+   "scored": true,
+   "expected": "true",
+   "correct": true,
+   "brier": 0.000166,
+   "logloss": 0.009142,
+   "p_truth": 0.9909
+  },
+  {
+   "id": "noul-ordering-15",
+   "family": "ordering",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 12.6,
+   "probabilities": [
+    0.9584,
+    0.0416
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.9584,
+   "scored": true,
+   "expected": "false",
+   "correct": true,
+   "brier": 0.003461,
+   "logloss": 0.04249,
+   "p_truth": 0.9584
+  },
+  {
+   "id": "noul-ordering-16",
+   "family": "ordering",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 12.4,
+   "probabilities": [
+    0.7606,
+    0.2394
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.7606,
+   "scored": true,
+   "expected": "false",
+   "correct": true,
+   "brier": 0.114625,
+   "logloss": 0.273648,
+   "p_truth": 0.7606
+  },
+  {
+   "id": "noul-ordering-17",
+   "family": "ordering",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 12.4,
+   "probabilities": [
+    0.2138,
+    0.7862
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.7862,
+   "scored": true,
+   "expected": "true",
+   "correct": true,
+   "brier": 0.091421,
+   "logloss": 0.240544,
+   "p_truth": 0.7862
+  },
+  {
+   "id": "noul-ambiguous-18",
+   "family": "ambiguous",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 12.6,
+   "probabilities": [
+    0.2202,
+    0.7798
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.7798,
+   "scored": false,
+   "confidence_on_ambiguous": 0.7798
+  },
+  {
+   "id": "noul-ambiguous-19",
+   "family": "ambiguous",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 11.6,
+   "probabilities": [
+    0.7062,
+    0.2938
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.7062,
+   "scored": false,
+   "confidence_on_ambiguous": 0.7062
+  },
+  {
+   "id": "noul-ambiguous-20",
+   "family": "ambiguous",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 11.7,
+   "probabilities": [
+    0.3718,
+    0.6282
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.6282,
+   "scored": false,
+   "confidence_on_ambiguous": 0.6282
+  },
+  {
+   "id": "noul-ambiguous-21",
+   "family": "ambiguous",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 12.1,
+   "probabilities": [
+    0.9667,
+    0.0333
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.9667,
+   "scored": false,
+   "confidence_on_ambiguous": 0.9667
+  },
+  {
+   "id": "choice-multilabel-00",
+   "family": "multilabel",
+   "type": "choice",
+   "status": 200,
+   "latency_ms": 14.4,
+   "probabilities": [
+    0.8674,
+    0.0477,
+    0.0843,
+    0.0006
+   ],
+   "keys": [
+    "billing",
+    "shipping",
+    "technical",
+    "account"
+   ],
+   "predicted": "billing",
+   "confidence": 0.8674,
+   "scored": true,
+   "expected": "billing",
+   "correct": true,
+   "brier": 0.026965,
+   "logloss": 0.142255,
+   "p_truth": 0.8674
+  },
+  {
+   "id": "choice-multilabel-01",
+   "family": "multilabel",
+   "type": "choice",
+   "status": 200,
+   "latency_ms": 14.5,
+   "probabilities": [
+    0.0001,
+    0.0003,
+    0.9946,
+    0.005
+   ],
+   "keys": [
+    "billing",
+    "shipping",
+    "technical",
+    "account"
+   ],
+   "predicted": "technical",
+   "confidence": 0.9946,
+   "scored": true,
+   "expected": "technical",
+   "correct": true,
+   "brier": 5.4e-05,
+   "logloss": 0.005415,
+   "p_truth": 0.9946
+  },
+  {
+   "id": "choice-multilabel-02",
+   "family": "multilabel",
+   "type": "choice",
+   "status": 200,
+   "latency_ms": 14.5,
+   "probabilities": [
+    0.0001,
+    0.9976,
+    0.0022,
+    0.0001
+   ],
+   "keys": [
+    "billing",
+    "shipping",
+    "technical",
+    "account"
+   ],
+   "predicted": "shipping",
+   "confidence": 0.9976,
+   "scored": true,
+   "expected": "shipping",
+   "correct": true,
+   "brier": 1.1e-05,
+   "logloss": 0.002403,
+   "p_truth": 0.9976
+  },
+  {
+   "id": "choice-multilabel-03",
+   "family": "multilabel",
+   "type": "choice",
+   "status": 200,
+   "latency_ms": 14.3,
+   "probabilities": [
+    0.0002,
+    0.0186,
+    0.1128,
+    0.8684
+   ],
+   "keys": [
+    "billing",
+    "shipping",
+    "technical",
+    "account"
+   ],
+   "predicted": "account",
+   "confidence": 0.8684,
+   "scored": true,
+   "expected": "account",
+   "correct": true,
+   "brier": 0.030388,
+   "logloss": 0.141103,
+   "p_truth": 0.8684
+  },
+  {
+   "id": "choice-multilabel-04",
+   "family": "multilabel",
+   "type": "choice",
+   "status": 200,
+   "latency_ms": 14.9,
+   "probabilities": [
+    0.0033,
+    0.9961,
+    0.0003,
+    0.0003
+   ],
+   "keys": [
+    "adds",
+    "subtracts",
+    "multiplies",
+    "compares"
+   ],
+   "predicted": "subtracts",
+   "confidence": 0.9961,
+   "scored": true,
+   "expected": "subtracts",
+   "correct": true,
+   "brier": 2.6e-05,
+   "logloss": 0.003908,
+   "p_truth": 0.9961
+  },
+  {
+   "id": "choice-multilabel-05",
+   "family": "multilabel",
+   "type": "choice",
+   "status": 200,
+   "latency_ms": 14.7,
+   "probabilities": [
+    0.0069,
+    0.9873,
+    0.0018,
+    0.004
+   ],
+   "keys": [
+    "all_rows",
+    "expensive_orders",
+    "cheap_orders",
+    "count"
+   ],
+   "predicted": "expensive_orders",
+   "confidence": 0.9873,
+   "scored": true,
+   "expected": "expensive_orders",
+   "correct": true,
+   "brier": 0.000228,
+   "logloss": 0.012781,
+   "p_truth": 0.9873
+  },
+  {
+   "id": "score-graded-00",
+   "family": "graded",
+   "type": "score",
+   "status": 200,
+   "latency_ms": 12.3,
+   "probabilities": [
+    0.0078,
+    0.0155,
+    0.0148,
+    0.0267,
+    0.9352
+   ],
+   "keys": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4"
+   ],
+   "predicted": "4",
+   "confidence": 0.9352,
+   "scored": true,
+   "expected": "4",
+   "correct": true,
+   "brier": 0.005432,
+   "logloss": 0.066995,
+   "p_truth": 0.9352
+  },
+  {
+   "id": "score-graded-01",
+   "family": "graded",
+   "type": "score",
+   "status": 200,
+   "latency_ms": 11.9,
+   "probabilities": [
+    0.5858,
+    0.3507,
+    0.0382,
+    0.021,
+    0.0042
+   ],
+   "keys": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4"
+   ],
+   "predicted": "0",
+   "confidence": 0.5858,
+   "scored": true,
+   "expected": "1",
+   "correct": false,
+   "brier": 0.76667,
+   "logloss": 1.047824,
+   "p_truth": 0.3507
+  },
+  {
+   "id": "score-graded-02",
+   "family": "graded",
+   "type": "score",
+   "status": 200,
+   "latency_ms": 12.0,
+   "probabilities": [
+    0.2286,
+    0.3532,
+    0.3553,
+    0.03,
+    0.0328
+   ],
+   "keys": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4"
+   ],
+   "predicted": "2",
+   "confidence": 0.3553,
+   "scored": true,
+   "expected": "2",
+   "correct": true,
+   "brier": 0.594622,
+   "logloss": 1.034793,
+   "p_truth": 0.3553
+  },
+  {
+   "id": "score-graded-03",
+   "family": "graded",
+   "type": "score",
+   "status": 200,
+   "latency_ms": 11.9,
+   "probabilities": [
+    0.082,
+    0.0286,
+    0.0324,
+    0.0312,
+    0.8259
+   ],
+   "keys": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4"
+   ],
+   "predicted": "4",
+   "confidence": 0.8259,
+   "scored": true,
+   "expected": "4",
+   "correct": true,
+   "brier": 0.039876,
+   "logloss": 0.191282,
+   "p_truth": 0.8259
+  },
+  {
+   "id": "score-graded-04",
+   "family": "graded",
+   "type": "score",
+   "status": 200,
+   "latency_ms": 12.1,
+   "probabilities": [
+    0.6486,
+    0.2946,
+    0.0432,
+    0.0087,
+    0.0049
+   ],
+   "keys": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4"
+   ],
+   "predicted": "0",
+   "confidence": 0.6486,
+   "scored": true,
+   "expected": "0",
+   "correct": true,
+   "brier": 0.212237,
+   "logloss": 0.432939,
+   "p_truth": 0.6486
+  },
+  {
+   "id": "noul-longstate-00",
+   "family": "longstate",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 303.7,
+   "probabilities": [
+    0.5875,
+    0.4125
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.5875,
+   "scored": true,
+   "expected": "true",
+   "correct": false,
+   "brier": 0.690313,
+   "logloss": 0.885519,
+   "p_truth": 0.4125
+  },
+  {
+   "id": "noul-longstate-01",
+   "family": "longstate",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 107.5,
+   "probabilities": [
+    0.5432,
+    0.4568
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.5432,
+   "scored": true,
+   "expected": "false",
+   "correct": true,
+   "brier": 0.417332,
+   "logloss": 0.610278,
+   "p_truth": 0.5432
+  },
+  {
+   "id": "noul-longstate-02",
+   "family": "longstate",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 43.2,
+   "probabilities": [
+    0.25,
+    0.75
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.75,
+   "scored": true,
+   "expected": "true",
+   "correct": true,
+   "brier": 0.125,
+   "logloss": 0.287682,
+   "p_truth": 0.75
+  },
+  {
+   "id": "noul-longstate-03",
+   "family": "longstate",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 303.0,
+   "probabilities": [
+    0.4902,
+    0.5098
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.5098,
+   "scored": true,
+   "expected": "false",
+   "correct": false,
+   "brier": 0.519792,
+   "logloss": 0.712942,
+   "p_truth": 0.4902
+  },
+  {
+   "id": "noul-longstate-04",
+   "family": "longstate",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 108.7,
+   "probabilities": [
+    0.6331,
+    0.3669
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "false",
+   "confidence": 0.6331,
+   "scored": true,
+   "expected": "true",
+   "correct": false,
+   "brier": 0.801631,
+   "logloss": 1.002666,
+   "p_truth": 0.3669
+  },
+  {
+   "id": "noul-longstate-05",
+   "family": "longstate",
+   "type": "noul",
+   "status": 200,
+   "latency_ms": 107.9,
+   "probabilities": [
+    0.4613,
+    0.5387
+   ],
+   "keys": [
+    "false",
+    "true"
+   ],
+   "predicted": "true",
+   "confidence": 0.5387,
+   "scored": true,
+   "expected": "false",
+   "correct": false,
+   "brier": 0.580395,
+   "logloss": 0.773707,
+   "p_truth": 0.4613
+  }
+ ],
+ "baseline": {
+  "model": "Qwen3.8-27B-oQ4e-mtp",
+  "items": 39,
+  "scored_items": 35,
+  "gates": {
+   "error": [],
+   "schema": [],
+   "degenerate": [],
+   "truncation": []
+  },
+  "gate_failures": 0,
+  "accuracy": 0.8571,
+  "brier": 0.1838,
+  "logloss": 0.2766,
+  "ece": 0.0496,
+  "mean_confidence": 0.8879,
+  "ambiguous_confidence": 0.7198,
+  "latency_ms_median": 536.3,
+  "latency_ms_p95": 9066.0,
+  "by_family": {
+   "arithmetic": {
+    "n": 6,
+    "accuracy": 0.8333,
+    "brier": 0.2346,
+    "mean_confidence": 0.7845
+   },
+   "graded": {
+    "n": 5,
+    "accuracy": 0.6,
+    "brier": 0.6293,
+    "mean_confidence": 0.8192
+   },
+   "longstate": {
+    "n": 6,
+    "accuracy": 0.6667,
+    "brier": 0.3006,
+    "mean_confidence": 0.7856
+   },
+   "multilabel": {
+    "n": 6,
+    "accuracy": 1.0,
+    "brier": 0.0012,
+    "mean_confidence": 0.9862
+   },
+   "negation": {
+    "n": 4,
+    "accuracy": 1.0,
+    "brier": 0.0161,
+    "mean_confidence": 0.9298
+   },
+   "ordering": {
+    "n": 4,
+    "accuracy": 1.0,
+    "brier": 0.0001,
+    "mean_confidence": 0.993
+   },
+   "sentiment": {
+    "n": 4,
+    "accuracy": 1.0,
+    "brier": 0.0003,
+    "mean_confidence": 0.9883
+   }
+  },
+  "rows": [
+   {
+    "id": "noul-sentiment-00",
+    "family": "sentiment",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 8697.3,
+    "probabilities": [
+     0.011,
+     0.989
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "true",
+    "confidence": 0.989,
+    "scored": true,
+    "expected": "true",
+    "correct": true,
+    "brier": 0.000242,
+    "logloss": 0.011061,
+    "p_truth": 0.989
+   },
+   {
+    "id": "noul-sentiment-01",
+    "family": "sentiment",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 535.1,
+    "probabilities": [
+     0.9914,
+     0.0086
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "false",
+    "confidence": 0.9914,
+    "scored": true,
+    "expected": "false",
+    "correct": true,
+    "brier": 0.000148,
+    "logloss": 0.008637,
+    "p_truth": 0.9914
+   },
+   {
+    "id": "noul-sentiment-02",
+    "family": "sentiment",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 532.6,
+    "probabilities": [
+     0.0067,
+     0.9933
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "true",
+    "confidence": 0.9933,
+    "scored": true,
+    "expected": "true",
+    "correct": true,
+    "brier": 9e-05,
+    "logloss": 0.006723,
+    "p_truth": 0.9933
+   },
+   {
+    "id": "noul-sentiment-03",
+    "family": "sentiment",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 533.2,
+    "probabilities": [
+     0.9797,
+     0.0203
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "false",
+    "confidence": 0.9797,
+    "scored": true,
+    "expected": "false",
+    "correct": true,
+    "brier": 0.000824,
+    "logloss": 0.020509,
+    "p_truth": 0.9797
+   },
+   {
+    "id": "noul-arithmetic-04",
+    "family": "arithmetic",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 532.8,
+    "probabilities": [
+     0.321,
+     0.679
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "true",
+    "confidence": 0.679,
+    "scored": true,
+    "expected": "true",
+    "correct": true,
+    "brier": 0.206082,
+    "logloss": 0.387134,
+    "p_truth": 0.679
+   },
+   {
+    "id": "noul-arithmetic-05",
+    "family": "arithmetic",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 538.2,
+    "probabilities": [
+     0.3778,
+     0.6222
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "true",
+    "confidence": 0.6222,
+    "scored": true,
+    "expected": "false",
+    "correct": false,
+    "brier": 0.774266,
+    "logloss": 0.97339,
+    "p_truth": 0.3778
+   },
+   {
+    "id": "noul-arithmetic-06",
+    "family": "arithmetic",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 417.1,
+    "probabilities": [
+     0.1482,
+     0.8518
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "true",
+    "confidence": 0.8518,
+    "scored": true,
+    "expected": "true",
+    "correct": true,
+    "brier": 0.043926,
+    "logloss": 0.160404,
+    "p_truth": 0.8518
+   },
+   {
+    "id": "noul-arithmetic-07",
+    "family": "arithmetic",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 417.1,
+    "probabilities": [
+     0.9978,
+     0.0022
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "false",
+    "confidence": 0.9978,
+    "scored": true,
+    "expected": "false",
+    "correct": true,
+    "brier": 1e-05,
+    "logloss": 0.002202,
+    "p_truth": 0.9978
+   },
+   {
+    "id": "noul-arithmetic-08",
+    "family": "arithmetic",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 535.9,
+    "probabilities": [
+     0.4379,
+     0.5621
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "true",
+    "confidence": 0.5621,
+    "scored": true,
+    "expected": "true",
+    "correct": true,
+    "brier": 0.383513,
+    "logloss": 0.576076,
+    "p_truth": 0.5621
+   },
+   {
+    "id": "noul-arithmetic-09",
+    "family": "arithmetic",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 537.8,
+    "probabilities": [
+     0.9941,
+     0.0059
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "false",
+    "confidence": 0.9941,
+    "scored": true,
+    "expected": "false",
+    "correct": true,
+    "brier": 7e-05,
+    "logloss": 0.005917,
+    "p_truth": 0.9941
+   },
+   {
+    "id": "noul-negation-10",
+    "family": "negation",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 418.1,
+    "probabilities": [
+     0.8355,
+     0.1645
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "false",
+    "confidence": 0.8355,
+    "scored": true,
+    "expected": "false",
+    "correct": true,
+    "brier": 0.05412,
+    "logloss": 0.179725,
+    "p_truth": 0.8355
+   },
+   {
+    "id": "noul-negation-11",
+    "family": "negation",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 415.8,
+    "probabilities": [
+     0.023,
+     0.977
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "true",
+    "confidence": 0.977,
+    "scored": true,
+    "expected": "true",
+    "correct": true,
+    "brier": 0.001058,
+    "logloss": 0.023269,
+    "p_truth": 0.977
+   },
+   {
+    "id": "noul-negation-12",
+    "family": "negation",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 533.2,
+    "probabilities": [
+     0.9669,
+     0.0331
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "false",
+    "confidence": 0.9669,
+    "scored": true,
+    "expected": "false",
+    "correct": true,
+    "brier": 0.002191,
+    "logloss": 0.03366,
+    "p_truth": 0.9669
+   },
+   {
+    "id": "noul-negation-13",
+    "family": "negation",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 532.1,
+    "probabilities": [
+     0.0601,
+     0.9399
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "true",
+    "confidence": 0.9399,
+    "scored": true,
+    "expected": "true",
+    "correct": true,
+    "brier": 0.007224,
+    "logloss": 0.061982,
+    "p_truth": 0.9399
+   },
+   {
+    "id": "noul-ordering-14",
+    "family": "ordering",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 533.2,
+    "probabilities": [
+     0.0023,
+     0.9977
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "true",
+    "confidence": 0.9977,
+    "scored": true,
+    "expected": "true",
+    "correct": true,
+    "brier": 1.1e-05,
+    "logloss": 0.002303,
+    "p_truth": 0.9977
+   },
+   {
+    "id": "noul-ordering-15",
+    "family": "ordering",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 534.6,
+    "probabilities": [
+     0.9944,
+     0.0056
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "false",
+    "confidence": 0.9944,
+    "scored": true,
+    "expected": "false",
+    "correct": true,
+    "brier": 6.3e-05,
+    "logloss": 0.005616,
+    "p_truth": 0.9944
+   },
+   {
+    "id": "noul-ordering-16",
+    "family": "ordering",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 532.2,
+    "probabilities": [
+     0.9859,
+     0.0141
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "false",
+    "confidence": 0.9859,
+    "scored": true,
+    "expected": "false",
+    "correct": true,
+    "brier": 0.000398,
+    "logloss": 0.0142,
+    "p_truth": 0.9859
+   },
+   {
+    "id": "noul-ordering-17",
+    "family": "ordering",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 533.0,
+    "probabilities": [
+     0.0059,
+     0.9941
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "true",
+    "confidence": 0.9941,
+    "scored": true,
+    "expected": "true",
+    "correct": true,
+    "brier": 7e-05,
+    "logloss": 0.005917,
+    "p_truth": 0.9941
+   },
+   {
+    "id": "noul-ambiguous-18",
+    "family": "ambiguous",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 416.6,
+    "probabilities": [
+     0.6792,
+     0.3208
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "false",
+    "confidence": 0.6792,
+    "scored": false,
+    "confidence_on_ambiguous": 0.6792
+   },
+   {
+    "id": "noul-ambiguous-19",
+    "family": "ambiguous",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 424.4,
+    "probabilities": [
+     0.7311,
+     0.2689
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "false",
+    "confidence": 0.7311,
+    "scored": false,
+    "confidence_on_ambiguous": 0.7311
+   },
+   {
+    "id": "noul-ambiguous-20",
+    "family": "ambiguous",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 422.3,
+    "probabilities": [
+     0.6514,
+     0.3486
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "false",
+    "confidence": 0.6514,
+    "scored": false,
+    "confidence_on_ambiguous": 0.6514
+   },
+   {
+    "id": "noul-ambiguous-21",
+    "family": "ambiguous",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 417.5,
+    "probabilities": [
+     0.8176,
+     0.1824
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "false",
+    "confidence": 0.8176,
+    "scored": false,
+    "confidence_on_ambiguous": 0.8176
+   },
+   {
+    "id": "choice-multilabel-00",
+    "family": "multilabel",
+    "type": "choice",
+    "status": 200,
+    "latency_ms": 541.2,
+    "probabilities": [
+     0.9988,
+     0.0002,
+     0.001,
+     0.0
+    ],
+    "keys": [
+     "billing",
+     "shipping",
+     "technical",
+     "account"
+    ],
+    "predicted": "billing",
+    "confidence": 0.9988,
+    "scored": true,
+    "expected": "billing",
+    "correct": true,
+    "brier": 2e-06,
+    "logloss": 0.001201,
+    "p_truth": 0.9988
+   },
+   {
+    "id": "choice-multilabel-01",
+    "family": "multilabel",
+    "type": "choice",
+    "status": 200,
+    "latency_ms": 543.6,
+    "probabilities": [
+     0.0006,
+     0.0001,
+     0.9993,
+     0.0
+    ],
+    "keys": [
+     "billing",
+     "shipping",
+     "technical",
+     "account"
+    ],
+    "predicted": "technical",
+    "confidence": 0.9993,
+    "scored": true,
+    "expected": "technical",
+    "correct": true,
+    "brier": 1e-06,
+    "logloss": 0.0007,
+    "p_truth": 0.9993
+   },
+   {
+    "id": "choice-multilabel-02",
+    "family": "multilabel",
+    "type": "choice",
+    "status": 200,
+    "latency_ms": 659.8,
+    "probabilities": [
+     0.0013,
+     0.9982,
+     0.0004,
+     0.0001
+    ],
+    "keys": [
+     "billing",
+     "shipping",
+     "technical",
+     "account"
+    ],
+    "predicted": "shipping",
+    "confidence": 0.9982,
+    "scored": true,
+    "expected": "shipping",
+    "correct": true,
+    "brier": 5e-06,
+    "logloss": 0.001802,
+    "p_truth": 0.9982
+   },
+   {
+    "id": "choice-multilabel-03",
+    "family": "multilabel",
+    "type": "choice",
+    "status": 200,
+    "latency_ms": 544.4,
+    "probabilities": [
+     0.0049,
+     0.0011,
+     0.0531,
+     0.9409
+    ],
+    "keys": [
+     "billing",
+     "shipping",
+     "technical",
+     "account"
+    ],
+    "predicted": "account",
+    "confidence": 0.9409,
+    "scored": true,
+    "expected": "account",
+    "correct": true,
+    "brier": 0.006338,
+    "logloss": 0.060918,
+    "p_truth": 0.9409
+   },
+   {
+    "id": "choice-multilabel-04",
+    "family": "multilabel",
+    "type": "choice",
+    "status": 200,
+    "latency_ms": 545.8,
+    "probabilities": [
+     0.018,
+     0.9815,
+     0.0004,
+     0.0001
+    ],
+    "keys": [
+     "adds",
+     "subtracts",
+     "multiplies",
+     "compares"
+    ],
+    "predicted": "subtracts",
+    "confidence": 0.9815,
+    "scored": true,
+    "expected": "subtracts",
+    "correct": true,
+    "brier": 0.000666,
+    "logloss": 0.018673,
+    "p_truth": 0.9815
+   },
+   {
+    "id": "choice-multilabel-05",
+    "family": "multilabel",
+    "type": "choice",
+    "status": 200,
+    "latency_ms": 662.0,
+    "probabilities": [
+     0.0012,
+     0.9984,
+     0.0003,
+     0.0
+    ],
+    "keys": [
+     "all_rows",
+     "expensive_orders",
+     "cheap_orders",
+     "count"
+    ],
+    "predicted": "expensive_orders",
+    "confidence": 0.9984,
+    "scored": true,
+    "expected": "expensive_orders",
+    "correct": true,
+    "brier": 4e-06,
+    "logloss": 0.001601,
+    "p_truth": 0.9984
+   },
+   {
+    "id": "score-graded-00",
+    "family": "graded",
+    "type": "score",
+    "status": 200,
+    "latency_ms": 540.8,
+    "probabilities": [
+     0.0002,
+     0.0,
+     0.0001,
+     0.0007,
+     0.999
+    ],
+    "keys": [
+     "0",
+     "1",
+     "2",
+     "3",
+     "4"
+    ],
+    "predicted": "4",
+    "confidence": 0.999,
+    "scored": true,
+    "expected": "4",
+    "correct": true,
+    "brier": 2e-06,
+    "logloss": 0.001001,
+    "p_truth": 0.999
+   },
+   {
+    "id": "score-graded-01",
+    "family": "graded",
+    "type": "score",
+    "status": 200,
+    "latency_ms": 537.5,
+    "probabilities": [
+     0.2912,
+     0.6986,
+     0.01,
+     0.0002,
+     0.0001
+    ],
+    "keys": [
+     "0",
+     "1",
+     "2",
+     "3",
+     "4"
+    ],
+    "predicted": "1",
+    "confidence": 0.6986,
+    "scored": true,
+    "expected": "1",
+    "correct": true,
+    "brier": 0.175739,
+    "logloss": 0.358677,
+    "p_truth": 0.6986
+   },
+   {
+    "id": "score-graded-02",
+    "family": "graded",
+    "type": "score",
+    "status": 200,
+    "latency_ms": 541.0,
+    "probabilities": [
+     0.006,
+     0.7906,
+     0.1999,
+     0.0032,
+     0.0003
+    ],
+    "keys": [
+     "0",
+     "1",
+     "2",
+     "3",
+     "4"
+    ],
+    "predicted": "1",
+    "confidence": 0.7906,
+    "scored": true,
+    "expected": "2",
+    "correct": false,
+    "brier": 1.265255,
+    "logloss": 1.609938,
+    "p_truth": 0.1999
+   },
+   {
+    "id": "score-graded-03",
+    "family": "graded",
+    "type": "score",
+    "status": 200,
+    "latency_ms": 536.8,
+    "probabilities": [
+     0.0036,
+     0.0171,
+     0.0151,
+     0.2363,
+     0.7279
+    ],
+    "keys": [
+     "0",
+     "1",
+     "2",
+     "3",
+     "4"
+    ],
+    "predicted": "4",
+    "confidence": 0.7279,
+    "scored": true,
+    "expected": "4",
+    "correct": true,
+    "brier": 0.130409,
+    "logloss": 0.317592,
+    "p_truth": 0.7279
+   },
+   {
+    "id": "score-graded-04",
+    "family": "graded",
+    "type": "score",
+    "status": 200,
+    "latency_ms": 536.3,
+    "probabilities": [
+     0.1051,
+     0.8798,
+     0.0142,
+     0.0007,
+     0.0002
+    ],
+    "keys": [
+     "0",
+     "1",
+     "2",
+     "3",
+     "4"
+    ],
+    "predicted": "1",
+    "confidence": 0.8798,
+    "scored": true,
+    "expected": "0",
+    "correct": false,
+    "brier": 1.575096,
+    "logloss": 2.252843,
+    "p_truth": 0.1051
+   },
+   {
+    "id": "noul-longstate-00",
+    "family": "longstate",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 20065.7,
+    "probabilities": [
+     0.2943,
+     0.7057
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "true",
+    "confidence": 0.7057,
+    "scored": true,
+    "expected": "true",
+    "correct": true,
+    "brier": 0.173225,
+    "logloss": 0.348565,
+    "p_truth": 0.7057
+   },
+   {
+    "id": "noul-longstate-01",
+    "family": "longstate",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 8992.4,
+    "probabilities": [
+     0.2944,
+     0.7056
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "true",
+    "confidence": 0.7056,
+    "scored": true,
+    "expected": "false",
+    "correct": false,
+    "brier": 0.995743,
+    "logloss": 1.222816,
+    "p_truth": 0.2944
+   },
+   {
+    "id": "noul-longstate-02",
+    "family": "longstate",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 3331.0,
+    "probabilities": [
+     0.1826,
+     0.8174
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "true",
+    "confidence": 0.8174,
+    "scored": true,
+    "expected": "true",
+    "correct": true,
+    "brier": 0.066686,
+    "logloss": 0.201627,
+    "p_truth": 0.8174
+   },
+   {
+    "id": "noul-longstate-03",
+    "family": "longstate",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 3816.0,
+    "probabilities": [
+     0.9954,
+     0.0046
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "false",
+    "confidence": 0.9954,
+    "scored": true,
+    "expected": "false",
+    "correct": true,
+    "brier": 4.2e-05,
+    "logloss": 0.004611,
+    "p_truth": 0.9954
+   },
+   {
+    "id": "noul-longstate-04",
+    "family": "longstate",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 9078.7,
+    "probabilities": [
+     0.5313,
+     0.4687
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "false",
+    "confidence": 0.5313,
+    "scored": true,
+    "expected": "true",
+    "correct": false,
+    "brier": 0.564559,
+    "logloss": 0.757792,
+    "p_truth": 0.4687
+   },
+   {
+    "id": "noul-longstate-05",
+    "family": "longstate",
+    "type": "noul",
+    "status": 200,
+    "latency_ms": 9066.0,
+    "probabilities": [
+     0.9579,
+     0.0421
+    ],
+    "keys": [
+     "false",
+     "true"
+    ],
+    "predicted": "false",
+    "confidence": 0.9579,
+    "scored": true,
+    "expected": "false",
+    "correct": true,
+    "brier": 0.003545,
+    "logloss": 0.043012,
+    "p_truth": 0.9579
+   }
+  ]
+ }
+}

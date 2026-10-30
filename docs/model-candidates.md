@@ -99,6 +99,41 @@ Sampling settings per model (from model cards, see citations below):
 
 ---
 
+## 4. Decision models
+
+These are not text generators. They answer typed questions with a probability
+distribution over options, so they are **not tuned** — there is no decode loop and
+no sampling. They are scored against a labelled corpus instead; see
+[`decision-model-methodology.md`](decision-model-methodology.md) and
+[`results/decision/`](../results/decision/).
+
+| Model | Family | Size | Servable on 0.7.3rc1 | Scored |
+|---|---|---|---|---|
+| `Jundot/clef-oQ4e` | clef | 17.5 GB | yes | yes — acc 0.943, brier 0.1003, 794 ms |
+| `Jundot/clef-flash-oQ4e` | clef | 6.6 GB | yes | yes — acc 0.857, brier 0.1742, 232 ms |
+| `openjev/openjev` | openjev | 54.7 GB | yes | yes — acc 0.857, brier 0.1987, 467 ms |
+| `vllm-sr/d3-flash` | d3 | 16.8 GB | yes | yes — acc 0.943, brier 0.0764, 153 ms |
+| `vllm-sr/d3-mini` | d3 | 9.1 GB | yes | yes — acc 0.914, brier 0.1034, 86 ms |
+| `vllm-sr/d3-nano` | d3 | 4.5 GB | yes | yes — acc 0.829, brier 0.2346, 38 ms |
+| `vllm-sr/d3-lite` | d3 | 1.7 GB | yes | yes — acc 0.714, brier 0.2546, 22 ms |
+| `vllm-sr/d3-edge` | d3 | 1.2 GB | yes | yes — acc 0.771, brier 0.2514, 12.9 ms |
+| `LiquidAI/d1-2B` | d1 | 3.9 GB | **no** | blocked |
+| `LiquidAI/d1-Omni-2B` | d1 | 4.4 GB | **no** | blocked |
+| `LiquidAI/d1-2B-MLX-8bit` | d1 | 2.2 GB | **no** | blocked |
+
+All eight servable checkpoints were scored against the same 39-item corpus and
+the same `Qwen3.8-27B-oQ4e-mtp` chat baseline (acc 0.857, brier 0.1838, 536 ms).
+**`d3-flash` is the best-quality decision model; `d3-edge` is the fastest;
+`d3-lite`, `clef-oQ4e` and `openjev` are dominated and should not be deployed.**
+Full results and the decision rule are in
+[`results/decision/README.md`](../results/decision/README.md).
+
+The three d1 checkpoints are not servable on 0.7.3rc1: `omlx/engine/decision.py`
+maps only `{"clef", "openjev", "d3"}` and `omlx/models/d1.py` is absent from the
+installed tree. Support is in `main` (PR #4937) but not in this release.
+
+---
+
 ## Exact commands used (for reproducibility)
 
 ```bash
