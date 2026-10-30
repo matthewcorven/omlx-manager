@@ -5,7 +5,7 @@ description: Read and apply per-model settings on oMLX 0.7.3rc1 — the complete
 
 # oMLX per-model settings
 
-Verified against a live oMLX 0.7.3rc1 server on `http://127.0.0.1:8001`.
+Verified against a live oMLX 0.7.3rc1 server on `$OMLX_BASE_URL`.
 Success paths that require a loaded real model are marked **unverified** — no
 model was downloaded while writing this.
 
@@ -13,7 +13,7 @@ model was downloaded while writing this.
 
 ```sh
 export PATH="$HOME/.omlx/bin:$PATH"
-OMLX=http://127.0.0.1:8001
+OMLX=${OMLX_BASE_URL:-http://127.0.0.1:8001}
 ```
 
 ## The single most important gotcha

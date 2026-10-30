@@ -5,7 +5,7 @@ description: Run throughput and long-context benchmarks on oMLX 0.7.3rc1, stream
 
 # oMLX benchmarking
 
-Verified against a live oMLX 0.7.3rc1 server on `http://127.0.0.1:8001`.
+Verified against a live oMLX 0.7.3rc1 server on `$OMLX_BASE_URL`.
 Bench **execution** requires a loaded real model and is marked **unverified** —
 no model was downloaded while writing this. Every request/response *shape* and
 every validation error below was verified live.
@@ -14,7 +14,7 @@ every validation error below was verified live.
 
 ```sh
 export PATH="$HOME/.omlx/bin:$PATH"
-OMLX=http://127.0.0.1:8001
+OMLX=${OMLX_BASE_URL:-http://127.0.0.1:8001}
 ```
 
 ## Rule: one benchmark at a time

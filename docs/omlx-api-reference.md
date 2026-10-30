@@ -1,8 +1,8 @@
 # oMLX 0.7.3rc1 — API Reference
 
 Compact but complete reference for the oMLX HTTP API, derived from the shipped
-Python source at `/Applications/oMLX.app/Contents/Resources/omlx/` and verified
-live against a running server on `http://127.0.0.1:8001`.
+Python source at `$OMLX_SOURCE_DIR` and verified live against a running server
+on `$OMLX_BASE_URL`.
 
 Everything marked **verified** was executed against the live server. Everything
 marked **unverified** requires a real (non-virtual) model to be downloaded and
@@ -14,8 +14,11 @@ loaded, which was out of scope for this reference.
 
 ```sh
 export PATH="$HOME/.omlx/bin:$PATH"
-OMLX=http://127.0.0.1:8001
+OMLX=${OMLX_BASE_URL:-http://127.0.0.1:8001}
 ```
+
+Every path and URL below is shown with the development machine's default. See
+[Development](../README.md#development) for the full variable list.
 
 ### Base URL and route families
 
@@ -130,7 +133,9 @@ modelscope, network, sampling, auth, claude_code, integrations,
 external_engines, system, ui, idle_timeout
 ```
 
-Relevant sub-objects on this machine:
+Relevant sub-objects on this machine. The JSON below is verbatim server output,
+so it shows the development machine's literal paths; substitute your own
+`$OMLX_MODELS_DIR` and `$OMLX_CACHE_DIR` when reading it:
 
 ```json
 {
@@ -268,7 +273,7 @@ Response:
 ```
 
 **Where files land:** `<model_dir>/<repo_id>`, i.e.
-`/Users/core/.omlx/models/mlx-community/<owner>/<model>`.
+`$OMLX_MODELS_DIR/<owner>/<model>`.
 
 Behaviour:
 
@@ -1122,7 +1127,7 @@ Subcommands: `{start, stop, restart, serve, launch, diagnose, cluster}`.
 
 These control the **macOS app**, not a foreground process. They talk to the Unix
 socket `~/Library/Application Support/oMLX/control.sock` with
-`{"command": "<cmd>"}\n`, auto-launching `/Applications/oMLX.app` via `open -gj`
+`{"command": "<cmd>"}\n`, auto-launching `$OMLX_APP` via `open -gj`
 if needed, then poll `status` until the state is `running` or `unresponsive`.
 
 | Flag | Applies to | Meaning |

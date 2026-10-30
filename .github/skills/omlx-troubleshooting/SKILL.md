@@ -5,14 +5,14 @@ description: Diagnose and fix common oMLX 0.7.3rc1 failures on macOS Apple Silic
 
 # oMLX troubleshooting
 
-Verified against a live oMLX 0.7.3rc1 server on `http://127.0.0.1:8001`.
+Verified against a live oMLX 0.7.3rc1 server on `$OMLX_BASE_URL`.
 Every error shape below was reproduced live unless marked **unverified**.
 
 ## Setup
 
 ```sh
 export PATH="$HOME/.omlx/bin:$PATH"
-OMLX=http://127.0.0.1:8001
+OMLX=${OMLX_BASE_URL:-http://127.0.0.1:8001}
 ```
 
 ## Triage order
@@ -74,7 +74,7 @@ omlx start --timeout 120
 
 `omlx start` talks to the macOS app over
 `~/Library/Application Support/oMLX/control.sock` and auto-launches
-`/Applications/oMLX.app` if needed. It polls until the state is `running` or
+`$OMLX_APP` if needed. It polls until the state is `running` or
 `unresponsive`.
 
 ### Symptom: `omlx start` prints "Background start is available for the macOS app and Homebrew installs."
@@ -107,7 +107,7 @@ Common causes:
 - A model directory that no longer exists. Check:
   ```sh
   curl -s $OMLX/admin/api/global-settings | jq '.model.model_dirs'
-  ls -d /Users/core/.omlx/models/mlx-community
+  ls -d $OMLX_MODELS_DIR
   ```
 
 ### Restart cleanly
@@ -271,12 +271,12 @@ If it is still missing:
 ```sh
 # Is it on disk where oMLX looks?
 curl -s $OMLX/admin/api/global-settings | jq '.model | {model_dirs, effective_model_dirs}'
-# {"model_dirs":["/Users/core/.omlx/models/mlx-community"],
-#  "effective_model_dirs":["/Users/core/.omlx/models/mlx-community",
-#                          "/Users/core/.cache/huggingface/hub"]}
+# {"model_dirs":["$OMLX_MODELS_DIR"],
+#  "effective_model_dirs":["$OMLX_MODELS_DIR",
+#                          "$HF_HOME/hub"]}
 
 # Does the directory have a config.json?
-ls -la /Users/core/.omlx/models/mlx-community/<owner>/<model>/config.json
+ls -la $OMLX_MODELS_DIR/<owner>/<model>/config.json
 ```
 
 A model without `config.json` is not discoverable. A **partially downloaded**
@@ -344,7 +344,7 @@ Common `error` values: network timeouts, 401/403 from a gated repo (needs
 Check free disk — a nearly full volume throttles writes:
 
 ```sh
-df -g /System/Volumes/Data | awk 'NR==2 {print $4 " GB free"}'
+df -g "${OMLX_DATA_VOLUME:-/System/Volumes/Data}" | awk 'NR==2 {print $4 " GB free"}'
 ```
 
 Check the SSD cache is not the bottleneck (it is 185 GB and must not be

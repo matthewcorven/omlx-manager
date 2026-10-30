@@ -138,8 +138,7 @@ ambiguous between two readings.
 Regenerate with the app-bundle interpreter, not the stock `python3`:
 
 ```sh
-/Applications/oMLX.app/Contents/MacOS/omlx-cluster-python \
-    scripts/decision_media_corpus.py --out results/decision/media
+"$OMLX_PYTHON" scripts/decision_media_corpus.py --out results/decision/media
 ```
 
 The stock interpreter has no Pillow and no OpenCV. The corpus is committed
@@ -194,7 +193,7 @@ from a build that cannot load them.
 6. Score text, then images, then video, then the baseline — same session.
 7. Write `results/decision/<name>.md` with a **Modality** section, and add rows
    to `results/decision/README.md` and `results/decision/media/README.md`.
-8. Shuttle the checkpoint to `/Volumes/NVMe/omlx-models` once written up.
+8. Shuttle the checkpoint to `$OMLX_EXTERNAL_MODELS_DIR` once written up.
 
 ```sh
 python3 scripts/decision_eval.py --model <id> --out results/decision/<name>.json

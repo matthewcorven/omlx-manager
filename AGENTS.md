@@ -10,13 +10,13 @@ settings profile that balances decode speed against time-to-first-token.
 
 ## Ground rules
 
-1. **Never delete `~/.omlx/cache`.** It is a shared 185 GB SSD cache. Clearing it
+1. **Never delete `$OMLX_CACHE_DIR`.** It is a shared 185 GB SSD cache. Clearing it
    destroys other work.
 2. **Check free disk before every download.** Run `scripts/disk_guard.sh <GB>`.
    Abort if free space would drop below 60 GB after the download.
 3. **One model per agent.** A model-tuning agent owns exactly one model. It must
    not download, load, or change settings for any other model.
-4. **Do not edit `~/.omlx/settings.json`** (global server config). Per-model
+4. **Do not edit `$OMLX_HOME/settings.json`** (global server config). Per-model
    changes go through `/admin/api/models/{id}/settings` only. In particular,
    **never** call `POST /admin/api/global-settings` with `model_dirs` during a
    benchmark — it unloads every loaded model and re-discovers.
@@ -29,17 +29,17 @@ settings profile that balances decode speed against time-to-first-token.
 
 ```sh
 export PATH="$HOME/.omlx/bin:$PATH"
-OMLX=http://127.0.0.1:8001
+OMLX=${OMLX_BASE_URL:-http://127.0.0.1:8001}
 ```
 
 - Server: `omlx start` / `omlx stop` / `omlx restart`. Health: `GET /api/status`.
-- Model dirs: `~/.omlx/models/mlx-community` (internal SSD) and
-  `/Volumes/NVMe/omlx-models` (1 TB external). Both are registered in
+- Model dirs: `$OMLX_MODELS_DIR` (internal SSD) and
+  `$OMLX_EXTERNAL_MODELS_DIR` (1 TB external). Both are registered in
   `model.model_dirs`; see **Storage** below.
-- Per-model settings: `~/.omlx/model_settings.json` (read-only for agents; write
+- Per-model settings: `$OMLX_HOME/model_settings.json` (read-only for agents; write
   via the API).
 - OpenAPI: `GET /openapi.json`
-- External engine: Splash 1.4.0 at `/opt/homebrew/bin/splash`, configured in
+- External engine: Splash 1.4.0 at `$OMLX_SPLASH_BIN`, configured in
   `integrations.splash_path`. Status:
   `curl -s $OMLX/admin/api/global-settings | jq .external_engines.splash`
 
@@ -50,10 +50,10 @@ not limited to the internal SSD:
 
 | Volume | Size | Role |
 |---|---|---|
-| `/System/Volumes/Data` (internal) | ~1.8 TB, ~430 GB free | Active download + tuning target |
-| `/Volumes/NVMe` (external, `/dev/disk4`) | 1 TB, ~931 GB free | Overflow / cold storage for tested models |
+| `$OMLX_DATA_VOLUME` (internal) | ~1.8 TB, ~430 GB free | Active download + tuning target |
+| `$OMLX_EXTERNAL_MODELS_DIR` (external) | 1 TB, ~931 GB free | Overflow / cold storage for tested models |
 
-Because `/Volumes/NVMe/omlx-models` is a registered model dir, oMLX discovers and
+Because `$OMLX_EXTERNAL_MODELS_DIR` is a registered model dir, oMLX discovers and
 loads models from it directly — **moving a model there does not make it
 unusable**, and no copy back to internal is needed to run it. The external volume
 is slower than internal SSD, so keep the model currently being tuned internal and
@@ -113,7 +113,7 @@ weights in-process. Splash runs its own Metal engine with DFlash2 speculative
 decoding and covers Qwen3.8-27B, Qwen3.6-35B-A3B, Qwen3.5-122B-A10B
 (Ornith-1.5-122B), Qwen3.8-Flash-Next and Flint.
 
-- Splash 1.4.0 is installed at `/opt/homebrew/bin/splash` and already set in
+- Splash 1.4.0 is installed at `$OMLX_SPLASH_BIN` and already set in
   `integrations.splash_path`; no setup is needed to use it.
 - Settings: `splash_kv_format` (`int8`), `splash_max_memory_gb`,
   `splash_ssd_cache_gb`, `splash_ane_prefill`.
@@ -199,13 +199,13 @@ Each model agent returns:
 - Keep `docs/model-candidates.md` and `results/` in sync.
 - Do not let two agents touch the same model.
 - Manage the two model directories: internal SSD for active work, and
-  `/Volumes/NVMe/omlx-models` (1 TB external) for models already tested. Both
+  `$OMLX_EXTERNAL_MODELS_DIR` (1 TB external) for models already tested. Both
   are registered in `model.model_dirs`, so a model on the external volume can be
   loaded directly — moving a model there does not make it unusable.
 - Never change `model_dirs` while any benchmark is running.
 - **Shuttle finished models to the external volume.** When a model's
   `final.json` and `NOTES.md` are written and committed, move it to
-  `/Volumes/NVMe/omlx-models` to free internal space for the next candidate.
+  `$OMLX_EXTERNAL_MODELS_DIR` to free internal space for the next candidate.
   Unload it first; never move a model mid-sweep or during a benchmark. See
   **Storage → Shuttle strategy**.
 - **Do not confuse disk with memory.** The external volume relieves disk

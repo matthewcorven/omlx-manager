@@ -4,7 +4,7 @@ Sources read in full:
 - https://github.com/jundot/omlx/releases/tag/v0.7.3rc1
 - https://github.com/jundot/omlx/releases/tag/v0.7.3.dev2 (linked "full feature/benchmark list")
 - PR links embedded in both release bodies (#4854, #4855, #4881, #4880/#4853/#4843, #4857/#4856, #4745, #4870, #4821, #4859, #4819/#4871, #4858, #4826, #4777, #4806, #4776, #4758, #4496, #4808, #4773, #4801, #4778, #4763, #4737, #4810, #4668, #4815, #4769, #4804, #4807, #4753, and the bug-fix/upgrade-notes PRs #4837, #4869, #4875, #4860, #4872, #4873, #4876, #4850, #4822, #4844, #4845, #4812, #4834, #4833, #4836, #4847, #4848, #4797, #4795, #4774, #4782)
-- Ground truth for "what fits this exact Mac": `http://127.0.0.1:8001/admin/api/hf/recommendations` (device reported: **Apple M4 Max, 40 GPU cores, 128 GB / 137,438,953,472 bytes unified memory, 546 GB/s bandwidth**) and `http://127.0.0.1:8001/admin/api/hf/search?q=...&model_format=all`.
+- Ground truth for "what fits this exact Mac": `$OMLX_BASE_URL/admin/api/hf/recommendations` (device reported: **Apple M4 Max, 40 GPU cores, 128 GB / 137,438,953,472 bytes unified memory, 546 GB/s bandwidth**) and `$OMLX_BASE_URL/admin/api/hf/search?q=...&model_format=all`.
 - Hugging Face Hub API, `curl -s "https://huggingface.co/api/models/<repo_id>?blobs=true"`, sizes summed from `siblings[].size` (exact commands listed per model below; all figures below are from these calls, not estimated).
 
 The admin recommendations endpoint reports, for this exact machine: `static_ceiling_bytes` ≈ 120 GB, `usable_bytes` under normal operation ≈ **98–118 GB** depending on scenario (memory-guard on/off, wired-limit set or not). I treat **~110–118 GB resident** as the practical ceiling for "fits comfortably" and up to ~120 GB as "fits but tight/marginal" (matches the server's own `unlock` tier, which is its "it technically loads, expect to give up some headroom" bucket).
@@ -150,8 +150,8 @@ installed tree. Support is in `main` (PR #4937) but not in this release.
 
 ```bash
 # Ground truth for this exact Mac
-curl -s "http://127.0.0.1:8001/admin/api/hf/recommendations"
-curl -s "http://127.0.0.1:8001/admin/api/hf/search?q=<name>&limit=20&model_format=all"
+curl -s "$OMLX_BASE_URL/admin/api/hf/recommendations"
+curl -s "$OMLX_BASE_URL/admin/api/hf/search?q=<name>&limit=20&model_format=all"
 
 # Enumerate Jundot's own oQ catalog
 curl -s "https://huggingface.co/api/models?author=Jundot&limit=100"

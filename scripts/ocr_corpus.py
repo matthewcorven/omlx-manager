@@ -26,10 +26,13 @@ import pathlib
 
 from PIL import Image, ImageDraw, ImageFont
 
+import omlx_config
+
 PAGE = 1024
-FONT_DIR = pathlib.Path("/System/Library/Fonts/Supplemental")
-REGULAR = FONT_DIR / "Arial.ttf"
-BOLD = FONT_DIR / "Arial Bold.ttf"
+# Resolved from OMLX_FONT_DIR (default: the macOS system font directory).
+FONT_DIR = omlx_config.FONT_DIR
+REGULAR = omlx_config.font("Arial.ttf")
+BOLD = omlx_config.font("Arial Bold.ttf")
 
 INK = (17, 17, 17)
 PAPER = (255, 255, 255)

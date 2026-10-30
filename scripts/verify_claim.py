@@ -26,6 +26,8 @@ import time
 import urllib.error
 import urllib.request
 
+import omlx_config
+
 DEFAULT_PROMPT = (
     "Write a Python function `merge_intervals(intervals)` that merges "
     "overlapping closed intervals and returns them sorted. Include a docstring "
@@ -108,7 +110,8 @@ def stream_once(base: str, model: str, prompt: str, max_tokens: int,
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--base", default="http://127.0.0.1:8001")
+    ap.add_argument("--base", default=omlx_config.BASE_URL,
+                    help=f"oMLX server (default: $OMLX_BASE_URL or {omlx_config.BASE_URL})")
     ap.add_argument("--model", required=True)
     ap.add_argument("--runs", type=int, default=1)
     ap.add_argument("--max-tokens", type=int, default=400)

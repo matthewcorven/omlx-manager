@@ -80,7 +80,10 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-BASE = "http://127.0.0.1:8001"
+import omlx_config
+
+# Resolved from OMLX_BASE_URL; --base-url overrides it per run.
+BASE = omlx_config.BASE_URL
 ECE_BINS = 10
 
 
@@ -373,9 +376,13 @@ def check_determinism(model: str, corpus: dict, timeout: float, sample: int = 5,
 
 
 def main() -> int:
+    global BASE
+
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--model", required=True, help="model id as served by oMLX")
+    ap.add_argument("--base-url", default=BASE,
+                    help=f"oMLX server (default: $OMLX_BASE_URL or {BASE})")
     ap.add_argument("--corpus", default="results/decision/corpus.json")
     ap.add_argument("--modality", choices=["text", "image", "video"], default="text",
                     help="which items to score; media items need --corpus pointing at a manifest")
@@ -386,6 +393,8 @@ def main() -> int:
     ap.add_argument("--baseline", help="also score this chat model on the same corpus")
     ap.add_argument("--quiet", action="store_true")
     args = ap.parse_args()
+
+    BASE = args.base_url.rstrip("/")
 
     corpus_path = Path(args.corpus)
     try:

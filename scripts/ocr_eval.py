@@ -41,7 +41,10 @@ import sys
 import time
 import urllib.request
 
-OMLX = "http://127.0.0.1:8001"
+import omlx_config
+
+# Resolved from OMLX_BASE_URL; --base-url overrides it per run.
+OMLX = omlx_config.BASE_URL
 PROMPT = "Multi page parsing."
 
 # The model emits an optional hierarchy tag between the label and the box,
@@ -296,14 +299,20 @@ def score_page(truth: dict, pred_blocks: list[dict]) -> dict:
 
 
 def main() -> int:
+    global OMLX
+
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", required=True)
     ap.add_argument("--corpus", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--base-url", default=OMLX,
+                    help=f"oMLX server (default: $OMLX_BASE_URL or {OMLX})")
     ap.add_argument("--max-tokens", type=int, default=8192)
     ap.add_argument("--pages", nargs="*", help="subset of page names")
     ap.add_argument("--skip-determinism", action="store_true")
     args = ap.parse_args()
+
+    OMLX = args.base_url.rstrip("/")
 
     corpus = pathlib.Path(args.corpus)
     manifest = json.loads((corpus / "manifest.json").read_text())

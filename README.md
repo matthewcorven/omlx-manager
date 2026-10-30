@@ -15,9 +15,12 @@ and the PRs/commits they reference.
 | Chip | Apple M4 Max, 40 GPU cores |
 | Memory | 128 GB unified (~546 GB/s) |
 | oMLX model memory ceiling | ~89.6 GB (balanced guard tier) |
-| Model dirs | `~/.omlx/models/mlx-community` + `/Volumes/NVMe/omlx-models` |
-| SSD cache | `~/.omlx/cache` (185 GB budget) |
-| Server | `http://127.0.0.1:8001` |
+| Model dirs | `$OMLX_MODELS_DIR` + `$OMLX_EXTERNAL_MODELS_DIR` |
+| SSD cache | `$OMLX_CACHE_DIR` (185 GB budget) |
+| Server | `$OMLX_BASE_URL` |
+
+The defaults for these variables match the development machine and are listed
+in [Development](#development). Nothing in this repo hardcodes them.
 
 ### Storage
 
@@ -26,10 +29,10 @@ internal SSD:
 
 | Volume | Size | Role |
 |---|---|---|
-| `/System/Volumes/Data` (internal) | ~1.8 TB, ~430 GB free | Active download + tuning target |
-| `/Volumes/NVMe` (external, `/dev/disk4`) | 1 TB, ~931 GB free | Overflow / cold storage for tested models |
+| `$OMLX_DATA_VOLUME` (internal) | ~1.8 TB, ~430 GB free | Active download + tuning target |
+| `$OMLX_EXTERNAL_MODELS_DIR` (external) | 1 TB, ~931 GB free | Overflow / cold storage for tested models |
 
-`/Volumes/NVMe/omlx-models` is registered as a second entry in
+`$OMLX_EXTERNAL_MODELS_DIR` is registered as a second entry in
 `model.model_dirs`, so oMLX discovers and loads models from it directly — no
 copying back is needed to run a model that lives there.
 
@@ -68,7 +71,7 @@ process instead of loading weights in-process. Splash runs its own Metal engine
 with DFlash2 speculative decoding and covers Qwen3.8-27B, Qwen3.6-35B-A3B,
 Qwen3.5-122B-A10B (Ornith-1.5-122B), Qwen3.8-Flash-Next and Flint.
 
-Splash 1.4.0 is installed at `/opt/homebrew/bin/splash` and configured in
+Splash 1.4.0 is installed at `$OMLX_SPLASH_BIN` and configured in
 `integrations.splash_path`. Check status with:
 
 ```sh
@@ -96,6 +99,7 @@ docs/
   omlx-benchmark/             throughput/context benches + TTFT measurement
   omlx-troubleshooting/       failure modes and fixes
 scripts/
+  omlx_config.py              configurable base paths (see Development)
   measure.py                  TTFT + decode tok/s harness for a coding prompt
   disk_guard.sh               free-space check before a download
   shuttle_model.sh            move a finished model internal <-> external NVMe
@@ -123,10 +127,10 @@ results/
 ```sh
 export PATH="$HOME/.omlx/bin:$PATH"
 omlx start                       # managed server on :8001
-curl -s http://127.0.0.1:8001/api/status | jq .
+curl -s "$OMLX_BASE_URL/api/status" | jq .
 
 # download a model
-curl -s -X POST http://127.0.0.1:8001/admin/api/hf/download \
+curl -s -X POST "$OMLX_BASE_URL/admin/api/hf/download" \
   -H 'Content-Type: application/json' \
   -d '{"repo_id":"Jundot/Qwen3.8-27B-oQ4e-mtp"}'
 
@@ -142,6 +146,70 @@ Per-model findings live in `results/`. Each directory holds:
 - `sweep.jsonl` — one line per settings variant tried
 - `final.json` — the settings left in place, with rationale
 - `NOTES.md` — human-readable summary
+
+## Development
+
+Every machine-specific location is a **base path with an environment-variable
+override**. The defaults below match the machine this repo was developed on;
+override any of them to run the harness elsewhere. No script hardcodes a path,
+and every repo-relative path (corpora, results, manifests) is resolved from the
+repo root, so run the scripts from there.
+
+`scripts/omlx_config.py` is the single source of truth. Print the resolved
+configuration at any time:
+
+```sh
+python3 scripts/omlx_config.py          # human-readable, shows env vs default
+python3 scripts/omlx_config.py --json   # machine-readable
+```
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `OMLX_BASE_URL` | `http://127.0.0.1:8001` | oMLX HTTP surface used by every harness |
+| `OMLX_APP` | `/Applications/oMLX.app` | oMLX app bundle |
+| `OMLX_SOURCE_DIR` | `/Applications/oMLX.app/Contents/Resources/omlx` | Shipped Python source, read to verify API and model behaviour |
+| `OMLX_PYTHON` | `/Applications/oMLX.app/Contents/MacOS/omlx-cluster-python` | Interpreter with Pillow, numpy, and OpenCV |
+| `OMLX_HOME` | `~/.omlx` | oMLX state directory (`settings.json`, `model_settings.json`) |
+| `OMLX_MODELS_DIR` | `~/.omlx/models/mlx-community` | Primary model directory |
+| `OMLX_EXTERNAL_MODELS_DIR` | `/Volumes/NVMe/omlx-models` | Second model directory (overflow / cold storage) |
+| `OMLX_CACHE_DIR` | `~/.omlx/cache` | Shared SSD cache |
+| `OMLX_DATA_VOLUME` | `/System/Volumes/Data` | Volume checked for free space |
+| `OMLX_FONT_DIR` | `/System/Library/Fonts/Supplemental` | Fonts used to render the OCR and media corpora |
+| `OMLX_FFMPEG` | `/opt/homebrew/bin/ffmpeg` | Optional; video is written with OpenCV |
+| `OMLX_SPLASH_BIN` | `/opt/homebrew/bin/splash` | External Splash engine |
+
+### Interpreter
+
+The corpus generators need Pillow, numpy, and OpenCV. The `python3` on `PATH`
+has none of them; the interpreter bundled with the app does. Use it for
+anything that draws a corpus:
+
+```sh
+"$OMLX_PYTHON" scripts/decision_media_corpus.py --out results/decision/media
+"$OMLX_PYTHON" scripts/ocr_corpus.py --out results/non-llm/<model>/corpus
+```
+
+The harnesses themselves are stdlib-only and run under any `python3`.
+
+### Corpora are generated, not edited
+
+Both corpora are seeded and must regenerate byte-identically. Never hand-edit a
+generated file — change the generator and regenerate:
+
+```sh
+"$OMLX_PYTHON" scripts/decision_media_corpus.py --out /tmp/media-check
+diff -r --exclude=README.md --exclude=runs results/decision/media /tmp/media-check
+```
+
+An empty diff is the contract. A non-empty one means the seed or a drawing
+primitive changed, which invalidates every result scored against the old corpus.
+
+### Historical results are not rewritten
+
+`results/<model>/` and `results/non-llm/` record what was actually run on this
+machine, including the absolute paths that were in effect at the time. They are
+a log, not configuration, so they keep the literal paths. Only the tooling and
+the current documentation use the variables above.
 
 ## Notes
 

@@ -220,7 +220,7 @@ fabricated.
 1. **Generate the corpora.** `python3 scripts/decision_corpus.py --out results/decision/corpus.json`
    and `scripts/decision_media_corpus.py --out results/decision/media`. The media
    generator needs Pillow and OpenCV; the stock `python3` has neither, so use
-   `/Applications/oMLX.app/Contents/MacOS/omlx-cluster-python`.
+   `$OMLX_PYTHON` (default: the app-bundled `omlx-cluster-python`).
 2. **Check disk.** `./scripts/disk_guard.sh <GB>` before every download.
 3. **Download one checkpoint.** One at a time — an active download skews latency
    by up to 4× on this machine.
@@ -237,7 +237,7 @@ fabricated.
    video baseline — the chat path has no video route.
 10. **Write it up** in `results/decision/<name>.md` with a Modality section, and
     add rows to `results/decision/README.md` and `results/decision/media/README.md`.
-11. **Shuttle** the checkpoint to `/Volumes/NVMe/omlx-models` once written up.
+11. **Shuttle** the checkpoint to `$OMLX_EXTERNAL_MODELS_DIR` once written up.
 
 ## What the first sweep changed about this process
 

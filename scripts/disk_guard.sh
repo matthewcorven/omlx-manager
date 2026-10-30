@@ -6,8 +6,9 @@ set -eu
 
 NEEDED="${1:?usage: disk_guard.sh <needed_gb> [floor_gb]}"
 FLOOR="${2:-60}"
+VOLUME="${OMLX_DATA_VOLUME:-/System/Volumes/Data}"
 
-FREE_GB=$(df -g /System/Volumes/Data | awk 'NR==2 {print $4}')
+FREE_GB=$(df -g "$VOLUME" | awk 'NR==2 {print $4}')
 AFTER=$((FREE_GB - NEEDED))
 
 echo "free=${FREE_GB}GB needed=${NEEDED}GB after=${AFTER}GB floor=${FLOOR}GB"

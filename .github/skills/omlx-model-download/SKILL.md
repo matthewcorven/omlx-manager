@@ -6,13 +6,13 @@ description: Find, download, verify, and delete MLX models on oMLX 0.7.3rc1 via 
 # oMLX model download
 
 Everything here is verified against a live oMLX 0.7.3rc1 server on
-`http://127.0.0.1:8001` unless explicitly marked **unverified**.
+`$OMLX_BASE_URL` unless explicitly marked **unverified**.
 
 ## Setup
 
 ```sh
 export PATH="$HOME/.omlx/bin:$PATH"
-OMLX=http://127.0.0.1:8001
+OMLX=${OMLX_BASE_URL:-http://127.0.0.1:8001}
 ```
 
 Confirm the server is up before anything else:
@@ -35,11 +35,11 @@ get `401`, see the troubleshooting skill.
 With the default config that is:
 
 ```
-/Users/core/.omlx/models/mlx-community/<owner>/<model>
+$OMLX_MODELS_DIR/<owner>/<model>
 ```
 
 e.g. `Jundot/Qwen3.8-27B-oQ4e-mtp` →
-`/Users/core/.omlx/models/mlx-community/Jundot/Qwen3.8-27B-oQ4e-mtp`.
+`$OMLX_MODELS_DIR/Jundot/Qwen3.8-27B-oQ4e-mtp`.
 
 The model directory is `model.model_dirs[0]` from
 `GET /admin/api/global-settings`. Do not change it.
@@ -76,7 +76,7 @@ Also check the server's own view of free space:
 
 ```sh
 curl -s $OMLX/admin/api/hf/recommendations | jq '.disk'
-# {"model_dir":"/Users/core/.omlx/models/mlx-community","free_bytes":489263915008}
+# {"model_dir":"$OMLX_MODELS_DIR","free_bytes":489263915008}
 ```
 
 ## Step 2 — search Hugging Face
@@ -314,7 +314,7 @@ curl -s $OMLX/admin/api/hf/models | jq
 
 ```json
 {"models":[{"name":"Qwen3.8-27B-oQ4e-mtp",
-  "path":"/Users/core/.omlx/models/mlx-community/Jundot/Qwen3.8-27B-oQ4e-mtp",
+  "path":"$OMLX_MODELS_DIR/Jundot/Qwen3.8-27B-oQ4e-mtp",
   "display_name":"Jundot/Qwen3.8-27B-oQ4e-mtp","size":417247417,
   "size_formatted":"397.9 MB","repo_id":"Jundot/Qwen3.8-27B-oQ4e-mtp",
   "source_type":"local"}]}
@@ -380,7 +380,7 @@ resolved path stays inside the model dir.
 
 ```sh
 # free space on the data volume (what disk_guard.sh uses)
-df -g /System/Volumes/Data | awk 'NR==2 {print $4 " GB free"}'
+df -g "${OMLX_DATA_VOLUME:-/System/Volumes/Data}" | awk 'NR==2 {print $4 " GB free"}'
 
 # what oMLX thinks is free
 curl -s $OMLX/admin/api/hf/recommendations | jq '.disk.free_bytes / 1073741824 | floor'

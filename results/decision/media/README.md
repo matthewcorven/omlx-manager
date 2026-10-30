@@ -16,12 +16,12 @@ construction and the files regenerate byte-identically:
 Regenerate with:
 
 ```sh
-/Applications/oMLX.app/Contents/MacOS/omlx-cluster-python scripts/decision_media_corpus.py \
-    --out results/decision/media
+"$OMLX_PYTHON" scripts/decision_media_corpus.py --out results/decision/media
 ```
 
 The stock `python3` cannot run this: it has no Pillow and no OpenCV. The app
-bundle's interpreter is the only one on this machine with both.
+bundle's interpreter is the only one on this machine with both. See
+[Development](../../../README.md#development) for the variable defaults.
 
 ## Headline
 

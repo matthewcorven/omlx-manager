@@ -66,14 +66,16 @@ import random
 import sys
 from pathlib import Path
 
+import omlx_config
+
 # Fixed seed: the corpus must regenerate byte-identically on any machine.
 SEED = 20261029
 
 PAGE = 1024
 PAPER = (247, 247, 245)
 INK = (24, 24, 28)
-FONT_DIR = Path("/System/Library/Fonts/Supplemental")
-BOLD = FONT_DIR / "Arial Bold.ttf"
+# Resolved from OMLX_FONT_DIR (default: the macOS system font directory).
+BOLD = omlx_config.font("Arial Bold.ttf")
 
 COLOURS = {
     "red": (196, 48, 48),
