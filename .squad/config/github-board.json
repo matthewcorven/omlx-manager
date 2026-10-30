@@ -1,0 +1,11 @@
+{
+  "projectNumber": "7",
+  "owner": "matthewcorven",
+  "projectId": "PVT_kwHOAajMkc4BpccB",
+  "statusFieldId": "PVTSSF_lAHOAajMkc4BpccBzhn4ECY",
+  "columnIds": {
+    "Todo": "f75ad846",
+    "In Progress": "47fc9ee4",
+    "Done": "98236657"
+  }
+}
