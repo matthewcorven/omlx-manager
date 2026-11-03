@@ -14,6 +14,7 @@
 - `docs/` (including `docs/model-candidates.md`, methodology docs) and `README.md`.
 - `results/COMPARISON.md` assembly from each model's `final.json` + `NOTES.md`.
 - Maintenance and audit of `dashboard/` assets.
+- E2E/Playwright checks, edge cases, regression gating (see `docs/E2E.md`).
 - Per-model summaries following the AGENTS.md Reporting format.
 - Ensuring `results/*.md` and `results/*.csv` consistency by running `scripts/record_model_result.py --validate-all`.
 

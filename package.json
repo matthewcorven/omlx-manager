@@ -1,0 +1,18 @@
+{
+  "name": "omlx-manager-e2e",
+  "private": true,
+  "description": "E2E harness for the oMLX benchmark dashboard (Playwright). See docs/E2E.md for the standards.",
+  "scripts": {
+    "e2e": "playwright test",
+    "e2e:headed": "playwright test --headed",
+    "e2e:ui": "playwright test --ui",
+    "e2e:report": "playwright show-report playwright-report",
+    "e2e:install": "playwright install --with-deps chromium",
+    "e2e:typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@types/node": "^22.20.5",
+    "typescript": "5.9.3"
+  }
+}

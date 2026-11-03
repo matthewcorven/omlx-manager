@@ -12,6 +12,7 @@ How to decide who handles what.
 | Decision-model, OCR, and Image-gen evaluation | Evaluator | Score on labelled corpus, record via `scripts/record_model_result.py --type [ocr\|decision\|image-generation]` |
 | Server health, troubleshooting, scripts, approved shuttles | Ops | 409/OOM/port issues, `scripts/`, shuttle to external volume |
 | Docs, schemas, results reporting, and dashboard | Docs | `docs/`, README, `results/*.{csv,md}` validation via `--validate-all`, `dashboard/` |
+| Tests and coverage (E2E/Playwright, edge cases, regression gating) | Docs | `e2e/`, `npm run e2e`, `docs/E2E.md` |
 
 Escalation: unmatched work or ownership disputes go to Lead.
 

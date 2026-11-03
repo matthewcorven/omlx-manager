@@ -1,0 +1,13 @@
+{
+  "enabledPlugins": {
+    "playwright-report-retrieval@corven-agent-tools": true
+  },
+  "extraKnownMarketplaces": {
+    "corven-agent-tools": {
+      "source": {
+        "source": "github",
+        "repo": "matthewcorven/corven-agent-tools"
+      }
+    }
+  }
+}

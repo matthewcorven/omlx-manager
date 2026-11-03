@@ -19,3 +19,15 @@ __pycache__/
 # Local Copilot session config
 .copilot/
 
+
+# Playwright: reports and traces are ephemeral, never committed
+playwright-report/
+blob-report/
+test-results/
+playwright-reports/
+
+# Playwright CI run logs (uploaded as artifacts, never committed)
+.e2e-logs/
+
+# Node
+node_modules/
