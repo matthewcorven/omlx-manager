@@ -7,7 +7,7 @@ permitted E2E UI automation tool in this repo.
 
 `dashboard/index.html` — a single static page that renders the leaderboard from
 `results/*.csv`. It has no backend of its own: the only network calls are
-`fetch`es for the four CSVs, with an `EMBEDDED_DATA` fallback baked into the
+`fetch`es for the five CSVs, with an `EMBEDDED_DATA` fallback baked into the
 page. That makes the whole surface deterministic and free to test — no omlx
 server, no model load, no paid inference.
 
@@ -83,7 +83,8 @@ none may be added.
 
 Every workflow needs a happy path, an alternate path, and an edge case. Current
 workflows: leaderboard shell, search/filter, sorting, row details, data-source
-fallback. A new dashboard interaction is not done until it has all three.
+fallback, conversational voice. A new dashboard interaction is not done until it
+has all three.
 
 ## What is never committed
 

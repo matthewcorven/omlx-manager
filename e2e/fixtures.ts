@@ -8,13 +8,19 @@ import {
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-export type Category = 'generative-text' | 'ocr' | 'decision' | 'image-generation';
+export type Category =
+  | 'generative-text'
+  | 'ocr'
+  | 'decision'
+  | 'image-generation'
+  | 'voice';
 
 export const CATEGORIES: Category[] = [
   'generative-text',
   'ocr',
   'decision',
   'image-generation',
+  'voice',
 ];
 
 /** Deterministic CSV doubles. The dashboard parses these exactly like the real files. */
@@ -39,6 +45,11 @@ export const STUB_CSV: Record<Category, string> = {
     'Model,Quant,Steps,Resolution,TTFT/Step Latency,Total Latency,VRAM/Resident,Quality/CLIP,Notes',
     'stub/img-fast,8bit,4,1024x1024,100.0 ms/step,1.00 s,4.0 GB,0.3000 CLIP,Fast stub row',
     'stub/img-slow,8bit,20,1024x1024,500.0 ms/step,9.00 s,12.0 GB,0.3500 CLIP,Slow stub row',
+  ].join('\n'),
+  voice: [
+    'Model,Quant,Params,Resident Size,Turn TTFT (ms),First Audio Latency (ms),Reply Audio (ms),Speech Real-Time Factor,Transcript WER,Voices/Languages,Quality/Status,Notes',
+    'stub/voice-fast,4bit,dense 2B omni,2.0 GB,10.0,90.0,4000,9.50,0.0200,1 realtime voice; 18 languages,PASS - 3/3 turns completed,Fast stub row',
+    'stub/voice-slow,8bit,dense 8B omni,8.0 GB,40.0,300.0,6000,1.20,0.1500,2 realtime voices; 6 languages,FAIL - turn timeout,Slow stub row',
   ].join('\n'),
 };
 

@@ -31,6 +31,7 @@ test.describe('leaderboard shell', () => {
       ocr: 'OCR & Non-LLM',
       decision: 'Decision Models',
       'image-generation': 'Image Generation',
+      voice: 'Conversational Voice',
     };
 
     for (const category of CATEGORIES) {

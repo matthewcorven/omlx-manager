@@ -1,0 +1,61 @@
+{
+  "model": "LFM3-Omni-2B-MLX-4bit",
+  "capabilities": {
+    "realtime_voices": [],
+    "tts_voices": [
+      "female",
+      "male"
+    ],
+    "capabilities": {
+      "input_image": true,
+      "tools": true
+    }
+  },
+  "prompt_text": "In one short sentence, explain what a real-time speech model is.",
+  "summary": {
+    "turn_ttft_ms": 12.9,
+    "first_audio_latency_ms": 96.5,
+    "reply_audio_ms": 7200.0,
+    "realtime_factor": 9.195,
+    "output_tokens": 117,
+    "runs": 3,
+    "transcript": "A real-time speech model processes spoken language instantly, generating a reply as soon as it\u2019s heard. Does that help?",
+    "retranscribed": "The real-time speech model processes spoken language instantly, generating a reply as soon as it's heard. Does that help?",
+    "transcript_wer": 0.0476
+  },
+  "runs": [
+    {
+      "turn_ttft_ms": 9.9,
+      "first_audio_latency_ms": 95.9,
+      "reply_audio_ms": 8320.0,
+      "stream_wall_ms": 904.9,
+      "realtime_factor": 9.195,
+      "output_tokens": 131,
+      "input_tokens": 86,
+      "status": "completed",
+      "transcript": "A real-time speech model processes spoken language instantly, generating a response as the speech arrives. Would you like an example?"
+    },
+    {
+      "turn_ttft_ms": 12.9,
+      "first_audio_latency_ms": 96.5,
+      "reply_audio_ms": 7200.0,
+      "stream_wall_ms": 813.5,
+      "realtime_factor": 8.85,
+      "output_tokens": 117,
+      "input_tokens": 86,
+      "status": "completed",
+      "transcript": "A real-time speech model processes spoken language instantly, generating a reply as soon as it\u2019s heard. Does that help?"
+    },
+    {
+      "turn_ttft_ms": 14.8,
+      "first_audio_latency_ms": 99.3,
+      "reply_audio_ms": 6880.0,
+      "stream_wall_ms": 734.3,
+      "realtime_factor": 9.369,
+      "output_tokens": 113,
+      "input_tokens": 86,
+      "status": "completed",
+      "transcript": "A real-time speech model processes spoken language instantly, generating a reply as soon as it\u2019s heard. Does that help?"
+    }
+  ]
+}

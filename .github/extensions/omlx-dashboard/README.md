@@ -7,7 +7,7 @@ A GitHub Copilot canvas extension providing an interactive, live leaderboard and
 - **Live Leaderboard:** Displays performance metrics, memory footprints, and quality gates across Generative Text, OCR, Decision Models, and Image Generation.
 - **Embedded Loopback Server:** Serves the responsive dashboard UI from `dashboard/index.html` and streams live CSV datasets from `results/`.
 - **Canvas Actions:**
-  - `switch_tab`: Programmatically switch the active category view (`generative-text`, `ocr`, `decision`, `image-generation`).
+  - `switch_tab`: Programmatically switch the active category view (`generative-text`, `ocr`, `decision`, `image-generation`, `voice`).
   - `reload_data`: Trigger an instant refresh of live CSV data without restarting the canvas.
   - `get_summary`: Return real-time summary statistics of audited models across all categories.
 

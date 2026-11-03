@@ -3,8 +3,8 @@
 scripts/record_model_result.py
 
 Unified CLI for validating, adding, updating, and synchronizing benchmark results
-across CSV and sibling Markdown files for Generative Text, OCR, Decision, and
-Image Generation models.
+across CSV and sibling Markdown files for Generative Text, OCR, Decision, Image
+Generation, and Voice models.
 
 Project Invariant: All model benchmark results must be recorded ONLY EVER by this script.
 """
@@ -88,6 +88,25 @@ SCHEMAS: Dict[str, Dict[str, Any]] = {
         ],
         "numeric_validators": {
             "Steps": lambda v: int(v) > 0,
+        }
+    },
+    "voice": {
+        "aliases": ["voice", "realtime", "speech", "audio"],
+        "csv_file": RESULTS_DIR / "voice.csv",
+        "md_file": RESULTS_DIR / "voice.md",
+        "title": "Conversational Voice Model Benchmark Results",
+        "columns": [
+            "Model", "Quant", "Params", "Resident Size",
+            "Turn TTFT (ms)", "First Audio Latency (ms)",
+            "Reply Audio (ms)", "Speech Real-Time Factor",
+            "Transcript WER", "Voices/Languages", "Quality/Status", "Notes"
+        ],
+        "numeric_validators": {
+            "Turn TTFT (ms)": lambda v: float(v) >= 0.0,
+            "First Audio Latency (ms)": lambda v: float(v) >= 0.0,
+            "Reply Audio (ms)": lambda v: float(v) > 0.0,
+            "Speech Real-Time Factor": lambda v: float(v) > 0.0,
+            "Transcript WER": lambda v: v.strip().upper() == "N/A" or (0.0 <= float(v) <= 1.0),
         }
     }
 }

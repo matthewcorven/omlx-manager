@@ -1,0 +1,39 @@
+{
+  "model": "LFM3-Omni-2B-MLX-4bit",
+  "capabilities": {
+    "realtime_voices": [],
+    "tts_voices": [
+      "female",
+      "male"
+    ],
+    "capabilities": {
+      "input_image": true,
+      "tools": true
+    }
+  },
+  "prompt_text": "In one short sentence, explain what a real-time speech model is.",
+  "summary": {
+    "turn_ttft_ms": 11.0,
+    "first_audio_latency_ms": 1568.7,
+    "reply_audio_ms": 8160.0,
+    "realtime_factor": 7.091,
+    "output_tokens": 127,
+    "runs": 1,
+    "transcript": "A real-time speech model processes spoken language instantly, generating a response as the speech arrives. Does that help?",
+    "retranscribed": "A real-time speech model processes spoken language instantly, generating a response as the speech arrives. Does that help?",
+    "transcript_wer": 0.0
+  },
+  "runs": [
+    {
+      "turn_ttft_ms": 11.0,
+      "first_audio_latency_ms": 1568.7,
+      "reply_audio_ms": 8160.0,
+      "stream_wall_ms": 1150.7,
+      "realtime_factor": 7.091,
+      "output_tokens": 127,
+      "input_tokens": 90,
+      "status": "completed",
+      "transcript": "A real-time speech model processes spoken language instantly, generating a response as the speech arrives. Does that help?"
+    }
+  ]
+}

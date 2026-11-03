@@ -24,7 +24,7 @@ settings profile that balances decode speed against time-to-first-token.
    corrupt measurements.
 6. **Record everything via `scripts/record_model_result.py` (STRICT INVARIANT).**
    All benchmark results across all modalities (`generative-text`, `ocr`, `decision`,
-   `image-generation`) must be recorded **ONLY EVER** by running
+   `image-generation`, `voice`) must be recorded **ONLY EVER** by running
    `scripts/record_model_result.py`. Ad-hoc, manually edited, or unvalidated
    markdown tables are strictly prohibited and deprecated. Every dataset commit
    must pass `python3 scripts/record_model_result.py --validate-all`.
@@ -205,6 +205,7 @@ All multi-modal benchmark numbers are centrally maintained under `results/`:
 - `results/ocr.csv` and `results/ocr.md`
 - `results/decision.csv` and `results/decision.md`
 - `results/image-generation.csv` and `results/image-generation.md`
+- `results/voice.csv` and `results/voice.md`
 
 Every `.csv` and `.md` pair is kept in 100% atomic synchronization.
 **Direct manual edits to these tables are strictly prohibited.**
@@ -212,10 +213,10 @@ Every `.csv` and `.md` pair is kept in 100% atomic synchronization.
 To record or update benchmark results:
 ```sh
 # Record new result:
-python3 scripts/record_model_result.py --type <generative-text|ocr|decision|image-generation> --add --data '<json_data>'
+python3 scripts/record_model_result.py --type <generative-text|ocr|decision|image-generation|voice> --add --data '<json_data>'
 
 # Update an existing model entry:
-python3 scripts/record_model_result.py --type <generative-text|ocr|decision|image-generation> --update --data '<json_data>'
+python3 scripts/record_model_result.py --type <generative-text|ocr|decision|image-generation|voice> --update --data '<json_data>'
 
 # Validate full repository consistency:
 python3 scripts/record_model_result.py --validate-all

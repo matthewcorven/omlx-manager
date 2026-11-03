@@ -97,12 +97,14 @@ docs/
   ocr-eval-methodology.md     audit and evaluation methodology for OCR models
   decision-models-audit.md    audit of 8 decision models across 4 evaluation gates
   image-generation-eval.md    evaluation architecture & prompt suite for image models
+  voice-eval-methodology.md   realtime voice protocol, metrics, and quality gates
   model-candidates.md         every model named in the release notes + HF sizes
   omlx-api-reference.md       complete oMLX REST API + settings field reference
   tuning-methodology.md       how models are benchmarked and tuned
 scripts/
   record_model_result.py      CANONICAL CLI to record/validate benchmark results
   image_eval.py               benchmark harness stub for image generation models
+  voice_eval.py               realtime WebSocket harness for conversational voice models
   measure.py                  TTFT + decode tok/s harness for a coding prompt
   disk_guard.sh               free-space check before a download
   shuttle_model.sh            move a finished model internal <-> external NVMe
@@ -111,6 +113,7 @@ results/
   ocr.{csv,md}                validated OCR and document parsing benchmarks
   decision.{csv,md}           validated decision model benchmarks (4 gates)
   image-generation.{csv,md}   validated image generation model benchmarks
+  voice.{csv,md}              validated conversational voice model benchmarks
 ```
 
 ## Centralized Benchmark Results & Interactive Dashboard
@@ -121,13 +124,14 @@ All benchmark results across all model modalities are centralized in `results/`:
 - **OCR & Non-LLM:** `results/ocr.csv` and `results/ocr.md`
 - **Decision Models:** `results/decision.csv` and `results/decision.md`
 - **Image Generation:** `results/image-generation.csv` and `results/image-generation.md`
+- **Conversational Voice:** `results/voice.csv` and `results/voice.md`
 
 > **CRITICAL INVARIANT:** All future benchmark numbers must be recorded **ONLY EVER** by running `scripts/record_model_result.py`. Ad-hoc, unvalidated markdown tables are strictly prohibited and deprecated.
 
 To record or update results:
 ```sh
 # Record new model result:
-python3 scripts/record_model_result.py --type <generative-text|ocr|decision|image-generation> --add --data '<json_data>'
+python3 scripts/record_model_result.py --type <generative-text|ocr|decision|image-generation|voice> --add --data '<json_data>'
 
 # Validate full dataset integrity and CSV/MD synchronization:
 python3 scripts/record_model_result.py --validate-all

@@ -16,6 +16,7 @@ const allowedCsvFiles = new Set([
     "ocr.csv",
     "decision.csv",
     "image-generation.csv",
+    "voice.csv",
 ]);
 
 const validCategories = new Set([
@@ -23,6 +24,7 @@ const validCategories = new Set([
     "ocr",
     "decision",
     "image-generation",
+    "voice",
 ]);
 
 const servers = new Map();
@@ -218,7 +220,7 @@ await joinSession({
                 properties: {
                     category: {
                         type: "string",
-                        enum: ["generative-text", "ocr", "decision", "image-generation"],
+                        enum: ["generative-text", "ocr", "decision", "image-generation", "voice"],
                         description: "Initial category tab to display upon opening.",
                     },
                 },
@@ -233,7 +235,7 @@ await joinSession({
                         properties: {
                             category: {
                                 type: "string",
-                                enum: ["generative-text", "ocr", "decision", "image-generation"],
+                                enum: ["generative-text", "ocr", "decision", "image-generation", "voice"],
                                 description: "Category tab to switch to.",
                             },
                         },

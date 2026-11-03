@@ -133,3 +133,51 @@ As new multi-modal image architectures are onboarded (e.g., Diffusion Transforme
 - `Guidance Scale` (float)
 - `Scheduler` (string)
 - `Throughput (images/min)` (float)
+
+---
+
+## 5. Conversational Voice Models
+
+Target Files:
+- `results/voice.csv`
+- `results/voice.md`
+
+Conversational voice models are served over the oMLX `/v1/realtime` WebSocket
+(`api/audio_routes.py`), not the chat completions path. They have no decode loop
+in the text sense: the model consumes 24 kHz PCM16 audio and emits audio slots,
+so throughput is expressed as a real-time factor rather than tokens/second.
+
+### Column Specification
+
+| Column Header | Type | Units / Format | Nullable | Description & Constraints |
+|---|---|---|---|---|
+| `Model` | string | Identifier | No | Canonical voice model (e.g., `LiquidAI/LFM3-Omni-2B-MLX-4bit`). |
+| `Quant` | string | Category | No | Quantization level (e.g., `4bit`, `8bit`, `FP16`). |
+| `Params` | string | Architecture summary | No | Parameter count and architecture (e.g., `dense 2.2B omni`, `MoE 30B-A3B omni`). |
+| `Resident Size` | string | Size with unit | No | Resident unified-memory footprint at load (e.g., `1.92 GB`). |
+| `Turn TTFT (ms)` | float | Milliseconds | No | Send-to-`response.created` latency for one committed turn. Must be `>= 0`. |
+| `First Audio Latency (ms)` | float | Milliseconds | No | Send-to-first-`response.output_audio.delta` latency. Must be `>= 0`. |
+| `Reply Audio (ms)` | float | Milliseconds | No | Duration of the generated reply audio. Must be `> 0`. |
+| `Speech Real-Time Factor` | float | Ratio (x) | No | Reply audio duration / wall-clock generation time. `> 1` is faster than real time. Must be `> 0`. |
+| `Transcript WER` | float | Ratio `0.0`–`1.0` | Yes | Word error rate of a TTS → realtime → ASR round trip. Use `N/A` when not measured. |
+| `Voices/Languages` | string | Free-form text | No | Built-in realtime voices, TTS voices, and language coverage. |
+| `Quality/Status` | string | Status label | No | Gate outcome, e.g. `PASS - 3/3 turns completed`, `FAIL - turn timeout`. |
+| `Notes` | string | Free-form text | Yes | Run count, prompt audio length, and interpretation of the metrics. |
+
+### Validation Rules
+
+- `Turn TTFT (ms)` and `First Audio Latency (ms)` must be non-negative floats.
+- `Reply Audio (ms)` must be a positive float.
+- `Speech Real-Time Factor` must be a positive float.
+- `Transcript WER` must be a float in `[0.0, 1.0]` or the literal `N/A`.
+- `Notes` must remain single-line: the dashboard's CSV parser splits on newlines
+  before applying quote handling, so embedded newlines break rendering.
+
+### Measurement Contract
+
+Voice numbers are produced by `scripts/voice_eval.py`, which drives a real
+`/v1/realtime` session: `session.update` → 40 ms `input_audio_buffer.append`
+frames → `input_audio_buffer.commit` → `response.create`. Server-side turn
+detection is rejected by oMLX, so every turn is explicitly committed. Use
+`--runs 3` and the same prompt audio for every comparison, exactly as with the
+text modality.

@@ -254,7 +254,9 @@ Notes on the Qwen3.8-Flash-Next-oQ4e-mtp row:
 tested table above.
 
 Not coding models, downloaded for other roles: `jinaai/jina-reranker-v3.5`
-(1.17 GB, reranker), `mlx-community/Unlimited-OCR-2-8bit` (3.84 GB, OCR).
+(1.17 GB, reranker), `mlx-community/Unlimited-OCR-2-8bit` (3.84 GB, OCR),
+`LiquidAI/LFM3-Omni-2B-MLX-4bit` (1.92 GB, conversational voice — scored in
+[`voice.md`](voice.md), not here; it has no decode loop to tune).
 
 ## Rejected / deferred
 
