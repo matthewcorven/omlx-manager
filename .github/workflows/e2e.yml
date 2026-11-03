@@ -5,7 +5,7 @@ on:
     branches: [dev, preview, main, insider]
     types: [opened, synchronize, reopened]
   push:
-    branches: [dev, insider]
+    branches: [main, dev, insider]
   workflow_dispatch:
 
 permissions:
@@ -39,7 +39,8 @@ jobs:
       # The app under test is a static dashboard, so there is no build step.
       # If a build is ever added, it must run here — once, before Playwright boots.
       - name: Build
-        run: echo "No build step: dashboard/index.html is served statically."
+        run: |
+          echo "No build step - dashboard/index.html is served statically."
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
