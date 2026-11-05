@@ -20,25 +20,62 @@ below are accounted for, not skipped:
 | `jinaai/jina-reranker-v3.5` | **PASS** — not an LLM, no decode to tune. Fixed by swapping the Transformers checkpoint for the MLX conversion. See `non-llm/`. |
 | `mlx-community/Unlimited-OCR-2-8bit` | **PASS** — not an LLM, no decode to tune. Fixed by updating oMLX's vendored `unlimited_ocr` package to the mlx-vlm 0.7.11 implementation (DASH attention). See `non-llm/`. |
 
+### oMLX 0.7.4.dev1 re-profile (2026-11-05)
+
+The whole set was re-measured on oMLX **0.7.4.dev1** with **settings unchanged**,
+to separate "the release changed something" from "the machine was different".
+Method and tooling: [`.github/skills/omlx-release-reprofile`](../.github/skills/omlx-release-reprofile/SKILL.md).
+All 7 generative rows, the OCR row, the voice row and the 9 decision rows carry
+the new version in their `Notes`.
+
+| Model | Decode change | TTFT change | Verdict |
+|---|---|---|---|
+| `Qwen3.8-27B-oQ4e-mtp` | 59.65 → **80.51 tps** (+35.0%) | 252.0 → 206.9 ms (−17.9%) | **Real gain.** The recorded row had been measured under active downloads; this is the first quiet measurement of that config. |
+| `gemma-4-31B-it-oQ4e-mtp` | 40.06 → 44.55 tps (+11.2%) | 297.0 → 278.9 ms (−6.1%) | Modest, single-sample gain. |
+| `Ornith-1.0-35B-oQ4e` | 146.34 → 136.25 tps (−6.9%) | 48.0 → 49.8 ms (+3.7%) | Null, inside the campaign's noise band. |
+| `flint-oQ4e` | 113.23 → 109.93 tps (−2.9%) | 252.0 → 242.4 ms (−3.8%) | Null. |
+| `Qwen3.6-35B-A3B-oQ8e-mtp` | 183.89 → 181.92 tps (−1.0%) | 77.4 → **63.1 ms** (−17.7%) | TTFT gain, decode neutral. |
+| `gemma-4-26B-A4B-it-oQ8e-mtp` | 118.6 → 107.33 tps (−9.5%) | 117.3 → **95.1 ms** (−18.9%) | Mixed — faster to first token, slower decode. |
+| `Qwen3.8-Flash-Next-oQ4e-mtp` | 96.56 → 84.51 tps (−5.0%, 5-run) | 123.1 → **108.3 ms** (−13.9%) | Release claims **+3-5% decode** for this family on M5 Max; that did **not** appear on M4 Max. A first 3-run block read −18%; the 5-run repeat read −5%, so the larger figure was load. |
+
+Everything else was unchanged: all **9 decision models scored bit-identically**
+(accuracy, Brier, ECE and log-loss to the last digit, determinism stable),
+**OCR** kept CER 0.0012 and IoU 0.880 (page latency 1.13 → 1.21 s warm), and
+**LFM3-Omni voice** held RTF 9.20 → 9.37 with first-audio 96.5 → 98 ms.
+
+Two lessons worth keeping:
+
+- **A release's headline number is a hypothesis, not a target.** 0.7.4's
+  Flash-Next and DeepSeek speedups are M3/M5 Ultra and M5 Max results. Neither
+  reproduced here, and the two models that *did* move are ones the notes do not
+  mention.
+- **Always re-run the outlier before believing it.** The first Flash-Next block
+  read −18% decode; the 5-run confirmation read −5%. One block is not a result.
+
 ## Tested and tuned
 
 | Model | Quant | Params | DL | Resident | Baseline TTFT / decode | Final TTFT / decode | Final settings | Quality |
 |---|---|---|---|---|---|---|---|---|
-| `Jundot/Qwen3.8-27B-oQ4e-mtp` | oQ4e | dense 27.8B | 15.81 GiB | 16.60 GiB | 233.6 ms / 78.33 tps | 252.0 ms / 59.65 tps | ctx 32768, MTP on depth 6, KV 4-bit + `skip_last`, temp 0.2 / top_p 0.95 / top_k 20, thinking off | 3/3 pass |
-| `Jundot/Ornith-1.0-35B-oQ4e` | oQ4e | MoE 35B | 21.1 GB | 19.96 GB | 52.0 ms / 146.72 tps | 48.0 ms / 146.34 tps | ctx native, all spec/quant/offload off, temp 1.0 / top_p 0.95 / top_k 20, thinking off | 3/3 pass |
-| `Jundot/flint-oQ4e` | oQ4e | MoE 2.5B active | 22 GB | 22.84 GB | 251.0 ms / 114.6 tps | 252.0 ms / 113.23 tps | ctx native, KV off, no MTP/draft head, temp 1.0 / top_p 0.95 / top_k 20, `activation_fp16_enabled: false` | 3/3 pass |
-| `Jundot/gemma-4-31B-it-oQ4e-mtp` | oQ4e | dense 30.7B | 18.60 GiB | 18.88 GiB | 267.7 ms / 56.10 tps | 297.0 ms / 40.06 tps | ctx native, MTP on adaptive depth, KV off, DFlash off, temp 0.2 / top_p 0.95 / top_k 64, `force_sampling: false`, thinking off | 3/3 pass |
-| `Jundot/gemma-4-26B-A4B-it-oQ8e-mtp` | oQ8e | MoE 26.23B / 4.82B active | 26.86 GiB | 26.93 GiB | 116.0 ms / 113.18 tps | 117.3 ms / 118.6 tps | ctx native, MTP on **fixed depth 4**, KV off, DFlash off, temp 0.2 / top_p 0.95 / top_k 64, `force_sampling: false`, thinking off | 3/3 pass |
-| `Jundot/Qwen3.6-35B-A3B-oQ8e-mtp` | oQ8e | MoE 35.1B / ~3B active | 36 GiB | 37.75 GiB | 74.2 ms / 161.22 tps | 77.4 ms / 183.89 tps | ctx native, MTP on depth 4, KV off, **ANE prefill off**, temp 0.6 / top_p 0.95 / top_k 20, `force_sampling: false`, thinking off | 3/3 pass |
-| `Jundot/Qwen3.8-Flash-Next-oQ4e-mtp` | oQ4e | MoE 125B / ~6B active | 105.06 GiB | 73.77 GiB | 115.0 ms / 86.50 tps | 123.1 ms / 96.56 tps | ctx native, **PLE SSD offload on**, MoE expert offload off, MTP on adaptive depth, KV off, temp 0.6 / top_p 0.95 / top_k 20, `force_sampling: false`, thinking off | 3/3 pass |
+| `Jundot/Qwen3.8-27B-oQ4e-mtp` | oQ4e | dense 27.8B | 15.81 GiB | 16.60 GiB | 233.6 ms / 78.33 tps | 206.9 ms / 80.51 tps | ctx 32768, MTP on depth 6, KV 4-bit + `skip_last`, temp 0.2 / top_p 0.95 / top_k 20, thinking off | 3/3 pass |
+| `Jundot/Ornith-1.0-35B-oQ4e` | oQ4e | MoE 35B | 21.1 GB | 19.96 GB | 52.0 ms / 146.72 tps | 49.8 ms / 136.25 tps | ctx native, all spec/quant/offload off, temp 1.0 / top_p 0.95 / top_k 20, thinking off | 3/3 pass |
+| `Jundot/flint-oQ4e` | oQ4e | MoE 2.5B active | 22 GB | 22.84 GB | 251.0 ms / 114.6 tps | 242.4 ms / 109.93 tps | ctx native, KV off, no MTP/draft head, temp 1.0 / top_p 0.95 / top_k 20, `activation_fp16_enabled: false` | 3/3 pass |
+| `Jundot/gemma-4-31B-it-oQ4e-mtp` | oQ4e | dense 30.7B | 18.60 GiB | 18.88 GiB | 267.7 ms / 56.10 tps | 278.9 ms / 44.55 tps | ctx native, MTP on adaptive depth, KV off, DFlash off, temp 0.2 / top_p 0.95 / top_k 64, `force_sampling: false`, thinking off | 3/3 pass |
+| `Jundot/gemma-4-26B-A4B-it-oQ8e-mtp` | oQ8e | MoE 26.23B / 4.82B active | 26.86 GiB | 26.93 GiB | 116.0 ms / 113.18 tps | 95.1 ms / 107.33 tps | ctx native, MTP on **fixed depth 4**, KV off, DFlash off, temp 0.2 / top_p 0.95 / top_k 64, `force_sampling: false`, thinking off | 3/3 pass |
+| `Jundot/Qwen3.6-35B-A3B-oQ8e-mtp` | oQ8e | MoE 35.1B / ~3B active | 36 GiB | 37.75 GiB | 74.2 ms / 161.22 tps | 63.1 ms / 181.92 tps | ctx native, MTP on depth 4, KV off, **ANE prefill off**, temp 0.6 / top_p 0.95 / top_k 20, `force_sampling: false`, thinking off | 3/3 pass |
+| `Jundot/Qwen3.8-Flash-Next-oQ4e-mtp` | oQ4e | MoE 125B / ~6B active | 105.06 GiB | 73.77 GiB | 115.0 ms / 86.50 tps | 108.3 ms / 84.51 tps | ctx native, **PLE SSD offload on**, MoE expert offload off, MTP on adaptive depth, KV off, temp 0.6 / top_p 0.95 / top_k 20, `force_sampling: false`, thinking off | 3/3 pass |
 
 **Count: 7 models fully tested and tuned.**
 
-The rows are **not** comparable head-to-head. Ornith's 146 tps vs Qwen's 60 tps
-is not a 2.4× speed advantage — Qwen's final 5-run was taken with downloads
-active and Ornith's with the machine quiet. The honest statement is that both
-were measured on their own terms, and that the *decisions* in each row are sound
-because each came from a paired comparison.
+The rows are **not** comparable head-to-head. Ornith's 136 tps vs Qwen's 81 tps
+is not a 1.7× speed advantage — the two were measured at different times under
+different load, and the campaign only trusts numbers from one block. The honest
+statement is that both were measured on their own terms, and that the
+*decisions* in each row are sound because each came from a paired comparison.
+
+The Final column now holds the **0.7.4.dev1 re-measurement** for all 7 rows. The
+Qwen3.8-27B value in particular is the first quiet measurement that config ever
+had, and the +35% against its old row is that quiet machine, not a kernel win.
+Treat every cross-model gap here as order-of-magnitude.
 
 What the four models agree on, and where they diverge:
 

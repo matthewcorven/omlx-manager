@@ -86,16 +86,33 @@ Sampling settings per model (from model cards, see citations below):
 
 ## 3. Not feasible on 128 GB — and why
 
+**Re-probed on oMLX 0.7.4.dev1.** The sizes below are the smallest build found in
+that re-probe. `MiniMax-M3.1-Flash` and `Ling-3.1-flash` moved down from the
+0.7.3 numbers (173.7 GB and 179.9 GB) but neither crosses the ceiling, so both
+stay excluded. This table is re-checked on every release by
+`.github/skills/omlx-release-reprofile` (`discover`), which persists the list in
+`.reprofile/catalogue.json` so the next release re-probes it automatically.
+
 | Model | Smallest confirmed build | Size | Reason excluded |
 |---|---|---|---|
-| **Ling 3.1 Flash** | `mlx-community/Ling-3.1-flash-1019-oQ2e-mtp` | 193.16 GB download, 572.1B total params | Even the lowest 2-bit oQ quant is ~193 GB on disk; nowhere near the ~110–118 GB resident ceiling on this Mac. Not present in oMLX's own recommendation set at all. |
+| **Ling 3.1 Flash** | `mlx-community/Ling-3.1-flash-1019-oQ2e-mtp` | 179.9 GB download (0.7.4 re-probe; 193.16 GB at 0.7.3), 572.1B total params | Even the lowest 2-bit oQ quant is ~180 GB on disk; nowhere near the ~96 GB resident ceiling on this Mac. Not present in oMLX's own recommendation set at all. |
 | **Ling Flash 3.0** | — | same order of magnitude as 3.1 | Same family/scale issue as Ling 3.1 Flash. |
-| **MiniMax M3.1 Flash** | `mlx-community/MiniMax-M3.1-Flash-oQ3e-mtp` | 182.7 GB download, 427.1B total params | Smallest available oQ build is still 182.7 GB; original NVFP4 checkpoint is 252.4 GB. Not offered by oMLX's own recommendation engine for this hardware. |
-| **DeepSeek-V4.1-Flash** | `Jundot/DeepSeek-V4.1-Flash-oQ2e-mtp` | 291.8 GB download | Despite "Flash" branding, this is DeepSeek's large/newest MoE; even 2-bit oQ is nearly 3x the Mac's total memory. |
+| **MiniMax M3.1 Flash** | `mlx-community/MiniMax-M3.1-Flash-Text-3bit` | 173.7 GB download (0.7.4 re-probe; the oQ3e build is 182.7 GB), 427.1B total params | Smallest build is still ~174 GB; original NVFP4 checkpoint is 252.4 GB. Not offered by oMLX's own recommendation engine for this hardware. |
+| **DeepSeek-V4.1-Flash** | `mlx-community/DeepSeek-V4.1-Flash-1017-oQ2e-mtp` | 291.8 GB download | Despite "Flash" branding, this is DeepSeek's large/newest MoE; even 2-bit oQ is nearly 3x the Mac's total memory. 0.7.4's DeepSeek speedups land on M5 Ultra/M5 Max and do not change this. |
 | **GLM-5.3** (non-Flash) | `zai-org/GLM-5.3` (orig) | 755.7 GB | Full GLM-5.3 (not the Flash distillation) is roughly double GLM-5.3-Flash's footprint; no oQ build small enough was found or offered by the server. |
 | **Muse Spark (816B-A42B)** | `meta-models/Muse-Spark-Open-816B-A42B` (orig) | 1,644.37 GB | An 816B-parameter MoE; off the scale of any single consumer Mac regardless of quantization level. |
 | **Ornith-1.5-122B** (full-precision path) | `ornith-ai/Ornith-1.5-122B` (orig) | 250.2 GB | Base checkpoint alone exceeds 128 GB; only a potential fit via Splash's pruned-expert GGUF export, whose exact size I could not confirm from the HF API in this pass (flagged as unverified, not a confirmed "yes"). |
 | **ERNIE-4.5-300B-A47B family** | `baidu/ERNIE-4.5-300B-A47B-*` | not pulled, clearly >128 GB at any reasonable quant given 300B+ total params | Far above the Mac's memory ceiling; only the much smaller 21B-A3B ERNIE variant is viable. |
+
+### Fits, but not downloaded — a variant worth revisiting
+
+`Jundot/Qwen3.8-Flash-Next-oQ2.5e-fp16-mtp` surfaced in the 0.7.4 re-probe at
+**78.5 GB**, against the oQ4e build already profiled at 105 GB. It is a real
+whole-model build from a trusted publisher, so it clears the fit test. It was
+**not** downloaded in this pass: the oQ4e variant is already tuned and resident,
+and the oQ2.5e build is a *quality* trade, not a speed one, so swapping it in
+needs its own quality check before it can replace a row. Revisit if internal
+disk pressure rises or if the oQ4e variant's 73.77 GB resident becomes a problem.
 
 ---
 
