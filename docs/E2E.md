@@ -11,6 +11,12 @@ permitted E2E UI automation tool in this repo.
 page. That makes the whole surface deterministic and free to test — no omlx
 server, no model load, no paid inference.
 
+`EMBEDDED_DATA` is **generated**, never hand-edited. `record_model_result.py`
+rewrites it on every write, and `--generate-embed` rebuilds it on demand from
+the committed CSVs. It used to be maintained by hand, drifted several releases
+behind, and served stale numbers plus a missing model; `embedded-freshness.spec.ts`
+now fails if the fallback and the CSVs disagree.
+
 The CLI and `scripts/` are covered by Python `unittest`
 (`scripts/tests/`), not by Playwright.
 
@@ -83,8 +89,20 @@ none may be added.
 
 Every workflow needs a happy path, an alternate path, and an edge case. Current
 workflows: leaderboard shell, search/filter, sorting, row details, data-source
-fallback, conversational voice. A new dashboard interaction is not done until it
-has all three.
+fallback, conversational voice, embedded-data freshness, oMLX version display.
+A new dashboard interaction is not done until it has all three.
+
+### Data invariants are tested against the CSVs, not literals
+
+Assertions about *what data is shown* read `backend.liveRows(category)` and
+compare against the rendered page. Hard-coded row counts and model names break
+every time a benchmark is recorded, which trains people to edit tests instead of
+trusting them. The one exception is the `stub/` fixtures, which exist precisely
+so behavioural tests have stable data.
+
+`embedded-freshness.spec.ts` is the guard that matters after a re-profile: it
+opens the page with every CSV unreachable and requires the offline fallback to
+render exactly the committed model set for each category.
 
 ## What is never committed
 

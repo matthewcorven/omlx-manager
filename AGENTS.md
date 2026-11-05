@@ -28,6 +28,13 @@ settings profile that balances decode speed against time-to-first-token.
    `scripts/record_model_result.py`. Ad-hoc, manually edited, or unvalidated
    markdown tables are strictly prohibited and deprecated. Every dataset commit
    must pass `python3 scripts/record_model_result.py --validate-all`.
+   Every row also carries an **`oMLX Version`** column naming the server release
+   it was measured on; a blank cell means *unverified*, not current.
+7. **A results change is not complete until the dashboard renders it.** The
+   dashboard's offline fallback (`EMBEDDED_DATA` in `dashboard/index.html`) is
+   generated from the CSVs by `record_model_result.py` — never hand-edit it.
+   Gate on `python3 .github/skills/omlx-release-reprofile/scripts/verify_ui.py`,
+   which checks CSV/fallback parity and runs the full Playwright suite.
 
 ## Environment
 

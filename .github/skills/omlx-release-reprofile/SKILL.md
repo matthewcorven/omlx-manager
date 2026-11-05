@@ -265,6 +265,31 @@ python3 scripts/record_model_result.py --type generative-text --update --data '<
 python3 scripts/record_model_result.py --validate-all
 ```
 
+### The `oMLX Version` column is required
+
+Every table now has an **`oMLX Version`** column, so a row states which server
+release produced it. Supply it in the row JSON you pass to `--update`:
+
+```sh
+python3 scripts/record_model_result.py --type generative-text --update --data \
+  '{"Model":"Jundot/flint-oQ4e","oMLX Version":"0.7.4.dev1", ...}'
+```
+
+`record_model_result.py` refuses no row for a missing version (the schema does
+not mark it mandatory yet), so an omission will silently leave a blank cell —
+which `release_reprofile.py status` correctly reports as **unverified**, not as
+current. Set it on every row you touch.
+
+Adding the column to a table that predates it is a one-shot migration:
+
+```sh
+python3 scripts/record_model_result.py --migrate-add-version 0.7.4.dev1
+```
+
+That backfills every existing row with the version they were actually measured
+on and regenerates both the Markdown and the dashboard embed. Only run it when
+that statement is true.
+
 ## Step 7 — report the not-feasible set
 
 `plan.json`'s `not_feasible` list is a deliverable, not a leftover. Each entry
@@ -278,10 +303,53 @@ this, and it is still the most common mistake: moving a 292 GB model to the NVMe
 does not make it load on a 128 GB machine, and MoE offload reduces residency
 without making a 292 GB download practical.
 
+## Step 8 — verify the dashboard actually shows the new data
+
+A re-profile is **not** done when the CSVs validate. The dashboard is what a
+human reads, and it can be wrong while every table is perfect:
+
+- the page can throw and render blank,
+- and its offline fallback (`EMBEDDED_DATA`, baked into `dashboard/index.html`)
+  can go stale — showing pre-release numbers and missing models added since it
+  was last written. That is not hypothetical: the fallback was hand-maintained
+  and was still serving pre-0.7.4 numbers with no Ming-3.0 row at all.
+
+The fallback is now **generated** from the CSVs. `record_model_result.py`
+refreshes it on every write, and `--generate-embed` rebuilds it on demand:
+
+```sh
+python3 scripts/record_model_result.py --generate-embed
+```
+
+Gate the run on it:
+
+```sh
+python3 $S/verify_ui.py              # parity + the full Playwright suite
+python3 $S/verify_ui.py --skip-e2e   # parity only, for a fast loop
+```
+
+`verify_ui.py` does exactly two things and delegates the rest:
+
+1. **Data parity** — parses `EMBEDDED_DATA` as JSON (an unparseable block is
+   the blank-page failure, and a clear JSON error beats a browser console
+   message later), then asserts every model in every `results/*.csv` appears in
+   the offline fallback. This is the direct answer to "did the UI load the new
+   data".
+2. **Full-breadth suite** — runs `npm run e2e`, the whole Playwright suite.
+   This is deliberately a *call*, not a reimplementation: `e2e/` is the single
+   source of truth for dashboard behaviour (`docs/E2E.md`). Never add release
+   checks inside the suite that only make sense for one release; the suite must
+   stay a general regression net that this skill happens to invoke.
+
+It exits non-zero on either failure. **Do not record a run as complete if it
+fails** — report it instead. A stale or broken UI means the numbers exist but
+nobody can see them.
+
 ## Checks before you call it done
 
 ```sh
 python3 scripts/record_model_result.py --validate-all      # tables in sync
+python3 $S/verify_ui.py                                    # UI loads the new data
 python3 $S/release_reprofile.py status                     # versions current
 git status --short                                          # only intended paths
 ```
@@ -290,6 +358,8 @@ git status --short                                          # only intended path
 - [ ] Every re-profiled row carries the new version stamp
 - [ ] Every `too-large` entry is in `docs/model-candidates.md` with its smallest build
 - [ ] `--validate-all` passes
+- [ ] Every touched row has a non-empty `oMLX Version`
+- [ ] `verify_ui.py` passes (parity **and** the Playwright suite)
 - [ ] No `.reprofile/` working state committed
 - [ ] Only one benchmark ran at a time (the batch runner enforces this)
 
@@ -302,6 +372,10 @@ git status --short                                          # only intended path
 | Catalogue says a 292 GB model "fits at 1.0 GB" | Overlay/partial repo ranked as a whole model | Trusted-publisher + fragment filters (Step 2) |
 | A dep version (`mlx-vlm 0.7.11`) read as the oMLX version | Naive `0.7.x` regex over `Notes` | Anchored regex that ignores foreign-package prefixes |
 | Re-profile says "settings match" but TTFT is 3x worse | Benchmark slot contention or saturated SSD cache | Check `bench/active`, `du -sh ~/.omlx/cache` |
+| Dashboard renders blank, every CSV still validates | `EMBEDDED_DATA` is syntactically invalid (a duplicated `};` from a bad generator) | `verify_ui.py` parses it as JSON and names the problem; fix the generator, not the page by hand |
+| Offline/dashboard shows old numbers or is missing a new model | Fallback was hand-maintained and drifted | `python3 scripts/record_model_result.py --generate-embed`, then re-run `verify_ui.py` |
+| E2E expects fewer rows than the table now has | Test hard-coded a row count instead of comparing against the CSV | Assert against `backend.liveRows(category)`, never a literal count |
+| E2E passes but a model is invisible in the UI | Model column is the only place it can appear and the table paginated it away | Confirm via the detail panel and search; the parity gate covers the fallback, not rendering |
 | Model loads but returns empty `content` with `finish_reason: length` | Reasoning budget consumed the whole `max_tokens` | Stream with `max_tokens >= 350` for quality checks |
 
 ## What this skill does not do

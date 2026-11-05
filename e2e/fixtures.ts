@@ -26,30 +26,30 @@ export const CATEGORIES: Category[] = [
 /** Deterministic CSV doubles. The dashboard parses these exactly like the real files. */
 export const STUB_CSV: Record<Category, string> = {
   'generative-text': [
-    'Model,Quant,Params,Download Size,Resident Size,Baseline TTFT (ms),Baseline Decode (tps),Final TTFT (ms),Final Decode (tps),Final Settings,Quality Pass Rate,Notes',
-    'stub/alpha-7b,oQ4e,dense 7B,4.0 GiB,4.2 GiB,100.0,50.0,90.0,60.0,"ctx 32768, thinking off",3/3 pass,Alpha stub row',
-    'stub/beta-30b,oQ8e,MoE 30B,18.0 GiB,19.0 GiB,200.0,120.0,180.0,150.0,"ctx native, MTP on",3/3 pass,Beta stub row',
-    'stub/gamma-3b,oQ4e,dense 3B,2.0 GiB,2.1 GiB,40.0,200.0,35.0,210.0,"ctx 8192",1/3 pass,Gamma stub row',
+    'Model,Quant,Params,Download Size,Resident Size,oMLX Version,Baseline TTFT (ms),Baseline Decode (tps),Final TTFT (ms),Final Decode (tps),Final Settings,Quality Pass Rate,Notes',
+    'stub/alpha-7b,oQ4e,dense 7B,4.0 GiB,4.2 GiB,0.7.4.dev1,100.0,50.0,90.0,60.0,"ctx 32768, thinking off",3/3 pass,Alpha stub row',
+    'stub/beta-30b,oQ8e,MoE 30B,18.0 GiB,19.0 GiB,0.7.4.dev1,200.0,120.0,180.0,150.0,"ctx native, MTP on",3/3 pass,Beta stub row',
+    'stub/gamma-3b,oQ4e,dense 3B,2.0 GiB,2.1 GiB,0.7.4.dev1,40.0,200.0,35.0,210.0,"ctx 8192",1/3 pass,Gamma stub row',
   ].join('\n'),
   ocr: [
-    'Model,Quant,Checkpoint/Package,Resident Size,CER (Character Error Rate),WER (Word Error Rate),Avg Page Latency (s),Max Tokens,Quality/Status,Notes',
-    'stub/ocr-good,8bit,stub-pkg,1.0 GB,0.0010,N/A,0.50,8192,PASS - fixed,Good stub row',
-    'stub/ocr-bad,8bit,stub-pkg,2.0 GB,0.2500,N/A,1.50,8192,FAIL - degenerate,Bad stub row',
+    'Model,Quant,Checkpoint/Package,Resident Size,oMLX Version,CER (Character Error Rate),WER (Word Error Rate),Avg Page Latency (s),Max Tokens,Quality/Status,Notes',
+    'stub/ocr-good,8bit,stub-pkg,1.0 GB,0.7.4.dev1,0.0010,N/A,0.50,8192,PASS - fixed,Good stub row',
+    'stub/ocr-bad,8bit,stub-pkg,2.0 GB,0.7.4.dev1,0.2500,N/A,1.50,8192,FAIL - degenerate,Bad stub row',
   ].join('\n'),
   decision: [
-    'Model,Quant,Params,Resident Size,Gate 1 (Accuracy),Gate 2 (ECE / Calibration),Gate 3 (Log Loss),Gate 4 (Media Score),Mean TTFT,Samples,Notes',
-    'stub/dec-pass,native,1.0 GB,1.0 GB,0.9000,0.0500,0.1000,0.950 (Image),10.0 ms,39,PASS - scored',
-    'stub/dec-fail,native,2.0 GB,2.0 GB,0.5000,0.2000,0.5000,0.500 (Image),20.0 ms,39,FAIL - dominated',
+    'Model,Quant,Params,Resident Size,oMLX Version,Gate 1 (Accuracy),Gate 2 (ECE / Calibration),Gate 3 (Log Loss),Gate 4 (Media Score),Mean TTFT,Samples,Notes',
+    'stub/dec-pass,native,1.0 GB,1.0 GB,0.7.4.dev1,0.9000,0.0500,0.1000,0.950 (Image),10.0 ms,39,PASS - scored',
+    'stub/dec-fail,native,2.0 GB,2.0 GB,0.7.4.dev1,0.5000,0.2000,0.5000,0.500 (Image),20.0 ms,39,FAIL - dominated',
   ].join('\n'),
   'image-generation': [
-    'Model,Quant,Steps,Resolution,TTFT/Step Latency,Total Latency,VRAM/Resident,Quality/CLIP,Notes',
-    'stub/img-fast,8bit,4,1024x1024,100.0 ms/step,1.00 s,4.0 GB,0.3000 CLIP,Fast stub row',
-    'stub/img-slow,8bit,20,1024x1024,500.0 ms/step,9.00 s,12.0 GB,0.3500 CLIP,Slow stub row',
+    'Model,Quant,Steps,Resolution,oMLX Version,TTFT/Step Latency,Total Latency,VRAM/Resident,Quality/CLIP,Notes',
+    'stub/img-fast,8bit,4,1024x1024,0.7.4.dev1,100.0 ms/step,1.00 s,4.0 GB,0.3000 CLIP,Fast stub row',
+    'stub/img-slow,8bit,20,1024x1024,0.7.4.dev1,500.0 ms/step,9.00 s,12.0 GB,0.3500 CLIP,Slow stub row',
   ].join('\n'),
   voice: [
-    'Model,Quant,Params,Resident Size,Turn TTFT (ms),First Audio Latency (ms),Reply Audio (ms),Speech Real-Time Factor,Transcript WER,Voices/Languages,Quality/Status,Notes',
-    'stub/voice-fast,4bit,dense 2B omni,2.0 GB,10.0,90.0,4000,9.50,0.0200,1 realtime voice; 18 languages,PASS - 3/3 turns completed,Fast stub row',
-    'stub/voice-slow,8bit,dense 8B omni,8.0 GB,40.0,300.0,6000,1.20,0.1500,2 realtime voices; 6 languages,FAIL - turn timeout,Slow stub row',
+    'Model,Quant,Params,Resident Size,oMLX Version,Turn TTFT (ms),First Audio Latency (ms),Reply Audio (ms),Speech Real-Time Factor,Transcript WER,Voices/Languages,Quality/Status,Notes',
+    'stub/voice-fast,4bit,dense 2B omni,2.0 GB,0.7.4.dev1,10.0,90.0,4000,9.50,0.0200,1 realtime voice; 18 languages,PASS - 3/3 turns completed,Fast stub row',
+    'stub/voice-slow,8bit,dense 8B omni,8.0 GB,0.7.4.dev1,40.0,300.0,6000,1.20,0.1500,2 realtime voices; 6 languages,FAIL - turn timeout,Slow stub row',
   ].join('\n'),
 };
 
