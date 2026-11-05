@@ -106,6 +106,7 @@ Load the relevant skill before acting:
 | Find, download, verify, or delete a model | `.github/skills/omlx-model-download` |
 | Read or change per-model settings | `.github/skills/omlx-model-settings` |
 | Run benchmarks or measure TTFT | `.github/skills/omlx-benchmark` |
+| Re-profile everything after an oMLX version upgrade | `.github/skills/omlx-release-reprofile` |
 | Evaluate or tune an OCR / document-parsing model | `.github/skills/omlx-ocr-eval` |
 | Evaluate a decision model (Clef, OpenJev, d3, d1) | `.github/skills/omlx-decision-eval` |
 | Something is broken | `.github/skills/omlx-troubleshooting` |
