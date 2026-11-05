@@ -1,13 +1,13 @@
 # Decision Model Benchmark Results
 
-| Model | Quant | Params | Resident Size | Gate 1 (Accuracy) | Gate 2 (ECE / Calibration) | Gate 3 (Log Loss) | Gate 4 (Media Score) | Mean TTFT | Samples | Notes |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| vllm-sr/d3-edge | native | 1.2 GB | 1.2 GB | 0.7714 | 0.1156 | 0.3763 | 0.773 (Image) / Degenerate (Video) | 12.9 ms | 39 | PASS - scored. Blind to video motion (degenerate gate failure on video) |
-| vllm-sr/d3-lite | native | 1.7 GB | 1.7 GB | 0.7143 | 0.124 | 0.3906 | 0.818 (Image) / 1.000 (Video) | 22.2 ms | 39 | FAIL - dominated by d3-edge |
-| vllm-sr/d3-nano | native | 4.5 GB | 4.5 GB | 0.8286 | 0.1315 | 0.3562 | 0.955 (Image) / 1.000 (Video) | 37.9 ms | 39 | PASS - best d3 under 5 GB; perfect on video (0.0000 Brier) |
-| Jundot/clef-flash-oQ4e | oQ4e | 6.6 GB | 6.6 GB | 0.8571 | 0.0901 | 0.297 | 1.000 (Image) / Reject (Video) | 231.7 ms | 39 | PASS - beats baseline Brier; rejects video modality |
-| vllm-sr/d3-mini | native | 9.1 GB | 9.1 GB | 0.9143 | 0.0766 | 0.1500 | 0.955 (Image) / 1.000 (Video) | 86.3 ms | 39 | PASS - best overall performance-to-size; perfect on video (0.0000 Brier) |
-| vllm-sr/d3-flash | native | 16.8 GB | 16.8 GB | 0.9429 | 0.0802 | 0.1200 | 0.955 (Image) / 1.000 (Video) | 153.4 ms | 39 | PASS - best quality; honest on ambiguity (ambig conf 0.652); near-perfect on video (0.0003 Brier) |
-| Jundot/clef-oQ4e | oQ4e | 17.5 GB | 17.5 GB | 0.9429 | 0.0819 | 0.1711 | 1.000 (Image) / Reject (Video) | 794.1 ms | 39 | FAIL - dominated by d3-flash; rejects video modality |
-| openjev/openjev | native | 54.7 GB | 54.7 GB | 0.8571 | 0.0998 | 0.3412 | 0.955 (Image) / Reject (Video) | 467.0 ms | 39 | FAIL - no better than chat baseline despite 54.7 GB size |
-| Jundot/Qwen3.8-27B-oQ4e-mtp (baseline) | oQ4e | dense 27.8B | 16.6 GB | 0.8571 | 0.0496 | 0.2766 | 1.000 (Image) / Unsupported (Video) | 536.0 ms | 39 | Reference chat baseline on /v1/systemone |
+| Model | Quant | Params | Resident Size | oMLX Version | Gate 1 (Accuracy) | Gate 2 (ECE / Calibration) | Gate 3 (Log Loss) | Gate 4 (Media Score) | Mean TTFT | Samples | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| vllm-sr/d3-edge | native | 1.2 GB | 1.2 GB | 0.7.4.dev1 | 0.7714 | 0.1156 | 0.3763 | 0.773 (Image) / Degenerate (Video) | 12.9 ms | 39 | PASS - scored. Blind to video motion (degenerate gate failure on video) |
+| vllm-sr/d3-lite | native | 1.7 GB | 1.7 GB | 0.7.4.dev1 | 0.7143 | 0.124 | 0.3906 | 0.818 (Image) / 1.000 (Video) | 22.2 ms | 39 | FAIL - dominated by d3-edge |
+| vllm-sr/d3-nano | native | 4.5 GB | 4.5 GB | 0.7.4.dev1 | 0.8286 | 0.1315 | 0.3562 | 0.955 (Image) / 1.000 (Video) | 37.9 ms | 39 | PASS - best d3 under 5 GB; perfect on video (0.0000 Brier) |
+| Jundot/clef-flash-oQ4e | oQ4e | 6.6 GB | 6.6 GB | 0.7.4.dev1 | 0.8571 | 0.0901 | 0.297 | 1.000 (Image) / Reject (Video) | 231.7 ms | 39 | PASS - beats baseline Brier; rejects video modality |
+| vllm-sr/d3-mini | native | 9.1 GB | 9.1 GB | 0.7.4.dev1 | 0.9143 | 0.0766 | 0.1500 | 0.955 (Image) / 1.000 (Video) | 86.3 ms | 39 | PASS - best overall performance-to-size; perfect on video (0.0000 Brier) |
+| vllm-sr/d3-flash | native | 16.8 GB | 16.8 GB | 0.7.4.dev1 | 0.9429 | 0.0802 | 0.1200 | 0.955 (Image) / 1.000 (Video) | 153.4 ms | 39 | PASS - best quality; honest on ambiguity (ambig conf 0.652); near-perfect on video (0.0003 Brier) |
+| Jundot/clef-oQ4e | oQ4e | 17.5 GB | 17.5 GB | 0.7.4.dev1 | 0.9429 | 0.0819 | 0.1711 | 1.000 (Image) / Reject (Video) | 794.1 ms | 39 | FAIL - dominated by d3-flash; rejects video modality |
+| openjev/openjev | native | 54.7 GB | 54.7 GB | 0.7.4.dev1 | 0.8571 | 0.0998 | 0.3412 | 0.955 (Image) / Reject (Video) | 467.0 ms | 39 | FAIL - no better than chat baseline despite 54.7 GB size |
+| Jundot/Qwen3.8-27B-oQ4e-mtp (baseline) | oQ4e | dense 27.8B | 16.6 GB | 0.7.4.dev1 | 0.8571 | 0.0496 | 0.2766 | 1.000 (Image) / Unsupported (Video) | 536.0 ms | 39 | Reference chat baseline on /v1/systemone |

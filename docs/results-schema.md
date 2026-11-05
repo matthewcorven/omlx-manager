@@ -7,6 +7,19 @@ All results must reside in centralized sibling CSV and Markdown files in `result
 
 ---
 
+## Versioning Invariant
+
+Every row records the oMLX server release it was measured on in its `oMLX Version`
+column. This exists because absolute throughput on one machine slides with
+background load: without a version stamp, a later release's numbers cannot be
+told apart from a noisy afternoon.
+
+- `scripts/record_model_result.py` writes the column; `--migrate-add-version`
+  backfills a table that predates it.
+- `.reprofile`/`release_reprofile.py status` compares the stamp against the
+  running server, and reports a blank cell as **unverified** rather than current.
+- The dashboard surfaces it in each row's detail panel.
+
 ## Architecture & Synchronization Invariant
 
 1. **Sibling Files**: Each model family has a pair of files in `results/`:
@@ -35,6 +48,7 @@ Target Files:
 | `Params` | string | Parameter count | No | Total and active parameters (e.g., `dense 27.8B`, `MoE 35.1B / ~3B active`). |
 | `Download Size` | string | Size with unit | No | Disk footprint (e.g., `15.81 GiB`, `21.1 GB`). |
 | `Resident Size` | string | Size with unit | No | VRAM / Unified memory footprint when loaded (e.g., `16.60 GiB`, `19.96 GB`). |
+| `oMLX Version` | string | Version | No | The oMLX server release the row was measured on (e.g., `0.7.4.dev1`). Required on every touched row; `release_reprofile.py status` treats a blank cell as *unverified*, never as current. |
 | `Baseline TTFT (ms)` | float | Milliseconds | No | Time to First Token under default configuration (>= 0.0). |
 | `Baseline Decode (tps)`| float | Tokens / sec | No | Decode throughput under default configuration (> 0.0). |
 | `Final TTFT (ms)` | float | Milliseconds | No | Time to First Token after optimal tuning (>= 0.0). |
@@ -64,6 +78,7 @@ Target Files:
 | `Quant` | string | Category | No | Quantization format (e.g., `8bit`, `4bit`, `FP16`). |
 | `Checkpoint/Package` | string | Version / Source | No | Specific backend library, commit, or package version (e.g., `mlx-vlm 0.7.11 DASH`). |
 | `Resident Size` | string | Size with unit | No | Resident memory consumption during document inference (e.g., `4.8 GB`). |
+| `oMLX Version` | string | Version | No | The oMLX server release the row was measured on (e.g., `0.7.4.dev1`). Required on every touched row; `release_reprofile.py status` treats a blank cell as *unverified*, never as current. |
 | `CER (Character Error Rate)` | float | Ratio [0.0 - 1.0] | No | Mean character error rate against ground truth corpus. |
 | `WER (Word Error Rate)` | float | Ratio [0.0 - 1.0] | No | Mean word error rate against ground truth corpus (or N/A if unsupported). |
 | `Avg Page Latency (s)`| float | Seconds | No | Mean wall-clock time per document page (> 0.0). |
@@ -93,6 +108,7 @@ Target Files:
 | `Quant` | string | Category | No | Quantization format (e.g., `oQ4e`, `BF16`, `native`). |
 | `Params` | string | Parameter count | No | Active or total parameter size (e.g., `16.8 GB`, `0.5B`, `8B`). |
 | `Resident Size` | string | Size with unit | No | Resident memory during evaluation (e.g., `16.8 GB`, `1.2 GB`). |
+| `oMLX Version` | string | Version | No | The oMLX server release the row was measured on (e.g., `0.7.4.dev1`). Required on every touched row; `release_reprofile.py status` treats a blank cell as *unverified*, never as current. |
 | `Gate 1 (Accuracy)` | float | Ratio [0.0 - 1.0] | No | Overall classification accuracy on standard 39-item corpus. |
 | `Gate 2 (ECE / Calibration)` | float | Ratio [0.0 - 1.0] | No | Expected Calibration Error (lower is better; e.g., `0.0802`). |
 | `Gate 3 (Log Loss)` | float | Score (>= 0.0) | No | Cross-entropy / logarithmic loss on predicted probabilities. |
@@ -125,6 +141,7 @@ Target Files:
 | `TTFT/Step Latency` | string | Latency / step | No | Time per denoising step or first step latency (e.g., `45.2 ms/step`). |
 | `Total Latency` | string | Total time | No | End-to-end image generation time (e.g., `1.82 s`, `1820 ms`). |
 | `VRAM/Resident` | string | Size with unit | No | Peak unified memory / VRAM consumption during sampling (e.g., `9.4 GB`). |
+| `oMLX Version` | string | Version | No | The oMLX server release the row was measured on (e.g., `0.7.4.dev1`). Required on every touched row; `release_reprofile.py status` treats a blank cell as *unverified*, never as current. |
 | `Quality/CLIP` | string | Score / Metric | No | Standard CLIP score or perceptual quality metric (e.g., `0.324 CLIP`, `N/A`). |
 | `Notes` | string | Free-form text | Yes | Scheduler used (e.g., DPMSolver, Euler), prompt details, or compilation notes. |
 
@@ -155,6 +172,7 @@ so throughput is expressed as a real-time factor rather than tokens/second.
 | `Quant` | string | Category | No | Quantization level (e.g., `4bit`, `8bit`, `FP16`). |
 | `Params` | string | Architecture summary | No | Parameter count and architecture (e.g., `dense 2.2B omni`, `MoE 30B-A3B omni`). |
 | `Resident Size` | string | Size with unit | No | Resident unified-memory footprint at load (e.g., `1.92 GB`). |
+| `oMLX Version` | string | Version | No | The oMLX server release the row was measured on (e.g., `0.7.4.dev1`). Required on every touched row; `release_reprofile.py status` treats a blank cell as *unverified*, never as current. |
 | `Turn TTFT (ms)` | float | Milliseconds | No | Send-to-`response.created` latency for one committed turn. Must be `>= 0`. |
 | `First Audio Latency (ms)` | float | Milliseconds | No | Send-to-first-`response.output_audio.delta` latency. Must be `>= 0`. |
 | `Reply Audio (ms)` | float | Milliseconds | No | Duration of the generated reply audio. Must be `> 0`. |

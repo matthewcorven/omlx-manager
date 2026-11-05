@@ -24,6 +24,13 @@ class TestRecordModelResult(unittest.TestCase):
     def setUp(self):
         # Create an isolated temporary test directory
         self.test_dir = tempfile.mkdtemp()
+        # Recording normally refreshes dashboard/index.html. Unit tests must
+        # not mutate committed files, so point the generator at a temp page.
+        self._orig_dashboard = rmr.DASHBOARD
+        rmr.DASHBOARD = Path(self.test_dir) / "index.html"
+        rmr.DASHBOARD.write_text(
+            '<script>\nconst EMBEDDED_DATA = {}\n;\nconst CONFIG = {};\n</script>\n'
+        )
         self.orig_schemas = {}
         # Patch SCHEMAS paths to use temp directory
         for model_type, spec in rmr.SCHEMAS.items():
@@ -41,6 +48,7 @@ class TestRecordModelResult(unittest.TestCase):
         for model_type, paths in self.orig_schemas.items():
             rmr.SCHEMAS[model_type]["csv_file"] = paths["csv_file"]
             rmr.SCHEMAS[model_type]["md_file"] = paths["md_file"]
+        rmr.DASHBOARD = self._orig_dashboard
         shutil.rmtree(self.test_dir, ignore_errors=True)
 
     def test_text_add_and_sync(self):
@@ -50,6 +58,7 @@ class TestRecordModelResult(unittest.TestCase):
             "Params": "dense 27.8B",
             "Download Size": "15.8 GiB",
             "Resident Size": "16.6 GiB",
+            "oMLX Version": "0.7.4.dev1",
             "Baseline TTFT (ms)": 230.5,
             "Baseline Decode (tps)": 75.2,
             "Final TTFT (ms)": 245.0,
@@ -86,6 +95,7 @@ class TestRecordModelResult(unittest.TestCase):
             "Params": "dense 27.8B",
             "Download Size": "15.8 GiB",
             "Resident Size": "16.6 GiB",
+            "oMLX Version": "0.7.4.dev1",
             "Baseline TTFT (ms)": 200,
             "Baseline Decode (tps)": 50,
             "Final TTFT (ms)": 210,
@@ -106,6 +116,7 @@ class TestRecordModelResult(unittest.TestCase):
             "Params": "dense 27.8B",
             "Download Size": "15.8 GiB",
             "Resident Size": "16.6 GiB",
+            "oMLX Version": "0.7.4.dev1",
             "Baseline TTFT (ms)": 200,
             "Baseline Decode (tps)": 50,
             "Final TTFT (ms)": 210,
@@ -132,6 +143,7 @@ class TestRecordModelResult(unittest.TestCase):
             "Quant": "8bit",
             "Checkpoint/Package": "mlx-vlm 0.7.11 DASH",
             "Resident Size": "4.8 GB",
+            "oMLX Version": "0.7.4.dev1",
             "CER (Character Error Rate)": 0.0012,
             "WER (Word Error Rate)": "N/A",
             "Avg Page Latency (s)": 1.13,
@@ -148,6 +160,7 @@ class TestRecordModelResult(unittest.TestCase):
             "Quant": "8bit",
             "Checkpoint/Package": "v1",
             "Resident Size": "2 GB",
+            "oMLX Version": "0.7.4.dev1",
             "CER (Character Error Rate)": 1.5,  # Invalid: > 1.0
             "WER (Word Error Rate)": 0.2,
             "Avg Page Latency (s)": 1.0,
@@ -164,6 +177,7 @@ class TestRecordModelResult(unittest.TestCase):
             "Quant": "native",
             "Params": "16.8 GB",
             "Resident Size": "16.8 GB",
+            "oMLX Version": "0.7.4.dev1",
             "Gate 1 (Accuracy)": 0.943,
             "Gate 2 (ECE / Calibration)": 0.0802,
             "Gate 3 (Log Loss)": 0.120,
@@ -184,11 +198,55 @@ class TestRecordModelResult(unittest.TestCase):
             "TTFT/Step Latency": "45.0 ms/step",
             "Total Latency": "1.80 s",
             "VRAM/Resident": "9.4 GB",
+            "oMLX Version": "0.7.4.dev1",
             "Quality/CLIP": "0.324",
             "Notes": "Euler scheduler"
         }
         rmr.add_result("image-generation", sample_img)
         self.assertTrue(rmr.validate_all_results())
+
+    def test_dashboard_embed_is_regenerated_from_the_csvs(self):
+        """A recorded row must reach the dashboard's offline fallback.
+
+        The fallback used to be hand-maintained and drifted: it served
+        pre-release numbers and omitted models added after it was written.
+        """
+        rmr.add_result("generative-text", self._text_row("TestOrg/EmbedCheck"))
+
+        html = rmr.DASHBOARD.read_text()
+        start = html.find("const EMBEDDED_DATA = ")
+        self.assertGreater(start, -1)
+        block = html[start + len("const EMBEDDED_DATA = "):]
+        block = block[:block.find("const CONFIG = ")].rstrip().rstrip(";")
+        embed = json.loads(block)
+        self.assertIn("TestOrg/EmbedCheck", embed["generative-text"])
+        self.assertIn("oMLX Version", embed["generative-text"])
+
+    def test_migrate_add_version_is_idempotent(self):
+        """Re-running the migration must not add a second version column."""
+        rmr.migrate_add_version("0.7.4.dev1")
+        headers, rows = rmr.read_csv_data(rmr.SCHEMAS["generative-text"]["csv_file"])
+        self.assertEqual(headers.count("oMLX Version"), 1)
+        rmr.migrate_add_version("0.7.4.dev1")
+        headers, rows = rmr.read_csv_data(rmr.SCHEMAS["generative-text"]["csv_file"])
+        self.assertEqual(headers.count("oMLX Version"), 1)
+
+    def _text_row(self, model):
+        return {
+            "Model": model,
+            "Quant": "oQ4e",
+            "Params": "dense 1B",
+            "Download Size": "1.0 GiB",
+            "Resident Size": "1.1 GiB",
+            "oMLX Version": "0.7.4.dev1",
+            "Baseline TTFT (ms)": 100.0,
+            "Baseline Decode (tps)": 50.0,
+            "Final TTFT (ms)": 90.0,
+            "Final Decode (tps)": 60.0,
+            "Final Settings": "ctx 8192, thinking off",
+            "Quality Pass Rate": "3/3 pass",
+            "Notes": "unit test row",
+        }
 
     def test_missing_mandatory_field(self):
         incomplete = {
